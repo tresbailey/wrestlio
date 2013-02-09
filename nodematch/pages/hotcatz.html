@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Wrestling Match</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="../css/bootstrap.css" rel="stylesheet">
+    <link href="../css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="../css/strapped.css" rel="stylesheet">
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+            <a class="brand brandTxt" href="#">
+                <img src="../images/logo.png" />
+                <h1>Wrestling Match</h1>
+            </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row top-row">
+      </div>
+        <div class="span12">
+            <h1><small>LEADER</small></h1><h2><small>BOARD</small></h2>
+        <div class="well">
+            <div class="row">
+                <div class="span1">
+                </div>
+                <div class="span2">
+      <div class="row" id="wrestlerListLeft">
+      </div>
+                </div>
+                <div class="span5">
+                </div>
+                <div class="span2">
+      <div class="row" id="wrestlerListRight">
+      </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+      <hr>
+
+      <footer>
+        <div class="navbar">&copy; 2012, HotCatz.  All rights reserved.</div>
+      </footer>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <script src="../js/jquery.js"></script>
+    <script src="../js/bootstrap-button.js"></script>
+    <script src="../js/bootstrap-modal.js"></script>
+    <script src="../js/underscore.js"></script>
+    <script src="../js/backbone.js"></script>
+    
+    <script type="text/template" id="catMediumTemplate">
+        <div class="span3 thumbnail">
+        <div class="rank-group">
+            <a href="#" class="rank-wrapper">
+                <div class="rank">
+                    <img class="fixedMedHeight" src="/upload_images/<%= cat.get("id") %>/<%= cat.get("image") %>" />
+                    <div class="rank-label-right">
+                        <img src="../images/n<%=rank%>.png" />
+                    </div>
+                </div>
+            </a>
+        </div>
+            <div class="pagination-centered">
+                <h1 >
+                    <small>
+                        <%= cat.get("cat_name") %>
+                    </small>
+                </h1>
+                        <%= cat.get("votes") %> Votes
+            </div>
+        </div>
+    </script>
+    <script type="text/template" id="smallWrestlerTemplate">
+        <div class="span2 thumbnail smallCat">
+        <div class="pagination-centered">
+            Name: <%= wrestler.first_name %> <%= wrestler.last_name %>
+            Weight: <%= wrestler.normal_weight %>
+            Wins: <%= wrestler.wins %>
+            Losses: <%= wrestler.losses %>
+        </div>
+        </div>
+    </script>
+    <script type="text/template" id="catTemplate">
+    <div class="span5">
+        <div class="photo-group thumbnail">
+            <div href="#" class="photo-wrapper">
+                <div class="photo">
+                    <img class="fixedHeight" src="/upload_images/<%= cat.get("id") %>/<%= cat.get("image") %>" />
+                    <div class="photo-label-<%=dir%>">
+                        
+        <div class="vote-group">
+            <a href="#" id="voteBtn" onclick="increaseVotes('<%= cat.get("id") %>')" class="vote-wrapper voteBtn">
+                <div class="vote">
+                    <img src="../images/<%= dir %>_tag.png" />
+                    <div class="vote-label-<%= dir %>">
+                        <h1 class="btnText">
+                            <small>
+                                <%= cat.get("cat_name") %>     
+                            </small>
+                        </h1>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </script>
+    <script type="text/template" id="catVoteTemplate">
+      <div class="row">
+            <div class="span5 matchCat" id="catLeft">
+                <%= _.template($("#catTemplate").html())({cat: leftCat,dir: 'left'} ) %>
+            </div>
+            <div class="span1">
+
+           <div class="vs-label-center">
+                <img src="../images/vs.png" />
+           </div> 
+            </div>
+            <div class="span5 matchCat" id="catRight">
+                <%= _.template($("#catTemplate").html())({cat: rightCat, dir: 'right'}) %>
+           </div>
+      </div>
+<!--
+      <div class="row overlay-row">
+            <div class="span12 pagination-centered">
+                <img src="../images/vs.png" />
+            </div>
+      </div>
+-->
+    </script>
+
+    <script type="text/template" id="allWrestlersTemplate">
+        <% _(models).each(function(school, index) { %>
+            <% _(_.values(school.get('wrestlers'))).each(function(wrestler, index) { %>
+                    <%= _.template($("#smallWrestlerTemplate").html())({wrestler: wrestler, rank: index}) %>
+            <% }) %>
+        <%}) %>
+    </script>
+    
+    <script type="text/template" id="catMatchTemplate">
+        <h1><small>CURRENT</small></h1><h2><small>RESULTS</small></h2>
+        <div class="well">
+        <div class="row" style="height: 200px">
+            <div class="span3 leftVoteStat pagination-centered" style="height:<%= (leftCat.get("votes")) ? (100*( leftCat.get("votes") / (leftCat.get("votes") + rightCat.get("votes")))) : 40 %>%">
+                <h1 class="btnText"><small>
+                    <%= leftCat.get("cat_name") %><br >
+                </small></h1>
+                <h2 class="btnText">
+                    <small>
+                    <%= leftCat.get("votes") %> VOTES
+                    </small>
+                </h2>
+            </div>
+            <div class="span1" />
+            <div class="span3 rightVoteStat pagination-centered" style="height:<%= (rightCat.get("votes")) ? (100*( rightCat.get("votes") / (leftCat.get("votes") + rightCat.get("votes")))) : 40  %>%">
+                <h1 class="btnText"><small>
+                    <%= rightCat.get("cat_name") %><br >
+                </small></h1>
+                <h2 class="btnText">
+                    <small>
+                    <%= rightCat.get("votes") %> VOTES
+                    </small>
+                </h2>
+            </div>
+        </div>
+        </div>
+    </script>
+
+    <script type="text/template" id="catSaveTemplate">
+        <div id="formModal" class="modal hide fade" role="dialog" aria-labelledby="formModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                Save Your Cat
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data" id="saveCatImage" method="post" target="http://localhost:8080/pages/hotcatz.html">
+                    <h2><small>Choose a local cat image:</small></h2>
+                    <input name="image" type="file" />
+                </form>
+                <form id="saveCatForm" action="#">
+                    <h2><small>What is your cat's name:</small></h2>
+                    <input name="cat_name" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
+                <a href="#" id="saveCatBtn" data-dismiss="modal" aria-hidden="true" class="btn btn-primary">Save</a>
+            </div>
+        </div>
+    </script>
+
+    <script src="../js/base_url.js"></script>
+    <script src="../js/mvvc.js"></script>
+
+  </body>
+</html>

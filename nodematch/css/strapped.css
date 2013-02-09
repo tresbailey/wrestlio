@@ -1,0 +1,154 @@
+
+body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+    background: url('../images/background.png') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+html {
+}
+img.fixedHeight
+{ 
+    max-height: 450px;  
+}
+img.fixedSmallHeight
+{ 
+    max-height: 150px;  
+}
+img.fixedMedHeight
+{ 
+    max-height: 250px;  
+}
+.bottomaligned 
+{
+}
+h1 small {
+    font-weight: bold;
+    color: #38190b;
+    display: inline;
+}
+h2 small {
+    color: #38190b;
+    display: inline;
+}
+h1 {
+    color: #38190b;
+    display: inline;
+}
+h2 {
+    color: #38190b;
+    display: inline;
+}
+h1.btnText small {
+    color: #ffffff;
+}
+.overlay-row {
+    position: relative;
+    top: -250px;
+}
+.top-row {
+    margin-top: 50px;
+}
+#voteBtn-left {
+}
+#voteBtn-right {
+}
+#voteBtnTxt-left {
+}
+#voteBtnTxt-right {
+}
+.matchCat {
+}
+.rightVoteStat {
+    background-color: #85c0ec;
+}
+.leftVoteStat {
+    background-color: #f59401;
+}
+.brandTxt {
+    text-align: bottom;
+}
+.content-header {
+    padding-bottom: 10px;
+}
+
+.thumbnail > a > img {
+    display: block;
+    max-width: 100%;
+}
+
+.vote-group .vote-wrapper {
+  position: relative;
+}
+
+.vote-group .vote-wrapper .vote {
+    position: relative;
+    margin: 0 auto;
+    display: table;
+}
+
+.vote-group .vote-wrapper .vote-label {
+  position: absolute;      
+  bottom: 10px;
+    left: 20px;
+}
+.vote-group .vote-wrapper .vote-label-left {
+  position: absolute;      
+  bottom: 10px;
+    left: 40px;
+}
+.vote-group .vote-wrapper .vote-label-right {
+  position: absolute;      
+  bottom: 10px;
+  left: 20px;
+}
+
+.photo-group .photo-wrapper {
+  position: relative;
+}
+
+.photo-group .photo-wrapper .photo {
+    position: relative;
+    margin: 0 auto;
+    display: table;
+}
+
+.photo-group .photo-wrapper .photo-label-left {
+  position: absolute;      
+  bottom: 5px;
+    left: -10px;
+}
+.photo-group .photo-wrapper .photo-label-right {
+  position: absolute;      
+  bottom: 5px;
+    right: -10px;
+}
+
+.rank-group .rank-wrapper {
+  position: relative;
+}
+
+.rank-group .rank-wrapper .rank {
+    position: relative;
+    margin: 0 auto;
+    display: table;
+}
+
+.rank-group .rank-wrapper .rank-label-left {
+  position: absolute;      
+  bottom: 5px;
+    left: -10px;
+}
+.rank-group .rank-wrapper .rank-label-right {
+  position: absolute;      
+  top: 0px;
+  right: 10px;
+}
+.vs-label-center {
+    line-height: 250px;
+    position: relative;
+    left: 2em;
+}
