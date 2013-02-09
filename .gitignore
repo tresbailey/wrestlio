@@ -3,6 +3,9 @@
 # Vim extensions
 *.sw[po]
 
+# Node
+node_modules
+
 # C extensions
 *.so
 

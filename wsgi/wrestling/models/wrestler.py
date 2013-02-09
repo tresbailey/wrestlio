@@ -37,6 +37,8 @@ class RoundActivity(WrestlingDocument):
             NEAR_FALL=3, OTHER_STALL_WARN=0,
             OTHER_STALL_FIRST=1, OTHER_STALL_SEC=2)
     action_time = db.IntField()
+    round_number = db.EnumField( db.IntField(),
+            1, 2, 3, 4, 5 )
     actor = db.ObjectIdField()
     point_value = db.IntField()
     activity_id = db.ObjectIdField()

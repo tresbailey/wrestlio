@@ -34,9 +34,8 @@ app.config['MONGOALCHEMY_SERVER_AUTH'] = False
 
 db = MongoAlchemy(app)
 
-from wrestling.views.base import base
 from wrestling.views.api import api
-app.register_blueprint(base)
+
 app.register_blueprint(api)
 
 if __name__ == '__main__':

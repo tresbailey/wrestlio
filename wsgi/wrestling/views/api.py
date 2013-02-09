@@ -124,8 +124,6 @@ def reassign_bout(boutDict):
     bout = Bout(**boutDict)
     bout.bout_date = datetime.strptime(bout.bout_date, '%m/%d/%Y')
     bout.bout_id = ObjectId()
-    import pdb
-    pdb.set_trace()
     bout.rounds = [ reassign_activity(activity) for activity in bout.rounds ]
     return bout
 
@@ -154,8 +152,6 @@ def get_single_match(match_id):
 
 @api.route('/matches/<match_id>/<bout_id>', methods=['GET'])
 def get_single_bout(match_id, bout_id):
-    import pdb
-    pdb.set_trace()
     match = find_match( match_id )
     bout = [bout for bout in match.individual_bouts 
             if bout.bout_id == ObjectId(bout_id) ]
