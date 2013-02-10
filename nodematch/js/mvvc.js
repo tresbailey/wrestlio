@@ -38,15 +38,16 @@
             default: {
                 id: "",
                 weight_class: "",
-                green_wrestler: "",
-                red_wrestler: "",
+                green_wrestler: {},
+                red_wrestler: {},
                 green_score: 0,
                 red_score: 0,
                 winner: "",
                 win_type: "",
                 date: "",
                 rounds: []
-            }
+            },
+
         });
         var Match = Backbone.Model.extend({
             default: {
@@ -57,6 +58,17 @@
                 bouts: []
             }
         });
+
+        var Bouts = Backbone.Collection.extend({
+            initialize: function() {
+
+            }
+        });
+        var Schools = Backbone.Collection.extend({
+            initialize: function() {
+            }
+        });
+
         var SmallWrestlerView = Backbone.View.extend({
             /*
             Renders a single wrestler in the list view
@@ -97,6 +109,7 @@
                 this.collection.bind("add", this.addWrestler);
             },
             render: function() {
+                console.log( "Got a first Model: "+ this.collection);
                 $(this.el).html( this.template( this.collection ) );
                 return this;
             },
@@ -112,39 +125,48 @@
 
             initialize: function() {
                 console.log("Initing the main view!!");
-                this.left_wrestlers = new Wrestlers();
-                this.left_wrestlers.url = 'http://localhost:8001/High%20School/SC/3A/Region%20II/Walhalla';
-                this.left_wrestlersView = new WrestlersView({ collection: this.left_wrestlers, el: $("#wrestlerListLeft") });
-                this.right_wrestlers = new Wrestlers();
-                this.right_wrestlers.url = 'http://localhost:8001/High%20School/SC/3A/Region%20II/Seneca';
-                this.right_wrestlersView = new WrestlersView({ collection: this.right_wrestlers, el: $("#wrestlerListRight") });
+                var left_school = new School();
+                left_school.url = 'http://localhost:8001/High%20School/SC/3A/Region%20II/Walhalla';
+                var right_school = new School();
+                right_school.url = 'http://localhost:8001/High%20School/SC/3A/Region%20II/Seneca';
+                var schools = new Schools();
+                schools.add(left_school);
+                schools.add(right_school);
                 that = this;
-                this.right_wrestlers.fetch({success: this.rightInit,
-                error: function(collection, xhr, options) {
-                    console.log("got a failure: "+ xhr.responseText);
-                }
+                currentBout = new Bout();
+                this.currentMatch = new Match({date: new Date(), 
+                    schools: schools, 
+                    bouts: new Bouts( [currentBout] )
                 });
-                this.left_wrestlers.fetch({success: this.leftInit,
-                error: function(collection, xhr, options) {
-                    console.log("got a failure: "+ xhr.responseText);
-                }
+                right_school.fetch({
+                    success: function(model, response, options) {
+                        var rawWrest = _.values(model.get('wrestlers'));
+                        var inList = [];
+                        _(rawWrest).each(function(raw, index) {
+                            inList.push(new Wrestler(raw));
+                        });
+                        var right_wrestlers = new Wrestlers(inList);
+                        var right_wrestlersView = new WrestlersView({ collection: right_wrestlers, el: $("#wrestlerListRight") });
+                    },
+                    error: function(collection, xhr, options) {
+                        console.log("got a failure: "+ xhr.responseText);
+                    }
+                });
+                left_school.fetch({
+                    success: function(model, response, options) {
+                        var rawWrest = _.values(model.get('wrestlers'));
+                        var inList = [];
+                        _(rawWrest).each(function(raw, index) {
+                            inList.push(new Wrestler(raw));
+                        });
+                        var left_wrestlers = new Wrestlers(inList);
+                        var left_wrestlersView = new WrestlersView({ collection: left_wrestlers, el: $("#wrestlerListLeft") });
+                    },
+                    error: function(collection, xhr, options) {
+                        console.log("got a failure: "+ xhr.responseText);
+                    }
                 });
             },
-            leftInit: function(collection, response, options) {
-                that.initAllViews(that.left_wrestlersView, collection, response, options);
-            },
-            rightInit: function(collection, response, options) {
-                that.initAllViews(that.right_wrestlersView, collection, response, options);
-            },
-            initAllViews: function(viewObject, collection, response, options) {
-                console.log("returned the collection: "+ viewObject);
-                viewObject = new WrestlersView({
-                    collection: collection, 
-                    el: viewObject.el
-                });
-                viewObject.collection = collection;
-                console.log("Wrestler View: "+ viewObject.collection);
-            }
         });
 
         var mainV = new MainView();

@@ -59,6 +59,12 @@ def create_school(competition, area, size, conference, school_name):
     return json.dumps( school, default=remove_OIDs )
 
 
+@api.route('/<competition>/<area>/<size>/<conference>/<school_name>/wrestlers', methods=['GET'])
+def show_all_wrestlers(competition, area, size, conference, school_name):
+    school = find_school(**request.view_args)
+    return json.dumps( school.wrestlers.values(), default=remove_OIDs )
+
+
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>/<wrestler_id>/', methods=['GET'])
 def show_wrestler_info(competition, area, size, conference, school_name, wrestler_id):
     school = find_school(**request.view_args)
