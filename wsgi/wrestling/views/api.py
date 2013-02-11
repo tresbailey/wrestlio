@@ -150,6 +150,12 @@ def update_school_match(match_id):
 def find_match( match_id ):
     return Match.query.filter( Match._id == ObjectId(match_id) ).one()
 
+
+def find_bout( match, bout_id ):
+    return [bout for bout in match.individual_bouts 
+            if bout.bout_id == ObjectId(bout_id) ]
+    
+
 @api.route('/matches/<match_id>', methods=['GET'])
 def get_single_match(match_id):
     match = find_match( match_id)
@@ -159,6 +165,19 @@ def get_single_match(match_id):
 @api.route('/matches/<match_id>/<bout_id>', methods=['GET'])
 def get_single_bout(match_id, bout_id):
     match = find_match( match_id )
-    bout = [bout for bout in match.individual_bouts 
-            if bout.bout_id == ObjectId(bout_id) ]
+    bout = find_bout( match, bout_id )
     return json.dumps( bout[0], default=remove_OIDs )
+
+
+@api.route('/matches/<match_id>/<bout_id>/<wrestler_id>', methods=['POST'])
+def save_wrestler_action(match_id, bout_id, wrestler_id, activity):
+    """
+    Good candidate to start using some memcache or redis here
+    """
+    match = find_match( match_id )
+    bout = find_bout( match, bout_id )
+    activity.actor = wrestler_id
+    bout.rounds.append( activity )
+    match.save()
+    return json.dumps( activity, default=remove_OIDs )
+
