@@ -7,6 +7,7 @@
         var App = App || {};
         App.Views = App.Views || {};
         
+
         var MainView = Backbone.View.extend({
 
             initialize: function() {
@@ -25,9 +26,7 @@
                     bouts: new Bouts( [this.currentBout] )
                 });
                 var activi = new Action();
-                activi.set('time', 994);
                 var actis = new Actions();
-                actis.add(activi);
                 this.currentBout.set('actions', actis);
                 this.curBoutView = new BoutView({model: that.currentBout, el: $("#mainMatch")});
                 right_school.fetch({
@@ -39,7 +38,11 @@
                         });
                         var right_wrestlers = new Wrestlers(inList);
                         var right_wrestlersView = new WrestlersView({ collection: right_wrestlers, el: $("#wrestlerListRight") });
-                        that.currentBout.set('green_wrestler', right_wrestlers.at(0));
+                        var rWrest = right_wrestlers.at(0);
+                        rWrest.set('available_moves', standing_moves);
+                        rWrest.set('position', "NEUTRAL");
+                        rWrest.set('points', 0);
+                        that.currentBout.set('green_wrestler', rWrest);
                         console.log("the current bout: "+ JSON.stringify(that.currentBout.get('green_wrestler')));
                         that.curBoutView.render();
                     },
@@ -56,7 +59,11 @@
                         });
                         var left_wrestlers = new Wrestlers(inList);
                         var left_wrestlersView = new WrestlersView({ collection: left_wrestlers, el: $("#wrestlerListLeft") });
-                        that.currentBout.set('red_wrestler', left_wrestlers.at(0));
+                        var lWrest = left_wrestlers.at(0);
+                        that.currentBout.set('red_wrestler', lWrest);
+                        lWrest.set('available_moves', standing_moves);
+                        lWrest.set('position', "NEUTRAL");
+                        lWrest.set('points', 0);
                         that.curBoutView.render();
                     },
                     error: function(collection, xhr, options) {

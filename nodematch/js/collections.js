@@ -23,3 +23,7 @@ var Actions = Backbone.Collection.extend({
     initialize: function() {
     }
 });
+var Moves = Backbone.Collection.extend({
+    initiailize:function() {
+    }
+});

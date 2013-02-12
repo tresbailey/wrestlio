@@ -1,3 +1,13 @@
+var Move = Backbone.Model.extend({
+    default: {
+        id: "",
+        move_name: "",
+        point_value: 0,
+        from_position: "",
+        actor_effect: "TOP",
+        victim_effect: "BOTTOM"
+    }
+});
 var Wrestler = Backbone.Model.extend({
     default: {
         id: "",
@@ -6,7 +16,10 @@ var Wrestler = Backbone.Model.extend({
         qualified_weight: "",
         normal_weight: "",
         wins: "",
-        losses: ""
+        losses: "",
+        available_moves: [],
+        position: "NEUTRAL",
+        points: 0
     }
 });
 var School = Backbone.Model.extend({
