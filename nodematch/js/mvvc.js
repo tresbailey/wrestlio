@@ -39,6 +39,7 @@
                         var right_wrestlers = new Wrestlers(inList);
                         var right_wrestlersView = new WrestlersView({ collection: right_wrestlers, el: $("#wrestlerListRight") });
                         var rWrest = right_wrestlers.at(0);
+                        rWrest.set('id', new Date());
                         rWrest.set('available_moves', standing_moves);
                         rWrest.set('position', "NEUTRAL");
                         rWrest.set('points', 0);
@@ -61,6 +62,7 @@
                         var left_wrestlersView = new WrestlersView({ collection: left_wrestlers, el: $("#wrestlerListLeft") });
                         var lWrest = left_wrestlers.at(0);
                         that.currentBout.set('red_wrestler', lWrest);
+                        lWrest.set('id', new Date());
                         lWrest.set('available_moves', standing_moves);
                         lWrest.set('position', "NEUTRAL");
                         lWrest.set('points', 0);

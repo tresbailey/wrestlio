@@ -296,7 +296,7 @@
             
     <div class="span3">
         <div id="greenMoves" class="well">
-        <% _(_.filter(_.values(move_lookup), function(val) { return val.get('from_position') == bout.get('red_wrestler').get('position');})).each(function(move, index) { %>
+        <% _(_.filter(_.values(move_lookup), function(val) { return val.get('from_position') == bout.get('green_wrestler').get('position');})).each(function(move, index) { %>
             <button class="btn btn-primary" id="<%= move.get('move_id') %>"><%= move.get('move_name') %></button>
         <%});%>
         </div>
@@ -309,6 +309,10 @@
                 </div>
                 <div class="accordion-body collapse in" id="1collapseOne">
                     <div class="accordion-inner">
+<% var green = this.model.get('green_wrestler');%>
+        <% _(_.filter(bout.get('actions').collection, function(val) { return val.get('actor') == green.get('id');})).each(function(action, index) { %>
+            <button class="btn btn-primary"><%= action %></button>
+        <%});%>
                         Need to make this use the _.where method to iterate and find green round 1 actions
                     </div>
                 </div>

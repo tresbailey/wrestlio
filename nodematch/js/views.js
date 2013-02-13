@@ -48,16 +48,30 @@ var BoutView = Backbone.View.extend({
         $(this.el).html( this.template( {bout: this.model} ) );
         return this;
     },
+    createAction: function(move, actor) {
+        var action = new Action();
+        action.set('time', 999);
+        action.set('actor', actor.get('id'));
+        action.set('value', move.get('point_value'));
+        action.set('round', 1);
+        var actions = this.model.get('actions');
+        actions.add(action);
+        this.model.set('actions', actions);
+    },
+    makeMove: function(move, actor, victim) {
+        actor.set('position', move.get('actor_effect'));
+        actor.set('points', move.get('point_value') + actor.get('points'));
+        victim.set('position', move.get('victim_effect'));
+        this.createAction(move, actor);
+        console.log("Move found: "+ JSON.stringify(move) );
+    },
     events: {
         "click #greenMoves .btn": function(event) { 
             var buttonClick = event.target;
             move = move_lookup[buttonClick.id];
             var green = this.model.get('green_wrestler');
             var red = this.model.get('red_wrestler');
-            green.set('position', move.get('actor_effect'));
-            green.set('points', move.get('point_value') + green.get('points'));
-            red.set('position', move.get('victim_effect'));
-            console.log("Move found: "+ JSON.stringify(move) );
+            this.makeMove(move, green, red); 
             this.render();
         },
         "click #redMoves .btn": function(event) { 
@@ -65,10 +79,7 @@ var BoutView = Backbone.View.extend({
             move = move_lookup[buttonClick.id];
             var green = this.model.get('green_wrestler');
             var red = this.model.get('red_wrestler');
-            red.set('position', move.get('actor_effect'));
-            red.set('points', move.get('point_value') + red.get('points'));
-            green.set('position', move.get('victim_effect'));
-            console.log("Move found: "+ JSON.stringify(move) );
+            this.makeMove(move, red, green); 
             this.render();
         }
     }
