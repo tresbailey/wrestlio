@@ -12,13 +12,13 @@
 
             initialize: function() {
                 console.log("Initing the main view!!");
-                var left_school = new School();
-                left_school.url = 'http://localhost:8001/High%20School/SC/3A/Region%20II/Walhalla';
-                var right_school = new School();
-                right_school.url = 'http://localhost:8001/High%20School/SC/3A/Region%20II/Seneca';
+                var red_school = new School();
+                red_school.url = 'http://localhost:8001/High%20School/SC/3A/Region%20II/Walhalla';
+                var green_school = new School();
+                green_school.url = 'http://localhost:8001/High%20School/SC/3A/Region%20II/Seneca';
                 var schools = new Schools();
-                schools.add(left_school);
-                schools.add(right_school);
+                schools.add(red_school);
+                schools.add(green_school);
                 that = this;
                 this.currentBout = new Bout();
                 this.currentMatch = new Match({date: new Date(), 
@@ -29,21 +29,22 @@
                 var actis = new Actions();
                 this.currentBout.set('actions', actis);
                 this.curBoutView = new BoutView({model: that.currentBout, el: $("#mainMatch")});
-                right_school.fetch({
+                green_school.fetch({
                     success: function(model, response, options) {
                         var rawWrest = _.values(model.get('wrestlers'));
                         var inList = [];
                         _(rawWrest).each(function(raw, index) {
                             inList.push(new Wrestler(raw));
                         });
-                        var right_wrestlers = new Wrestlers(inList);
-                        var right_wrestlersView = new WrestlersView({ collection: right_wrestlers, el: $("#wrestlerListRight") });
-                        var rWrest = right_wrestlers.at(0);
-                        rWrest.set('id', new Date());
-                        rWrest.set('available_moves', standing_moves);
-                        rWrest.set('position', "NEUTRAL");
-                        rWrest.set('points', 0);
-                        that.currentBout.set('green_wrestler', rWrest);
+                        var green_wrestlers = new Wrestlers(inList);
+                        var green_wrestlersView = new WrestlersView({ collection: green_wrestlers, el: $("#wrestlerListLeft") });
+                        var gWrest = green_wrestlers.at(0);
+                        gWrest.set('id', new Date());
+                        gWrest.set('available_moves', standing_moves);
+                        gWrest.set('position', "NEUTRAL");
+                        gWrest.set('points', 0);
+                        gWrest.set('stalling_count', 0);
+                        that.currentBout.set('green_wrestler', gWrest);
                         console.log("the current bout: "+ JSON.stringify(that.currentBout.get('green_wrestler')));
                         that.curBoutView.render();
                     },
@@ -51,21 +52,22 @@
                         console.log("got a failure: "+ xhr.responseText);
                     }
                 });
-                left_school.fetch({
+                red_school.fetch({
                     success: function(model, response, options) {
                         var rawWrest = _.values(model.get('wrestlers'));
                         var inList = [];
                         _(rawWrest).each(function(raw, index) {
                             inList.push(new Wrestler(raw));
                         });
-                        var left_wrestlers = new Wrestlers(inList);
-                        var left_wrestlersView = new WrestlersView({ collection: left_wrestlers, el: $("#wrestlerListLeft") });
-                        var lWrest = left_wrestlers.at(0);
-                        that.currentBout.set('red_wrestler', lWrest);
-                        lWrest.set('id', new Date());
-                        lWrest.set('available_moves', standing_moves);
-                        lWrest.set('position', "NEUTRAL");
-                        lWrest.set('points', 0);
+                        var red_wrestlers = new Wrestlers(inList);
+                        var red_wrestlersView = new WrestlersView({ collection: red_wrestlers, el: $("#wrestlerListRight") });
+                        var rWrest = red_wrestlers.at(0);
+                        that.currentBout.set('red_wrestler', rWrest);
+                        rWrest.set('id', new Date());
+                        rWrest.set('available_moves', standing_moves);
+                        rWrest.set('position', "NEUTRAL");
+                        rWrest.set('points', 0);
+                        rWrest.set('stalling_count', 0);
                         that.curBoutView.render();
                     },
                     error: function(collection, xhr, options) {

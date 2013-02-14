@@ -48,21 +48,31 @@ var BoutView = Backbone.View.extend({
         $(this.el).html( this.template( {bout: this.model} ) );
         return this;
     },
-    createAction: function(move, actor) {
+    createAction: function(move, actor, victim) {
         var action = new Action();
-        action.set('time', 999);
-        action.set('actor', actor.get('id'));
-        action.set('value', move.get('point_value'));
+        action.set('time', $('#left').html());
+        if ( isStalling( move.get('move_id') ) ) {
+            victim.set('actor', victim.get('id'));
+            victim.set('value', move.get('victim_value'));
+        } else {
+            action.set('actor', actor.get('id'));
+            action.set('value', move.get('actor_value'));
+        }
         action.set('round', 1);
-        var actions = this.model.get('actions');
+        var actions = new Actions();
         actions.add(action);
         this.model.set('actions', actions);
     },
     makeMove: function(move, actor, victim) {
-        actor.set('position', move.get('actor_effect'));
-        actor.set('points', move.get('point_value') + actor.get('points'));
-        victim.set('position', move.get('victim_effect'));
-        this.createAction(move, actor);
+        actor.set('position', move.get('actor_effect') || actor.get('position') );
+        actor.set('points', move.get('actor_value') + actor.get('points'));
+        victim.set('points', move.get('victim_value') + actor.get('points'));
+        victim.set('position', move.get('victim_effect') || victim.get('position') );
+        if (move.get('move_id').indexOf('stalling') == 0) {
+            var count = actor.get('stalling_count');
+            actor.set('stalling_count', ++count);
+        }
+        this.createAction(move, actor, victim);
         console.log("Move found: "+ JSON.stringify(move) );
     },
     events: {

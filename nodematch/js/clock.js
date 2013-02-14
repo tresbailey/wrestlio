@@ -2,6 +2,7 @@
 /*
 http://irae.pro.br/lab/canvas_pie_countdown/
  */
+
 window.onload = function() {
 	canvas = document.getElementById('pie-countdown');
 	num = document.getElementById('left');
@@ -11,16 +12,19 @@ window.onload = function() {
 	center = [ (canvas_size[0] / 2) - 70, canvas_size[1] / 2 ];
 	start = 1; // varia de 1 até 0
 	fps = 40;
-	seconds = 180;
+	seconds = 10;
 
 	var total = fps * seconds;
 	for ( var i = total; i >= 0; i--) {
 		var delayed = (function() {
 			var step = 1 - i / total;
 			var left = Math.ceil(i / fps);
-			left = Math.floor(left / 60) + ":" + left % 60
+			var stleft = Math.floor(left / 60) + ":" + left % 60
 			return function() {
-				num.innerHTML = left;
+			    if ( left == 0 ) {
+                    console.log('round complete');
+                }
+            	num.innerHTML = stleft;
 				draw_next(step);
 			};
 		})();

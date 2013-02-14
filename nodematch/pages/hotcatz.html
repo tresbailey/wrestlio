@@ -231,39 +231,20 @@
         <%}) %>
     </script>
     
-    <script type="text/template" id="catMatchTemplate">
-        <h1><small>CURRENT</small></h1><h2><small>RESULTS</small></h2>
-        <div class="well">
-        <div class="row" style="height: 200px">
-            <div class="span3 leftVoteStat pagination-centered" style="height:<%= (leftCat.get("votes")) ? (100*( leftCat.get("votes") / (leftCat.get("votes") + rightCat.get("votes")))) : 40 %>%">
-                <h1 class="btnText"><small>
-                    <%= leftCat.get("cat_name") %><br >
-                </small></h1>
-                <h2 class="btnText">
-                    <small>
-                    <%= leftCat.get("votes") %> VOTES
-                    </small>
-                </h2>
-            </div>
-            <div class="span1" />
-            <div class="span3 rightVoteStat pagination-centered" style="height:<%= (rightCat.get("votes")) ? (100*( rightCat.get("votes") / (leftCat.get("votes") + rightCat.get("votes")))) : 40  %>%">
-                <h1 class="btnText"><small>
-                    <%= rightCat.get("cat_name") %><br >
-                </small></h1>
-                <h2 class="btnText">
-                    <small>
-                    <%= rightCat.get("votes") %> VOTES
-                    </small>
-                </h2>
-            </div>
-        </div>
-        </div>
-    </script>
-    
-    <script type="text/template" id="moveBtn">
-        <%= move %>
+    <script type="text/template" id="actionOccurred">
+        <% if(actions.at(0) !== undefined) { %>
+            <%= JSON.stringify(actions.at(0).get('time')) %>
+        <% } %>
+        <% _.each(actions.collection, function(val, index) { %>
+            <%= JSON.stringify(val) %>
+        <%});%>
     </script>
 
+    <script type="text/template" id="movesAvail">
+        <% _(_.filter(_.values(move_lookup), function(val) { return moveComparison(val, wrestler);})).each(function(move, index) { %>
+            <button class="btn btn-primary" id="<%= move.get('move_id') %>"><%= move.get('move_name') %></button>
+        <%});%>
+    </script>
     <script type="text/template" id="mainMatchTemplate">
     <div class="row"> 
     <div class="span3">
@@ -296,9 +277,9 @@
             
     <div class="span3">
         <div id="greenMoves" class="well">
-        <% _(_.filter(_.values(move_lookup), function(val) { return val.get('from_position') == bout.get('green_wrestler').get('position');})).each(function(move, index) { %>
-            <button class="btn btn-primary" id="<%= move.get('move_id') %>"><%= move.get('move_name') %></button>
-        <%});%>
+            <% var green = this.model.get('green_wrestler');%>
+            <% var red = this.model.get('red_wrestler');%>
+            <%= _.template($("#movesAvail").html())({wrestler: green}) %>
         </div>
         <div class="accordion" id="accordion1">
             <div class="accordion-group">
@@ -309,11 +290,7 @@
                 </div>
                 <div class="accordion-body collapse in" id="1collapseOne">
                     <div class="accordion-inner">
-<% var green = this.model.get('green_wrestler');%>
-        <% _(_.filter(bout.get('actions').collection, function(val) { return val.get('actor') == green.get('id');})).each(function(action, index) { %>
-            <button class="btn btn-primary"><%= action %></button>
-        <%});%>
-                        Need to make this use the _.where method to iterate and find green round 1 actions
+                        <%= _.template($("#actionOccurred").html())({wrestler: green, round: 1, actions: bout.get('actions')}) %>
                     </div>
                 </div>
             </div>
@@ -325,7 +302,7 @@
                 </div>
                 <div class="accordion-body collapse" id="1collapseTwo">
                     <div class="accordion-inner">
-                        Round Actions
+                        <%= _.template($("#actionOccurred").html())({wrestler: green, round: 2, actions: bout.get('actions')}) %>
                     </div>
                 </div>
             </div>
@@ -337,7 +314,7 @@
                 </div>
                 <div class="accordion-body collapse" id="1collapseThree">
                     <div class="accordion-inner">
-                        Round Actions
+                        <%= _.template($("#actionOccurred").html())({wrestler: green, round: 3, actions: bout.get('actions')}) %>
                     </div>
                 </div>
             </div>
@@ -347,9 +324,7 @@
     <div class="span3">
 
         <div id="redMoves" class="well">
-        <% _(_.filter(_.values(move_lookup), function(val) { return val.get('from_position') == bout.get('red_wrestler').get('position');})).each(function(move, index) { %>
-            <button class="btn btn-primary" id="<%= move.get('move_id') %>"><%= move.get('move_name') %></button>
-        <%});%>
+            <%= _.template($("#movesAvail").html())({wrestler: red}) %>
         </div>
         <div class="accordion" id="accordion2">
             <div class="accordion-group">
@@ -360,7 +335,7 @@
                 </div>
                 <div class="accordion-body collapse in" id="collapseOne">
                     <div class="accordion-inner">
-                        Round Actions
+                        <%= _.template($("#actionOccurred").html())({wrestler: red, round: 1, actions: bout.get('actions')}) %>
                     </div>
                 </div>
             </div>
@@ -372,7 +347,7 @@
                 </div>
                 <div class="accordion-body collapse" id="collapseTwo">
                     <div class="accordion-inner">
-                        Round Actions
+                        <%= _.template($("#actionOccurred").html())({wrestler: red, round: 2, actions: bout.get('actions')}) %>
                     </div>
                 </div>
             </div>
@@ -384,7 +359,7 @@
                 </div>
                 <div class="accordion-body collapse" id="collapseThree">
                     <div class="accordion-inner">
-                        Round Actions
+                        <%= _.template($("#actionOccurred").html())({wrestler: red, round: 3, actions: bout.get('actions')}) %>
                     </div>
                 </div>
             </div>
