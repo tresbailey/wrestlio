@@ -58,6 +58,7 @@ var Bout = Backbone.Model.extend({
         winner: "",
         win_type: "",
         date: "",
+        current_round: 1,
         actions: []
     },
 

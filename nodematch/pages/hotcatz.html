@@ -233,10 +233,10 @@
     
     <script type="text/template" id="actionOccurred">
         <% if(actions.at(0) !== undefined) { %>
-            <%= JSON.stringify(actions.at(0).get('time')) %>
+            <%= JSON.stringify(_.values(actions)) %>
         <% } %>
-        <% _.each(actions.collection, function(val, index) { %>
-            <%= JSON.stringify(val) %>
+        <% _(_.values(actions)).each(function(val, index) { %>
+            <a><%= JSON.stringify(val) %></a>
         <%});%>
     </script>
 

@@ -43,6 +43,11 @@ var BoutView = Backbone.View.extend({
     Renders the one on one matchup between 2 wrestlers
     */
     template: _.template( $("#mainMatchTemplate").html() ),
+    advance_next_round: function() {
+        console.log('next round upcoming');
+        var roundC = this.model.get('current_round');
+        this.model.set('current_round', roundC+1);
+    },
     render: function() {
         console.log("Wrestler Model: "+ JSON.stringify(this.model));
         $(this.el).html( this.template( {bout: this.model} ) );
@@ -58,7 +63,7 @@ var BoutView = Backbone.View.extend({
             action.set('actor', actor.get('id'));
             action.set('value', move.get('actor_value'));
         }
-        action.set('round', 1);
+        action.set('round', this.model.get('current_round'));
         var actions = new Actions();
         actions.add(action);
         this.model.set('actions', actions);
@@ -66,7 +71,7 @@ var BoutView = Backbone.View.extend({
     makeMove: function(move, actor, victim) {
         actor.set('position', move.get('actor_effect') || actor.get('position') );
         actor.set('points', move.get('actor_value') + actor.get('points'));
-        victim.set('points', move.get('victim_value') + actor.get('points'));
+        victim.set('points', move.get('victim_value') + victim.get('points'));
         victim.set('position', move.get('victim_effect') || victim.get('position') );
         if (move.get('move_id').indexOf('stalling') == 0) {
             var count = actor.get('stalling_count');

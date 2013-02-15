@@ -21,6 +21,7 @@
                 schools.add(green_school);
                 that = this;
                 this.currentBout = new Bout();
+                this.currentBout.set('current_round', 1);
                 this.currentMatch = new Match({date: new Date(), 
                     schools: schools, 
                     bouts: new Bouts( [this.currentBout] )
@@ -29,6 +30,7 @@
                 var actis = new Actions();
                 this.currentBout.set('actions', actis);
                 this.curBoutView = new BoutView({model: that.currentBout, el: $("#mainMatch")});
+                start_clock(this.curBoutView);
                 green_school.fetch({
                     success: function(model, response, options) {
                         var rawWrest = _.values(model.get('wrestlers'));

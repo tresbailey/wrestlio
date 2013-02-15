@@ -3,7 +3,7 @@
 http://irae.pro.br/lab/canvas_pie_countdown/
  */
 
-window.onload = function() {
+start_clock = function( round ) {
 	canvas = document.getElementById('pie-countdown');
 	num = document.getElementById('left');
 	ctx = canvas.getContext('2d');
@@ -22,7 +22,7 @@ window.onload = function() {
 			var stleft = Math.floor(left / 60) + ":" + left % 60
 			return function() {
 			    if ( left == 0 ) {
-                    console.log('round complete');
+                    round.advance_next_round();
                 }
             	num.innerHTML = stleft;
 				draw_next(step);
