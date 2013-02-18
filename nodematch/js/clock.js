@@ -3,7 +3,12 @@
 http://irae.pro.br/lab/canvas_pie_countdown/
  */
 
-start_clock = function( round ) {
+pause_clock = function( clock_model ) {
+    clearInterval( clock_model.get('timeout_keeper') );
+    $("#pie-countdown").removeClass("runningClock").addClass("stoppedClock");
+}
+
+start_clock = function( round, clock_model ) {
 	canvas = document.getElementById('pie-countdown');
 	num = document.getElementById('left');
 	ctx = canvas.getContext('2d');
@@ -12,24 +17,27 @@ start_clock = function( round ) {
 	center = [ (canvas_size[0] / 2) - 70, canvas_size[1] / 2 ];
 	start = 1; // varia de 1 até 0
 	fps = 40;
-	seconds = 10;
+	seconds = clock_model.get('total');
 
-	var total = fps * seconds;
-	for ( var i = total; i >= 0; i--) {
-		var delayed = (function() {
-			var step = 1 - i / total;
-			var left = Math.ceil(i / fps);
-			var stleft = Math.floor(left / 60) + ":" + left % 60
-			return function() {
-			    if ( left == 0 ) {
-                    round.advance_next_round();
-                }
-            	num.innerHTML = stleft;
-				draw_next(step);
-			};
-		})();
-		setTimeout(delayed, -1000 / fps * (i - total));
-	}
+    fps = 100;
+    $("#restartClock").hide();
+    $("#pie-countdown").removeClass("stoppedClock").addClass("runningClock");
+    
+    delayed = function() {
+        var left = clock_model.get('left');
+        if ( left == 0 ) {
+            round.advance_next_round();
+            clearInterval( clock_model.get('timeout_keeper') );
+        } else {
+            var stleft = Math.floor(left/1000 / 60) +":"+ Math.floor((left/1000) % 60);
+            num.innerHTML = stleft;
+            var step = 1 - left/seconds;
+            draw_next( step );
+        }
+        clock_model.set('left', left-fps);
+    }
+
+    clock_model.set('timeout_keeper', setInterval( delayed, fps ) );
 }
 
 function draw_next(step) { // step between 0 and 1
@@ -54,6 +62,3 @@ function draw_next(step) { // step between 0 and 1
 	}
 }
 
-function start_stop_clock(event) {
-    alert(event)
-}

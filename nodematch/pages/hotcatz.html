@@ -41,54 +41,7 @@
       </div>
     
     <div class="well">
-      <div class="row">
-            <div class="span1">
-            </div>
-            <div class="span1 centered">
-                <h1>8</h1>
-            </div>
-            <div class="span1">
-            </div>
-            <div class="span1">
-            </div>
-            <div class="span2 centered">
-				<div style="padding-left: 5px;">
-                    <div class="photo-group thumbnail">
-                        <div href="#" class="photo-wrapper">
-                            <div class="photo">
-			            		<canvas id="pie-countdown" height="150px" width="300px"> 
-                    			Sorry, it doesn't work for you.
-                        		</canvas>
-                                <div class="vote-group">
-                                    <a href="#" id="voteBtn" class="vote-wrapper voteBtn">
-                                        <div class="vote">
-                                            <div class="vote-label-left" style="left: -92px; bottom: 22px">
-                                                <h1 class="btnText">
-                                                    <small>
-                                    					<div id="left" style="color: #aaaaaa">
-                                		  			    </div>                
-                                                    </small>
-                                                </h1>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-				</div>
-            </div>
-            <div class="span1">
-            </div>
-            <div class="span1">
-            </div>
-            <div class="span1">
-            </div>
-            <div class="span1 centered">
-                <h1>12</h1>
-            </div>
-            <div class="span1">
-            </div>
+      <div id="boutClock" class="row">
         </div>
 <div id="mainMatch">
 </div>
@@ -139,7 +92,55 @@
     <script src="../js/underscore.js"></script>
     <script src="../js/backbone.js"></script>
     <script src="../js/clock.js"></script>
-    
+
+    <script type="text/template" id="boutClockTemplate">
+            <div class="span1">
+            </div>
+            <div class="span1 centered">
+                <h1>8</h1>
+            </div>
+            <div class="span1">
+            </div>
+            <div class="span1">
+            </div>
+            <div class="span2 centered">
+				<div style="padding-left: 5px;">
+                    <div class="photo-group thumbnail">
+                        <div href="#" class="photo-wrapper">
+                            <div class="photo">
+			            		<canvas id="pie-countdown" height="150px" width="300px"> 
+                    			Sorry, it doesn't work for you.
+                        		</canvas>
+                                <div class="vote-group">
+                                    <a href="#" id="voteBtn" class="vote-wrapper voteBtn">
+                                        <div class="vote">
+                                            <div class="vote-label-left" style="left: -92px; bottom: 22px">
+                                                <h1 class="btnText">
+                                                    <small>
+                                    					<div id="left" style="color: #aaaaaa">
+                                		  			    </div>                
+                                                    </small>
+                                                </h1>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+            </div>
+            <div class="span1">
+            </div>
+            <div class="span1">
+            </div>
+            <div class="span1">
+            </div>
+            <div class="span1 centered">
+            </div>
+            <div class="span1">
+            </div>
+    </script>    
     <script type="text/template" id="catMediumTemplate">
         <div class="span3 thumbnail">
         <div class="rank-group">

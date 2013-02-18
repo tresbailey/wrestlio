@@ -30,7 +30,11 @@
                 var actis = new Actions();
                 this.currentBout.set('actions', actis);
                 this.curBoutView = new BoutView({model: that.currentBout, el: $("#mainMatch")});
-                start_clock(this.curBoutView);
+                this.boutClock = new Clock();
+                this.boutClock.set('total', 120000);
+                this.boutClock.set('left', 120000);
+                this.boutClockView = new ClockView({model: that.boutClock, el: $("#boutClock")});
+                this.boutClockView.render( this.curBoutView );
                 green_school.fetch({
                     success: function(model, response, options) {
                         var rawWrest = _.values(model.get('wrestlers'));

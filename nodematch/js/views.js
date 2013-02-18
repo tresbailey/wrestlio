@@ -38,6 +38,27 @@ var WrestlersView = Backbone.View.extend({
     }
 });
 
+var ClockView = Backbone.View.extend({
+    template: _.template( $("#boutClockTemplate").html() ),
+    render: function( boutView ) {
+        $(this.el).html( this.template() );
+        this.boutView = boutView;
+        start_clock( this.boutView, this.model );
+        return this;
+    },
+    events: {
+        "click .runningClock#pie-countdown": function(event) { 
+            console.log("Clicked the clock");
+            pause_clock( this.model );
+        },
+        "click .stoppedClock#pie-countdown": function(event) {
+            console.log("Started the clock");
+            start_clock( this.boutView, this.model);
+        }
+    }
+});
+        
+
 var BoutView = Backbone.View.extend({
     /*
     Renders the one on one matchup between 2 wrestlers
@@ -47,6 +68,7 @@ var BoutView = Backbone.View.extend({
         console.log('next round upcoming');
         var roundC = this.model.get('current_round');
         this.model.set('current_round', roundC+1);
+        $("#restartClock").show();
     },
     render: function() {
         console.log("Wrestler Model: "+ JSON.stringify(this.model));

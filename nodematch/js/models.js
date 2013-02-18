@@ -73,3 +73,10 @@ var Match = Backbone.Model.extend({
     }
 });
 
+var Clock = Backbone.Model.extend({
+    default: {
+        total: 120,
+        left: 120,
+        timeout_keeper: "",
+    }
+});
