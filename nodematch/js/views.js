@@ -48,11 +48,9 @@ var ClockView = Backbone.View.extend({
     },
     events: {
         "click .runningClock#pie-countdown": function(event) { 
-            console.log("Clicked the clock");
             pause_clock( this.model );
         },
         "click .stoppedClock#pie-countdown": function(event) {
-            console.log("Started the clock");
             start_clock( this.boutView, this.model);
         }
     }
@@ -74,6 +72,18 @@ var BoutView = Backbone.View.extend({
         console.log("Wrestler Model: "+ JSON.stringify(this.model));
         $(this.el).html( this.template( {bout: this.model} ) );
         return this;
+    },
+    checkForWin: function( ) {
+        var score_diff = this.model.get('green_wrestler').get('points') - this.model.get('red_wrestler').get('points');
+        console.log("score diff: "+ this.model.get('green_wrestler').get('points'));
+        if ( Math.abs(score_diff) > 15  && score_diff > 0 ) {
+            console.log("Choowing a winner");
+            this.model.set('winner', this.model.get('green_wrestler').get('id') );
+            return 'green_wrestler';
+        } else if ( Math.abs(score_diff) > 15 && score_diff < 0 ) {
+            this.model.set('winner', this.model.get('red_wrestler').get('id') );
+            return 'red_wrestler';
+        }
     },
     createAction: function(move, actor, victim) {
         var action = new Action();
@@ -100,6 +110,9 @@ var BoutView = Backbone.View.extend({
             actor.set('stalling_count', ++count);
         }
         this.createAction(move, actor, victim);
+        if ( this.checkForWin() !== undefined ) {
+            console.log("is a winner: "+ this.checkForWin() );
+        }
         console.log("Move found: "+ JSON.stringify(move) );
     },
     events: {
