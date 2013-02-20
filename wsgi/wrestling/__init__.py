@@ -21,6 +21,7 @@ def convert_json():
 def add_headers(response):
     if isinstance(response.data, dict) or isinstance(response.data, list):
         response.headers['Content-Type'] = 'application/json'
+    response.headers.add_header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,HEAD')
     response.headers.add_header('Access-Control-Allow-Origin', '*')
     response.headers.add_header('Access-Control-Allow-Headers', 'Content-Type')
     print 'response headers are %s' % response.headers

@@ -11,8 +11,8 @@ move = new Move({move_id: "stalling3", move_name: "STALLING 3", actor_value: 0, 
 move_lookup.stalling3 = move;
 move = new Move({move_id: "switch", move_name: "SWITCH", actor_value: 2, victim_value: 0, from_position: "BOTTOM", actor_effect: "TOP", victim_effect: "BOTTOM"});
 move_lookup.switch = move;
-move = new Move({move_id: "standup", move_name: "STANDUP", actor_value: 1, victim_value: 0, from_position: "BOTTOM", actor_effect: "NEUTRAL", victim_effect: "NEUTRAL"});
-move_lookup.standup = move;
+move = new Move({move_id: "escape", move_name: "STANDUP", actor_value: 1, victim_value: 0, from_position: "BOTTOM", actor_effect: "NEUTRAL", victim_effect: "NEUTRAL"});
+move_lookup.escape = move;
 move = new Move({move_id: "backpoints", move_name: "BACKPOINTS", actor_value: 2, victim_value: 0, from_position: "TOP", actor_effect: "TOP", victim_effect: "BOTTOM"});
 move_lookup.backpoints = move;
 move = new Move({move_id: "nearfall", move_name: "NEARFALL", actor_value: 3, victim_value: 0, from_position: "TOP", actor_effect: "TOP", victim_effect: "BOTTOM"});
@@ -24,7 +24,7 @@ var bottom_moves = new Moves();
 var top_moves = new Moves();
 
 bottom_moves.add( move_lookup.switch );
-bottom_moves.add( move_lookup.standup );
+bottom_moves.add( move_lookup.escape );
 
 top_moves.add(move_lookup.backpoints );
 top_moves.add(move_lookup.nearfall);

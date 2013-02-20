@@ -41,10 +41,10 @@ var Action = Backbone.Model.extend({
     default: {
         id: "",
         actor: "",
-        time: 0,
-        value: 0,
-        type: "",
-        round: 1
+        action_time: 0,
+        point_value: 0,
+        activity_type: "",
+        round_number: 1
     }
 });
 var Bout = Backbone.Model.extend({
@@ -57,7 +57,7 @@ var Bout = Backbone.Model.extend({
         red_score: 0,
         winner: "",
         win_type: "",
-        date: "",
+        bout_date: "",
         current_round: 1,
         actions: []
     },

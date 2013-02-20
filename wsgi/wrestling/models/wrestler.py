@@ -32,10 +32,10 @@ class WrestlingDocument(db.Document):
 class RoundActivity(WrestlingDocument):
 
     activity_value = dict(
-            TAKEDOWN=2, REVERSAL=2,
-            ESCAPE=1, BACK_POINTS=2,
-            NEAR_FALL=3, OTHER_STALL_WARN=0,
-            OTHER_STALL_FIRST=1, OTHER_STALL_SEC=2)
+            takedown=2, reversal=2,
+            escape=1, backpoints=2,
+            nearfall=3, stalling1=0,
+            stalling2=1, stalling3=2)
     action_time = db.IntField()
     round_number = db.EnumField( db.IntField(),
             1, 2, 3, 4, 5 )
@@ -51,12 +51,12 @@ class Bout(WrestlingDocument):
     weight_class = db.IntField()
     red_wrestler = db.ObjectIdField()
     green_wrestler = db.ObjectIdField()
-    winner = db.ObjectIdField()
-    win_type = db.EnumField( db.StringField(), "PIN", "DECISION", "MAJOR DECISION", "TECHNICAL FALL")
+    winner = db.ObjectIdField(allow_none=True)
+    win_type = db.EnumField( db.StringField(), "PIN", "DECISION", "MAJOR_DECISION", "TECHNICAL_FALL", allow_none=True)
     red_score = db.IntField()
     green_score = db.IntField()
     bout_date = db.DateTimeField()
-    rounds = db.ListField( db.DocumentField( RoundActivity ) )
+    actions = db.ListField( db.DocumentField( RoundActivity ) )
     
 
 class Wrestler(WrestlingDocument):

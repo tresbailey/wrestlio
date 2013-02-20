@@ -10,7 +10,8 @@ pause_clock = function( clock_model ) {
 
 start_clock = function( round, clock_model ) {
 	canvas = document.getElementById('pie-countdown');
-	num = document.getElementById('left');
+	num = document.getElementById('secondsleft');
+	stnum = document.getElementById('left');
 	ctx = canvas.getContext('2d');
 	canvas_size = [ canvas.width, canvas.height ];
 	radius = Math.min(canvas_size[0], canvas_size[1]) / 2;
@@ -30,7 +31,8 @@ start_clock = function( round, clock_model ) {
             clearInterval( clock_model.get('timeout_keeper') );
         } else {
             var stleft = Math.floor(left/1000 / 60) +":"+ Math.floor((left/1000) % 60);
-            num.innerHTML = stleft;
+            stnum.innerHTML = stleft;
+            num.innerHTML = left;
             var step = 1 - left/seconds;
             draw_next( step );
         }

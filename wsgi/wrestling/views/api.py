@@ -123,21 +123,22 @@ def reassign_activity(activity_dict):
     activity = RoundActivity(**activity_dict)
     activity.activity_id = ObjectId(activity_dict.get('activity_id'))
     activity.point_value = activity.activity_value.get(activity.activity_type)
+    activity.action_time = int(activity.action_time)
     return activity
 
 
-def reassign_bout(boutDict):
-    bout = Bout(**boutDict)
-    bout.bout_date = datetime.strptime(bout.bout_date, '%m/%d/%Y')
+def reassign_bout(bout):
+    #bout['bout_date'] = datetime.strptime(bout.get('bout_date'), '%m-%d-%Y') if bout.has_key('bout_date') else None
+    bout['bout_date'] = datetime.fromtimestamp(bout.get('bout_date')/1000)
+    bout = Bout(**bout)
     bout.bout_id = ObjectId()
-    bout.rounds = [ reassign_activity(activity) for activity in bout.rounds ]
+    bout.actions = [ reassign_activity(activity) for activity in bout.actions ]
     return bout
 
 
 @api.route('/matches/<match_id>', methods=['PUT'])
 def update_school_match(match_id):
-    json_data = dict( json.loads(
-        request.form.items()[0][0]))
+    json_data = request.data
     match = Match( **json_data )
     match._id = ObjectId( match_id )
     match.schools = [ prepare_school(school) for school in match.schools ]
@@ -146,6 +147,16 @@ def update_school_match(match_id):
     match.save()
     return json.dumps( match, default=remove_OIDs)
 
+
+@api.route('/matches/<match_id>', methods=['POST'])
+def create_match_bout( match_id ):
+    match = find_match( match_id )
+    bout_data = request.data
+    del bout_data['current_round']
+    bout_data = reassign_bout( bout_data )
+    match.individual_bouts.append( bout_data )
+    match.save()
+    return json.dumps( match, default=remove_OIDs)
 
 def find_match( match_id ):
     return Match.query.filter( Match._id == ObjectId(match_id) ).one()

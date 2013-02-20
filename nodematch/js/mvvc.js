@@ -29,6 +29,7 @@
                 var activi = new Action();
                 var actis = new Actions();
                 this.currentBout.set('actions', actis);
+                this.currentBout.set('bout_date', new Date());
                 this.curBoutView = new BoutView({model: that.currentBout, el: $("#mainMatch")});
                 this.boutClock = new Clock();
                 this.boutClock.set('total', 120000);
@@ -40,17 +41,20 @@
                         var rawWrest = _.values(model.get('wrestlers'));
                         var inList = [];
                         _(rawWrest).each(function(raw, index) {
-                            inList.push(new Wrestler(raw));
+                            var rw = new Wrestler(raw);
+                            rw.id = raw['wrestler_id'];
+                            inList.push(rw);
                         });
                         var green_wrestlers = new Wrestlers(inList);
                         var green_wrestlersView = new WrestlersView({ collection: green_wrestlers, el: $("#wrestlerListLeft") });
                         var gWrest = green_wrestlers.at(0);
-                        gWrest.set('id', new Date());
+                        console.log("wrestler id: "+ gWrest.id)
                         gWrest.set('available_moves', standing_moves);
                         gWrest.set('position', "NEUTRAL");
                         gWrest.set('points', 0);
                         gWrest.set('stalling_count', 0);
                         that.currentBout.set('green_wrestler', gWrest);
+                        that.currentBout.set('weight_class', gWrest.get('normal_weight'));
                         console.log("the current bout: "+ JSON.stringify(that.currentBout.get('green_wrestler')));
                         that.curBoutView.render();
                     },
@@ -63,13 +67,14 @@
                         var rawWrest = _.values(model.get('wrestlers'));
                         var inList = [];
                         _(rawWrest).each(function(raw, index) {
-                            inList.push(new Wrestler(raw));
+                            var rw = new Wrestler(raw);
+                            rw.id = raw['wrestler_id'];
+                            inList.push(rw);
                         });
                         var red_wrestlers = new Wrestlers(inList);
                         var red_wrestlersView = new WrestlersView({ collection: red_wrestlers, el: $("#wrestlerListRight") });
                         var rWrest = red_wrestlers.at(0);
                         that.currentBout.set('red_wrestler', rWrest);
-                        rWrest.set('id', new Date());
                         rWrest.set('available_moves', standing_moves);
                         rWrest.set('position', "NEUTRAL");
                         rWrest.set('points', 0);

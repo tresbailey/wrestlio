@@ -41,7 +41,7 @@ var WrestlersView = Backbone.View.extend({
 var ClockView = Backbone.View.extend({
     template: _.template( $("#boutClockTemplate").html() ),
     render: function( boutView ) {
-        $(this.el).html( this.template() );
+        $(this.el).html( this.template({ model: this.model } ) );
         this.boutView = boutView;
         start_clock( this.boutView, this.model );
         return this;
@@ -87,15 +87,16 @@ var BoutView = Backbone.View.extend({
     },
     createAction: function(move, actor, victim) {
         var action = new Action();
-        action.set('time', $('#left').html());
+        action.set('action_time', $('#secondsleft').html());
         if ( isStalling( move.get('move_id') ) ) {
-            victim.set('actor', victim.get('id'));
-            victim.set('value', move.get('victim_value'));
+            victim.set('actor', victim.id);
+            victim.set('point_value', move.get('victim_value'));
         } else {
-            action.set('actor', actor.get('id'));
-            action.set('value', move.get('actor_value'));
+            action.set('actor', actor.id);
+            action.set('point_value', move.get('actor_value'));
         }
-        action.set('round', this.model.get('current_round'));
+        action.set('activity_type', move.get('move_id'));
+        action.set('round_number', this.model.get('current_round'));
         var actions = new Actions();
         actions.add(action);
         this.model.set('actions', actions);
@@ -110,8 +111,22 @@ var BoutView = Backbone.View.extend({
             actor.set('stalling_count', ++count);
         }
         this.createAction(move, actor, victim);
+        this.model.set('green_score', this.model.get('green_wrestler').get('points'));
+        this.model.set('red_score', this.model.get('red_wrestler').get('points'));
         if ( this.checkForWin() !== undefined ) {
             console.log("is a winner: "+ this.checkForWin() );
+            this.model.set('winner', this.model.get(this.checkForWin()).id );
+            this.model.set('win_type', 'TECHNICAL_FALL');
+            this.model.url = 'http://localhost:5001/matches/510d3883319d7d3728000001';
+            this.model.save({ green_wrestler: this.model.get('green_wrestler').id,
+                red_wrestler: this.model.get('red_wrestler').id,
+                actions: this.model.get('actions'),
+                bout_date: this.model.get('bout_date').getTime(),
+                green_score: this.model.get('green_score'),
+                red_score: this.model.get('red_score'),
+                weight_class: this.model.get('weight_class'),
+                winner: this.model.get('winner'),
+                win_type: this.model.get('win_type')});
         }
         console.log("Move found: "+ JSON.stringify(move) );
     },
