@@ -27,3 +27,7 @@ var Moves = Backbone.Collection.extend({
     initiailize:function() {
     }
 });
+var Matches = Backbone.Collection.extend({
+    initialize: function() {
+    }
+});

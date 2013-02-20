@@ -22,14 +22,19 @@
                 that = this;
                 this.currentBout = new Bout();
                 this.currentBout.set('current_round', 1);
+                this.matches = new Matches();
                 this.currentMatch = new Match({date: new Date(), 
                     schools: schools, 
                     bouts: new Bouts( [this.currentBout] )
                 });
+                this.matches.url = 'http://localhost:5001/matches';
+                this.matches.add(this.currentMatch);
+                this.currentMatch.id = '510d3883319d7d3728000001';
                 var activi = new Action();
                 var actis = new Actions();
                 this.currentBout.set('actions', actis);
                 this.currentBout.set('bout_date', new Date());
+                this.currentBout.url = this.matches.url +'/'+ this.currentMatch.id;
                 this.curBoutView = new BoutView({model: that.currentBout, el: $("#mainMatch")});
                 this.boutClock = new Clock();
                 this.boutClock.set('total', 120000);

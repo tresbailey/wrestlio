@@ -117,7 +117,6 @@ var BoutView = Backbone.View.extend({
             console.log("is a winner: "+ this.checkForWin() );
             this.model.set('winner', this.model.get(this.checkForWin()).id );
             this.model.set('win_type', 'TECHNICAL_FALL');
-            this.model.url = 'http://localhost:5001/matches/510d3883319d7d3728000001';
             this.model.save({ green_wrestler: this.model.get('green_wrestler').id,
                 red_wrestler: this.model.get('red_wrestler').id,
                 actions: this.model.get('actions'),
