@@ -97,7 +97,7 @@ var BoutView = Backbone.View.extend({
         }
         action.set('activity_type', move.get('move_id'));
         action.set('round_number', this.model.get('current_round'));
-        var actions = new Actions();
+        var actions = this.model.get('actions');
         actions.add(action);
         this.model.set('actions', actions);
     },

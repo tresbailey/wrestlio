@@ -235,11 +235,8 @@
     </script>
     
     <script type="text/template" id="actionOccurred">
-        <% if(actions.at(0) !== undefined) { %>
-            <%= JSON.stringify(_.values(actions)) %>
-        <% } %>
-        <% _(_.values(actions)).each(function(val, index) { %>
-            <a><%= JSON.stringify(val) %></a>
+        <% _(_.filter(actions.models, function(mod) { return (mod.get('actor') == wrestler.id && round == mod.get('round_number')) ;})).each(function(val, index) { %>
+            <button class="btn btn-primary"><%= val.get('point_value') %></button>
         <%});%>
     </script>
 
