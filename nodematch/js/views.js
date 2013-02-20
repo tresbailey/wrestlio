@@ -62,11 +62,15 @@ var BoutView = Backbone.View.extend({
     Renders the one on one matchup between 2 wrestlers
     */
     template: _.template( $("#mainMatchTemplate").html() ),
-    advance_next_round: function() {
+    advance_next_round: function( clock ) {
         console.log('next round upcoming');
         var roundC = this.model.get('current_round');
         this.model.set('current_round', roundC+1);
-        $("#restartClock").show();
+        $("#"+ this.model.get('green_wrestler').id +"collapse"+ roundC).collapse('hide');
+        $("#"+ this.model.get('green_wrestler').id +"collapse"+ this.model.get('current_round')).collapse('show');
+        $("#"+ this.model.get('red_wrestler').id +"collapse"+ roundC).collapse('hide');
+        $("#"+ this.model.get('red_wrestler').id +"collapse"+ roundC+1).collapse('show');
+        //start_clock( this, clock );
     },
     render: function() {
         console.log("Wrestler Model: "+ JSON.stringify(this.model));

@@ -288,7 +288,7 @@
                         Round 1
                     </a>
                 </div>
-                <div class="accordion-body collapse in" id="1collapseOne">
+                <div class="accordion-body collapse in" id="<%= green.id %>collapse1">
                     <div class="accordion-inner">
                         <%= _.template($("#actionOccurred").html())({wrestler: green, round: 1, actions: bout.get('actions')}) %>
                     </div>
@@ -300,7 +300,7 @@
                         Round 2
                     </a>
                 </div>
-                <div class="accordion-body collapse" id="1collapseTwo">
+                <div class="accordion-body collapse" id="<%= green.id %>collapse2">
                     <div class="accordion-inner">
                         <%= _.template($("#actionOccurred").html())({wrestler: green, round: 2, actions: bout.get('actions')}) %>
                     </div>
@@ -312,7 +312,7 @@
                         Round 3
                     </a>
                 </div>
-                <div class="accordion-body collapse" id="1collapseThree">
+                <div class="accordion-body collapse" id="<%= green.id %>collapse3">
                     <div class="accordion-inner">
                         <%= _.template($("#actionOccurred").html())({wrestler: green, round: 3, actions: bout.get('actions')}) %>
                     </div>
@@ -333,7 +333,7 @@
                         Round 1
                     </a>
                 </div>
-                <div class="accordion-body collapse in" id="collapseOne">
+                <div class="accordion-body collapse in" id="<%= red.id %>collapse1">
                     <div class="accordion-inner">
                         <%= _.template($("#actionOccurred").html())({wrestler: red, round: 1, actions: bout.get('actions')}) %>
                     </div>
@@ -345,7 +345,7 @@
                         Round 2
                     </a>
                 </div>
-                <div class="accordion-body collapse" id="collapseTwo">
+                <div class="accordion-body collapse" id="<%= red.id %>collapse2">
                     <div class="accordion-inner">
                         <%= _.template($("#actionOccurred").html())({wrestler: red, round: 2, actions: bout.get('actions')}) %>
                     </div>
@@ -357,7 +357,7 @@
                         Round 3
                     </a>
                 </div>
-                <div class="accordion-body collapse" id="collapseThree">
+                <div class="accordion-body collapse" id="<%= red.id %>collapse3">
                     <div class="accordion-inner">
                         <%= _.template($("#actionOccurred").html())({wrestler: red, round: 3, actions: bout.get('actions')}) %>
                     </div>
