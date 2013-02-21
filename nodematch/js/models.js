@@ -59,7 +59,8 @@ var Bout = Backbone.Model.extend({
         win_type: "",
         bout_date: "",
         current_round: 1,
-        actions: []
+        actions: [],
+        clock: {}
     },
 
 });
@@ -77,6 +78,7 @@ var Clock = Backbone.Model.extend({
     default: {
         total: 120,
         left: 120,
+        str_clock: "",
         timeout_keeper: "",
     }
 });

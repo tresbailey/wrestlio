@@ -35,12 +35,11 @@
                 this.currentBout.set('actions', actis);
                 this.currentBout.set('bout_date', new Date());
                 this.currentBout.url = this.matches.url +'/'+ this.currentMatch.id;
+                var boutClock = new Clock();
+                boutClock.set('total', 120000);
+                boutClock.set('left', 120000);
+                this.currentBout.set('clock', boutClock);
                 this.curBoutView = new BoutView({model: that.currentBout, el: $("#mainMatch")});
-                this.boutClock = new Clock();
-                this.boutClock.set('total', 120000);
-                this.boutClock.set('left', 120000);
-                this.boutClockView = new ClockView({model: that.boutClock, el: $("#boutClock")});
-                this.boutClockView.render( this.curBoutView );
                 green_school.fetch({
                     success: function(model, response, options) {
                         var rawWrest = _.values(model.get('wrestlers'));

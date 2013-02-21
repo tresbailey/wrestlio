@@ -40,19 +40,65 @@ var WrestlersView = Backbone.View.extend({
 
 var ClockView = Backbone.View.extend({
     template: _.template( $("#boutClockTemplate").html() ),
-    render: function( boutView ) {
-        $(this.el).html( this.template({ model: this.model } ) );
-        this.boutView = boutView;
-        start_clock( this.boutView, this.model );
+    canvas_element: "",
+    initialize: function(options) {
+        this.el = options.el;
+        this.model = options.model;
+    },
+    render: function( ) {
+        $("#boutClock").html( this.template({ model: this.model } ) );
         return this;
     },
-    events: {
-        "click .runningClock#pie-countdown": function(event) { 
-            pause_clock( this.model );
-        },
-        "click .stoppedClock#pie-countdown": function(event) {
-            start_clock( this.boutView, this.model);
+    tick_clock: function( that ) {
+        var fps = 100;
+        var left = that.model.get('left');
+	    var seconds = that.model.get('total');
+        if ( left == 0 ) {
+            that.trigger("boutClock:complete");
+            clearInterval( that.model.get('timeout_keeper') );
+        } else {
+            that.model.set('str_clock', Math.floor(left/1000 / 60) +":"+ Math.floor((left/1000) % 60) );
+            var step = 1 - left/seconds;
+            that.model.set('left', left-fps);
+            that.render();
+            that.draw_next( step );
         }
+    },
+    start_clock: function() {
+        fps = 100;
+        var that = this;
+        that.tick_clock(that);
+    },
+    pause_clock: function() {
+        clearInterval( this.model.get('timeout_keeper') );
+        $("#pie-countdown").removeClass("runningClock").addClass("stoppedClock");
+    },
+    draw_next: function( step ) {
+	    this.canvas_element = document.getElementById('pie-countdown');
+    	ctx = this.canvas_element.getContext('2d');
+	    canvas_size = [ this.canvas_element.width, this.canvas_element.height ];
+    	radius = Math.min(canvas_size[0], canvas_size[1]) / 2;
+	    center = [ (canvas_size[0] / 2) - 70, canvas_size[1] / 2 ];
+    	ctx.clearRect(0, 0, canvas_size[0], canvas_size[1]);
+	    if (step < 1) {
+		    ctx.beginPath();
+    		ctx.moveTo(center[0], center[1]); // ponto central
+	    	ctx.arc( // draw next arc
+		    center[0], center[1], radius, Math.PI * (-0.5 + 0), // -0.5 pra começar do topo
+    		Math.PI * (-0.5 + step * 2), true // anti horário
+	    	);
+		    ctx.lineTo(center[0], center[1]); // line back to the center
+    		ctx.closePath();
+
+	    	if (step>.1) {
+		        ctx.fillStyle = '#d00a1'; // color
+    		} else {
+	     	    ctx.fillStyle = 'rgb(40,40,40)'; // color
+    		}
+		    ctx.fill();
+    	}
+    },
+    events: {
     }
 });
         
@@ -62,19 +108,25 @@ var BoutView = Backbone.View.extend({
     Renders the one on one matchup between 2 wrestlers
     */
     template: _.template( $("#mainMatchTemplate").html() ),
-    advance_next_round: function( clock ) {
+    initialize: function() {
+        this.model.get('clock');
+        this.boutClockView = new ClockView({model: this.model.get('clock'), el: $("#boutClock")});
+        $("#pie-countdown").removeClass("runningClock").addClass("stoppedClock");
+        this.listenTo( this.boutClockView, 'boutClock:complete', this.advance_next_round );
+    },
+    advance_next_round: function( ) {
         console.log('next round upcoming');
         var roundC = this.model.get('current_round');
         this.model.set('current_round', roundC+1);
         $("#"+ this.model.get('green_wrestler').id +"collapse"+ roundC).collapse('hide');
         $("#"+ this.model.get('green_wrestler').id +"collapse"+ this.model.get('current_round')).collapse('show');
         $("#"+ this.model.get('red_wrestler').id +"collapse"+ roundC).collapse('hide');
-        $("#"+ this.model.get('red_wrestler').id +"collapse"+ roundC+1).collapse('show');
-        //start_clock( this, clock );
+        $("#"+ this.model.get('red_wrestler').id +"collapse"+ this.model.get('current_round')).collapse('show');
     },
     render: function() {
         console.log("Wrestler Model: "+ JSON.stringify(this.model));
         $(this.el).html( this.template( {bout: this.model} ) );
+        this.boutClockView.start_clock();
         return this;
     },
     checkForWin: function( ) {
@@ -149,6 +201,15 @@ var BoutView = Backbone.View.extend({
             var red = this.model.get('red_wrestler');
             this.makeMove(move, red, green); 
             this.render();
+        },
+        "click .runningClock#pie-countdown": function(event) { 
+            var that = this.boutClockView;
+            that.pause_clock( );
+        },
+        "click .stoppedClock#pie-countdown": function(event) {
+            var that = this.boutClockView;
+            $("#pie-countdown").removeClass("stoppedClock").addClass("runningClock");
+            this.model.set('timeout_keeper', setInterval( function() {that.tick_clock(that); }, fps ) );
         }
     }
 }); 
