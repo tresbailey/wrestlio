@@ -130,6 +130,7 @@ def reassign_activity(activity_dict):
 def reassign_bout(bout):
     #bout['bout_date'] = datetime.strptime(bout.get('bout_date'), '%m-%d-%Y') if bout.has_key('bout_date') else None
     bout['bout_date'] = datetime.fromtimestamp(bout.get('bout_date')/1000)
+    bout['winner'] = ObjectId( bout.get('winner') )
     bout = Bout(**bout)
     bout.bout_id = ObjectId()
     bout.actions = [ reassign_activity(activity) for activity in bout.actions ]

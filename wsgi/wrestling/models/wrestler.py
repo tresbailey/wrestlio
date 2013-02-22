@@ -32,7 +32,7 @@ class WrestlingDocument(db.Document):
 class RoundActivity(WrestlingDocument):
 
     activity_value = dict(
-            takedown=2, reversal=2,
+            takedown=2, switch=2,
             escape=1, backpoints=2,
             nearfall=3, stalling1=0,
             stalling2=1, stalling3=2)

@@ -187,7 +187,7 @@ var BoutView = Backbone.View.extend({
     },
     send_match_winner: function(winner, win_type) {
         console.log("is a winner: "+ winner );
-        this.model.set('winner', winner );
+        this.model.set('winner', winner.id );
         this.model.set('win_type', win_type);
         var that = this.boutClockView;
         that.pause_clock( );
