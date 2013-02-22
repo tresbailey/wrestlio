@@ -54,8 +54,8 @@ var ClockView = Backbone.View.extend({
         var left = that.model.get('left');
 	    var seconds = that.model.get('total');
         if ( left == 0 ) {
-            that.trigger("boutClock:complete");
             clearInterval( that.model.get('timeout_keeper') );
+            that.trigger("boutClock:complete");
         } else {
             that.model.set('str_clock', Math.floor(left/1000 / 60) +":"+ Math.floor((left/1000) % 60) );
             var step = 1 - left/seconds;
@@ -117,11 +117,22 @@ var BoutView = Backbone.View.extend({
     advance_next_round: function( ) {
         console.log('next round upcoming');
         var roundC = this.model.get('current_round');
-        this.model.set('current_round', roundC+1);
-        $("#"+ this.model.get('green_wrestler').id +"collapse"+ roundC).collapse('hide');
-        $("#"+ this.model.get('green_wrestler').id +"collapse"+ this.model.get('current_round')).collapse('show');
-        $("#"+ this.model.get('red_wrestler').id +"collapse"+ roundC).collapse('hide');
-        $("#"+ this.model.get('red_wrestler').id +"collapse"+ this.model.get('current_round')).collapse('show');
+        if ( roundC == 3 ) {
+            var green = this.model.get('green_wrestler');
+            var red = this.model.get('red_wrestler');
+            var winner = (red.get('points') > green.get('points')) ? red : green;
+            this.send_match_winner( winner, "DECISION" );
+        } else {
+            this.model.set('current_round', roundC+1);
+            var boutClock= new Clock();
+            boutClock.set('total', 120000);
+            boutClock.set('left', 120000);
+            this.model.set('clock', boutClock);
+            this.boutClockView = new ClockView({model: this.model.get('clock'), el: $("#boutClock")});
+            $("#pie-countdown").removeClass("stoppedClock").addClass("runningClock");
+            this.listenTo( this.boutClockView, 'boutClock:complete', this.advance_next_round );
+            this.render();
+        }
     },
     render: function() {
         console.log("Wrestler Model: "+ JSON.stringify(this.model));
@@ -135,10 +146,10 @@ var BoutView = Backbone.View.extend({
         if ( Math.abs(score_diff) > 15  && score_diff > 0 ) {
             console.log("Choowing a winner");
             this.model.set('winner', this.model.get('green_wrestler').get('id') );
-            return 'green_wrestler';
+            return this.model.get('green_wrestler');
         } else if ( Math.abs(score_diff) > 15 && score_diff < 0 ) {
             this.model.set('winner', this.model.get('red_wrestler').get('id') );
-            return 'red_wrestler';
+            return this.model.get('red_wrestler');
         }
     },
     createAction: function(move, actor, victim) {
@@ -170,20 +181,26 @@ var BoutView = Backbone.View.extend({
         this.model.set('green_score', this.model.get('green_wrestler').get('points'));
         this.model.set('red_score', this.model.get('red_wrestler').get('points'));
         if ( this.checkForWin() !== undefined ) {
-            console.log("is a winner: "+ this.checkForWin() );
-            this.model.set('winner', this.model.get(this.checkForWin()).id );
-            this.model.set('win_type', 'TECHNICAL_FALL');
-            this.model.save({ green_wrestler: this.model.get('green_wrestler').id,
-                red_wrestler: this.model.get('red_wrestler').id,
-                actions: this.model.get('actions'),
-                bout_date: this.model.get('bout_date').getTime(),
-                green_score: this.model.get('green_score'),
-                red_score: this.model.get('red_score'),
-                weight_class: this.model.get('weight_class'),
-                winner: this.model.get('winner'),
-                win_type: this.model.get('win_type')});
+            this.send_match_winner( this.checkForWin(), "TECHNICAL_FALL" );
         }
         console.log("Move found: "+ JSON.stringify(move) );
+    },
+    send_match_winner: function(winner, win_type) {
+        console.log("is a winner: "+ winner );
+        this.model.set('winner', winner );
+        this.model.set('win_type', win_type);
+        var that = this.boutClockView;
+        that.pause_clock( );
+        this.model.unset('clock');
+        this.model.save({ green_wrestler: this.model.get('green_wrestler').id,
+            red_wrestler: this.model.get('red_wrestler').id,
+            actions: this.model.get('actions'),
+            bout_date: this.model.get('bout_date').getTime(),
+            green_score: this.model.get('green_score'),
+            red_score: this.model.get('red_score'),
+            weight_class: this.model.get('weight_class'),
+            winner: this.model.get('winner'),
+            win_type: this.model.get('win_type')});
     },
     events: {
         "click #greenMoves .btn": function(event) { 
@@ -209,7 +226,7 @@ var BoutView = Backbone.View.extend({
         "click .stoppedClock#pie-countdown": function(event) {
             var that = this.boutClockView;
             $("#pie-countdown").removeClass("stoppedClock").addClass("runningClock");
-            this.model.set('timeout_keeper', setInterval( function() {that.tick_clock(that); }, fps ) );
+            that.model.set('timeout_keeper', setInterval( function() {that.tick_clock(that); }, fps ) );
         }
     }
 }); 
