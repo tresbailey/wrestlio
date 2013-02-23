@@ -40,6 +40,10 @@
                 boutClock.set('left', 120000);
                 this.currentBout.set('clock', boutClock);
                 this.curBoutView = new BoutView({model: that.currentBout, el: $("#mainMatch")});
+                var match = new Match();
+                match.set('date', new Date());
+                match.set('schools', new Schools());
+                var matchView = new MatchView({model: match, el: $("#fullMatch")});
                 green_school.fetch({
                     success: function(model, response, options) {
                         var rawWrest = _.values(model.get('wrestlers'));
@@ -50,6 +54,7 @@
                             inList.push(rw);
                         });
                         var green_wrestlers = new Wrestlers(inList);
+                        green_school.set('wrestlers', green_wrestlers);
                         var green_wrestlersView = new WrestlersView({ collection: green_wrestlers, el: $("#wrestlerListLeft") });
                         var gWrest = green_wrestlers.at(0);
                         console.log("wrestler id: "+ gWrest.id)
@@ -60,6 +65,7 @@
                         that.currentBout.set('green_wrestler', gWrest);
                         that.currentBout.set('weight_class', gWrest.get('normal_weight'));
                         console.log("the current bout: "+ JSON.stringify(that.currentBout.get('green_wrestler')));
+                        matchView.trigger("match:schoolloaded", model);
                         that.curBoutView.render();
                     },
                     error: function(collection, xhr, options) {
@@ -76,6 +82,7 @@
                             inList.push(rw);
                         });
                         var red_wrestlers = new Wrestlers(inList);
+                        red_school.set('wrestlers', red_wrestlers);
                         var red_wrestlersView = new WrestlersView({ collection: red_wrestlers, el: $("#wrestlerListRight") });
                         var rWrest = red_wrestlers.at(0);
                         that.currentBout.set('red_wrestler', rWrest);
@@ -83,6 +90,7 @@
                         rWrest.set('position', "NEUTRAL");
                         rWrest.set('points', 0);
                         rWrest.set('stalling_count', 0);
+                        matchView.trigger("match:schoolloaded", model);
                         that.curBoutView.render();
                     },
                     error: function(collection, xhr, options) {

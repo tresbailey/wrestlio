@@ -53,6 +53,18 @@
       </div>
         <div class="span12">
             <h1><small>TEAM</small></h1><h2><small>ROSTERS</small></h2>
+            <div id="fullMatch" class="well">
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="container">
+      <div class="row top-row">
+      </div>
+        <div class="span12">
+            <h1><small>TEAM</small></h1><h2><small>ROSTERS</small></h2>
         <div class="well">
             <div class="row">
                 <div class="span1">
@@ -145,28 +157,6 @@
             </div>
         </div>
     </script>    
-    <script type="text/template" id="catMediumTemplate">
-        <div class="span3 thumbnail">
-        <div class="rank-group">
-            <a href="#" class="rank-wrapper">
-                <div class="rank">
-                    <img class="fixedMedHeight" src="/upload_images/<%= cat.get("id") %>/<%= cat.get("image") %>" />
-                    <div class="rank-label-right">
-                        <img src="../images/n<%=rank%>.png" />
-                    </div>
-                </div>
-            </a>
-        </div>
-            <div class="pagination-centered">
-                <h1 >
-                    <small>
-                        <%= cat.get("cat_name") %>
-                    </small>
-                </h1>
-                        <%= cat.get("votes") %> Votes
-            </div>
-        </div>
-    </script>
     <script type="text/template" id="smallWrestlerTemplate">
         <div class="span2 thumbnail smallCat">
         <div class="pagination-centered">
@@ -180,8 +170,22 @@
 
     <script type="text/template" id="allWrestlersTemplate">
         <% _(models).each(function(wrestler, index) { %>
-                    <%= _.template($("#smallWrestlerTemplate").html())({wrestler: wrestler, rank: index}) %>
+                    <%= _.template($("#smallWrestlerTemplate").html())({wrestler: wrestler}) %>
         <%}) %>
+    </script>
+    
+    <script type="text/template" id="mainMatchTemplate">
+        <% _(_.zip(model.get('schools').at(0).get('wrestlers').models, model.get('schools').at(1).get('wrestlers').models)).each( function(wrestler, index) { %>
+            <div class="row">
+                <div class="span3">
+                    <%= wrestler[0].get('first_name')%>
+                </div>
+                <div class="span3"></div>
+                <div class="span3">
+                    <%= wrestler[1] ? wrestler[1].get('first_name') : "" %>
+                </div>
+            </div>
+        <% }) %>
     </script>
     
     <script type="text/template" id="actionOccurred">
@@ -195,7 +199,7 @@
             <button class="btn btn-primary" id="<%= move.get('move_id') %>"><%= move.get('move_name') %></button>
         <%});%>
     </script>
-    <script type="text/template" id="mainMatchTemplate">
+    <script type="text/template" id="mainBoutTemplate">
     <%= _.template($("#boutClockTemplate").html())({model: bout.get('clock')}) %>
     <div class="row"> 
     <div class="span3">

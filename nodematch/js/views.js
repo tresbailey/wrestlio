@@ -107,7 +107,7 @@ var BoutView = Backbone.View.extend({
     /*
     Renders the one on one matchup between 2 wrestlers
     */
-    template: _.template( $("#mainMatchTemplate").html() ),
+    template: _.template( $("#mainBoutTemplate").html() ),
     initialize: function() {
         this.model.get('clock');
         this.boutClockView = new ClockView({model: this.model.get('clock'), el: $("#boutClock")});
@@ -239,5 +239,27 @@ var MovesView = Backbone.View.extend({
         console.log("Rendering the Moves: "+ JSON.stringify(this.model));
         $(this.el).html( this.template( this ));
         return this;
+    }
+});
+
+var MatchView = Backbone.View.extend({
+    template: _.template( $("#mainMatchTemplate").html() ),
+    initialize: function() {
+        // Should take a match object as model
+        // iterate through the wrestlers of home(controlling) team and select the opponent from other team
+        // have a bout end event that would fire from bout and would trigger this to create the next matchup
+        // the render should load the selected matchup and have a clickable thing.
+        this.on( 'match:schoolloaded', this.add_school );
+    },
+    render: function() {
+        $(this.el).html( this.template( this ));
+        return this;
+    },
+    add_school: function(school) {
+        var schools = this.model.get('schools');
+        schools.push( school );
+        if ( schools.length == 2 ) {
+            this.render();
+        }
     }
 });
