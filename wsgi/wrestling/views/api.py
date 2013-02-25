@@ -95,11 +95,22 @@ def create_wrestler(competition, area, size, conference, school_name):
 def prepare_school( school, converter=str ): 
     school = converter(school)
     return school
+
+def add_qparam_searches( query, query_params ):
+    filter_list = list()
+    if query_params.has_key('qschool'):
+        filter_list.append(Match.schools.in_(query_params.get('qschool')))
+    if query_params.has_key('qdate'):
+        filter_list.append( Match.match_date == 
+            datetime.strptime(query_params.get('qdate'),
+                '%m/%d/%Y'))
+    return query.filter( *filter_list )
    
 
 @api.route('/matches', methods=['GET'])
 def get_school_matches():
-    matches = Match.query.all()
+    query_params = request.args
+    matches = add_qparam_searches( Match.query, query_params ).all()
     return json.dumps( matches, default=remove_OIDs )
 
 @api.route('/matches', methods=['POST'])

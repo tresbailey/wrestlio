@@ -182,7 +182,9 @@
                 </div>
                 <div class="span3"></div>
                 <div class="span3">
-                    <%= wrestler[1] ? wrestler[1].get('first_name') : "" %>
+                    <% if ( wrestler.model !== undefined ) { %>
+                    <%= _.template($("#smallWrestlerTemplate").html())({wrestler: wrestler}) %>
+                    <% } %>
                 </div>
             </div>
         <% }) %>
