@@ -22,10 +22,8 @@ var WrestlersView = Backbone.View.extend({
     /*
     Renders the list view of all cats
     */
-    template: _.template( $("#allWrestlersTemplate").html() ),
     initialize: function(models, options) {
         console.log("Initiing the list view: "+ this.collection);
-        this.render();
         this.collection.bind("add", this.addWrestler);
     },
     render: function() {
@@ -34,7 +32,6 @@ var WrestlersView = Backbone.View.extend({
         return this;
     },
     addWrestler: function(model) {
-        this.render();
     }
 });
 
@@ -255,11 +252,33 @@ var MatchView = Backbone.View.extend({
         $(this.el).html( this.template( this ));
         return this;
     },
+    create_bouts: function() {
+        var green_wrestlers = _.sortBy( this.model.get('schools').at(0).get('wrestlers').models, function(wrestler) { return wrestler.get('normal_weight') });
+        var red_wrestlers = _.sortBy( this.model.get('schools').at(1).get('wrestlers').models, function(wrestler) { return wrestler.get('normal_weight') });
+        var rawlist = [];
+        _.each( _.zip(green_wrestlers, red_wrestlers), function(combo, index) {
+            if (combo[0] !== undefined && combo[1] !== undefined) {
+            rawlist.push( new Bout({green_wrestler: combo[0], red_wrestler: combo[1]}) );
+            }
+        });
+        this.model.set('bouts', new Bouts(rawlist));
+    },
     add_school: function(school) {
         var schools = this.model.get('schools');
         schools.push( school );
         if ( schools.length == 2 ) {
+            this.create_bouts();
             this.render();
         }
+    }
+});
+
+var ScheduleView = Backbone.View.extend({
+    initialize: function() {
+
+    },
+    render: function() {
+        $(this.el).html( this.template( this ) );
+        return this;
     }
 });

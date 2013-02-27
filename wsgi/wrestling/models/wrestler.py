@@ -52,7 +52,7 @@ class Bout(WrestlingDocument):
     red_wrestler = db.ObjectIdField()
     green_wrestler = db.ObjectIdField()
     winner = db.ObjectIdField(allow_none=True)
-    win_type = db.EnumField( db.StringField(), "PIN", "DECISION", "MAJOR_DECISION", "TECHNICAL_FALL", allow_none=True)
+    win_type = db.EnumField( db.StringField(), "PIN", "DECISION", "MAJOR_DECISION", "TECHNICAL_FALL", "FORFEIT", allow_none=True)
     red_score = db.IntField()
     green_score = db.IntField()
     bout_date = db.DateTimeField()

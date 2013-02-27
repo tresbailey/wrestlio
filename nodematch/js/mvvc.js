@@ -55,7 +55,6 @@
                         });
                         var green_wrestlers = new Wrestlers(inList);
                         green_school.set('wrestlers', green_wrestlers);
-                        var green_wrestlersView = new WrestlersView({ collection: green_wrestlers, el: $("#wrestlerListLeft") });
                         var gWrest = green_wrestlers.at(0);
                         console.log("wrestler id: "+ gWrest.id)
                         gWrest.set('available_moves', standing_moves);
@@ -83,7 +82,6 @@
                         });
                         var red_wrestlers = new Wrestlers(inList);
                         red_school.set('wrestlers', red_wrestlers);
-                        var red_wrestlersView = new WrestlersView({ collection: red_wrestlers, el: $("#wrestlerListRight") });
                         var rWrest = red_wrestlers.at(0);
                         that.currentBout.set('red_wrestler', rWrest);
                         rWrest.set('available_moves', standing_moves);
