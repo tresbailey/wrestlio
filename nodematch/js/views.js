@@ -239,6 +239,38 @@ var MovesView = Backbone.View.extend({
     }
 });
 
+var SmallBoutView = Backbone.View.extend({
+    template: _.template( $("#smallBoutTemplate").html() ),
+    initialize: function() {
+    },
+    render: function() {
+        $(this.el).html( this.template( this ));
+        return this;
+    }
+});
+    
+var BoutsCollView = Backbone.View.extend({
+    template: _.template( $("#mainMatchTemplate").html() ),
+    initialize: function() {
+        var that =  this;
+        this._subviews = []
+
+        _.each(this.collection.models, function(model, index) {
+            var subview = new SmallBoutView( {model: model});
+            that._subviews.push( subview );
+        });
+    },
+    render: function() {
+        $(this.el).html( this.template( this ) );
+        return this;
+    },
+    events: {
+        "click .btn": function(event) { 
+            console.log("clicked a button");
+        }
+    }
+});
+
 var MatchView = Backbone.View.extend({
     template: _.template( $("#mainMatchTemplate").html() ),
     initialize: function() {
@@ -249,7 +281,7 @@ var MatchView = Backbone.View.extend({
         this.on( 'match:schoolloaded', this.add_school );
     },
     render: function() {
-        $(this.el).html( this.template( this ));
+        this.boutsView.render();
         return this;
     },
     create_bouts: function() {
@@ -258,10 +290,12 @@ var MatchView = Backbone.View.extend({
         var rawlist = [];
         _.each( _.zip(green_wrestlers, red_wrestlers), function(combo, index) {
             if (combo[0] !== undefined && combo[1] !== undefined) {
-            rawlist.push( new Bout({green_wrestler: combo[0], red_wrestler: combo[1]}) );
+            var bout = new Bout({green_wrestler: combo[0], red_wrestler: combo[1]});
+            rawlist.push( bout );
             }
         });
         this.model.set('bouts', new Bouts(rawlist));
+        this.boutsView = new BoutsCollView({collection: this.model.get('bouts'), el: this.el});
     },
     add_school: function(school) {
         var schools = this.model.get('schools');
