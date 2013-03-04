@@ -46,18 +46,14 @@
     </div>
     </div>
 
-    <div id="temp">
-        
-    </div>
-
     <div class="container">
       <div class="row top-row">
       </div>
-        <div class="span12">
+        <div class="row">
             <h1><small>TEAM</small></h1><h2><small>ROSTERS</small></h2>
+        </div>
             <div id="fullMatch" class="well">
             </div>
-        </div>
     </div>
 
       <hr>
@@ -145,9 +141,8 @@
     </script>
 
     <script type="text/template" id="smallBoutTemplate">
-
             <div id="<%=model.get('weight_class')%>Bout" class="row">
-                <div class="span3">
+                <div class="span4">
             Name: <%= model.get('green_wrestler').get('first_name') %> <%= model.get('green_wrestler').get('last_name') %>
             Weight: <%= model.get('green_wrestler').get('normal_weight') %>
             Wins: <%= model.get('green_wrestler').get('wins') %>
@@ -156,7 +151,7 @@
                 <div class="span3">
                     <button class="btn btn-primary">Let's Wrestle!</button>
                 </div>
-                <div class="span3">
+                <div class="span4">
             Name: <%= model.get('red_wrestler').get('first_name') %> <%= model.get('red_wrestler').get('last_name') %>
             Weight: <%= model.get('red_wrestler').get('normal_weight') %>
             Wins: <%= model.get('red_wrestler').get('wins') %>
@@ -166,25 +161,8 @@
     </script>
 
     <script type="text/template" id="mainMatchTemplate">
-        <% _.each( collection.models, function(bout, index) {  %>
-            <div id="<%=bout.get('weight_class')%>Bout" class="row">
-                <div class="span3">
-            Name: <%= bout.get('green_wrestler').get('first_name') %> <%= bout.get('green_wrestler').get('last_name') %>
-            Weight: <%= bout.get('green_wrestler').get('normal_weight') %>
-            Wins: <%= bout.get('green_wrestler').get('wins') %>
-            Losses: <%= bout.get('green_wrestler').get('losses') %>
-                </div>
-                <div class="span3">
-                    <button class="btn btn-primary">Let's Wrestle!</button>
-                </div>
-                <div class="span3">
-            Name: <%= bout.get('red_wrestler').get('first_name') %> <%= bout.get('red_wrestler').get('last_name') %>
-            Weight: <%= bout.get('red_wrestler').get('normal_weight') %>
-            Wins: <%= bout.get('red_wrestler').get('wins') %>
-            Losses: <%= bout.get('red_wrestler').get('losses') %>
-                </div>
-            </div>
-        <% }) %>
+        <ul style="list-style-type: none">
+        </ul>
     </script>
     
     <script type="text/template" id="actionOccurred">

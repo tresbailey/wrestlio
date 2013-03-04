@@ -242,10 +242,17 @@ var MovesView = Backbone.View.extend({
 var SmallBoutView = Backbone.View.extend({
     template: _.template( $("#smallBoutTemplate").html() ),
     initialize: function() {
+        //this._childN = options.childN + 1;
     },
     render: function() {
         $(this.el).html( this.template( this ));
         return this;
+    },
+    events: {
+        "click": function(event) {
+            console.log('clocked btn');
+            mainV.trigger("bout:selectedBout", this.model);    
+        }
     }
 });
     
@@ -253,21 +260,18 @@ var BoutsCollView = Backbone.View.extend({
     template: _.template( $("#mainMatchTemplate").html() ),
     initialize: function() {
         var that =  this;
-        this._subviews = []
 
-        _.each(this.collection.models, function(model, index) {
-            var subview = new SmallBoutView( {model: model});
-            that._subviews.push( subview );
-        });
     },
     render: function() {
         $(this.el).html( this.template( this ) );
+        var that = this;
+        _.each(this.collection.models, function(model, index) {
+            $(that.el).children("ul").append("<li></li>");
+            var subview = new SmallBoutView( 
+                {model: model, el: $(that.el).children("ul").children("li:nth-child("+ index +")")});
+            subview.render();
+        });
         return this;
-    },
-    events: {
-        "click .btn": function(event) { 
-            console.log("clicked a button");
-        }
     }
 });
 

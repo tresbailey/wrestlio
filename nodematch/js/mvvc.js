@@ -44,6 +44,17 @@
                 match.set('date', new Date());
                 match.set('schools', new Schools());
                 var matchView = new MatchView({model: match, el: $("#fullMatch")});
+
+                this.on('bout:selectedBout', function(bout) { 
+                    console.log('selected some');
+                    that.currentBout = bout;
+                    that.curBoutView = new BoutView({model: that.currentBout, el: $("#mainMatch")});
+                var boutClock = new Clock();
+                boutClock.set('total', 120000);
+                boutClock.set('left', 120000);
+                that.currentBout.set('clock', boutClock);
+                    that.curBoutView.render();
+                });
                 green_school.fetch({
                     success: function(model, response, options) {
                         var rawWrest = _.values(model.get('wrestlers'));
@@ -98,8 +109,7 @@
             },
         });
 
-        var mainV = new MainView();
-
+        mainV = new MainView();
 
     })(jQuery);
 
