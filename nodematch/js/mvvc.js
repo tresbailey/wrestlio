@@ -10,6 +10,37 @@
 
         var MainView = Backbone.View.extend({
 
+            prepare_bout: function(bout) {
+                this.currentBout = bout;
+                var matBouts = this.currentMatch.get('bouts');
+                matBouts.add(this.currentBout);
+                this.currentBout.set('current_round', 1);
+                var actis = new Actions();
+                this.currentBout.set('actions', actis);
+                this.currentBout.set('bout_date', new Date());
+                this.currentBout.url = this.matches.url +'/'+ this.currentMatch.id;
+                var boutClock = new Clock();
+                boutClock.set('total', 120000);
+                boutClock.set('left', 120000);
+                this.currentBout.set('clock', boutClock);
+                this.currentMatch.set('bouts', new Bouts( [this.currentBout] ));
+                this.curBoutView = new BoutView({model: this.currentBout, el: $("#mainMatch")});
+                if ( this.currentBout.has('green_wrestler') &&
+                  this.currentBout.has('red_wrestler') ) {
+                    this.currentBout.set('green_wrestler',
+                        this.prepare_wrestler(this.currentBout.get('green_wrestler')) );
+                    this.currentBout.set('red_wrestler',
+                        this.prepare_wrestler(this.currentBout.get('red_wrestler')) );
+                    this.curBoutView.render();
+                }
+            },
+            prepare_wrestler: function(wrestler) {
+                wrestler.set('available_moves', standing_moves);
+                wrestler.set('position', "NEUTRAL");
+                wrestler.set('points', 0);
+                wrestler.set('stalling_count', 0);
+                return wrestler
+            },
             initialize: function() {
                 console.log("Initing the main view!!");
                 var red_school = new School();
@@ -19,42 +50,17 @@
                 var schools = new Schools();
                 schools.add(red_school);
                 schools.add(green_school);
-                that = this;
-                this.currentBout = new Bout();
-                this.currentBout.set('current_round', 1);
                 this.matches = new Matches();
-                this.currentMatch = new Match({date: new Date(), 
-                    schools: schools, 
-                    bouts: new Bouts( [this.currentBout] )
-                });
                 this.matches.url = 'http://localhost:5001/matches';
-                this.matches.add(this.currentMatch);
+                this.currentMatch = new Match();
                 this.currentMatch.id = '510d3883319d7d3728000001';
-                var activi = new Action();
-                var actis = new Actions();
-                this.currentBout.set('actions', actis);
-                this.currentBout.set('bout_date', new Date());
-                this.currentBout.url = this.matches.url +'/'+ this.currentMatch.id;
-                var boutClock = new Clock();
-                boutClock.set('total', 120000);
-                boutClock.set('left', 120000);
-                this.currentBout.set('clock', boutClock);
-                this.curBoutView = new BoutView({model: that.currentBout, el: $("#mainMatch")});
-                var match = new Match();
-                match.set('date', new Date());
-                match.set('schools', new Schools());
-                var matchView = new MatchView({model: match, el: $("#fullMatch")});
-
-                this.on('bout:selectedBout', function(bout) { 
-                    console.log('selected some');
-                    that.currentBout = bout;
-                    that.curBoutView = new BoutView({model: that.currentBout, el: $("#mainMatch")});
-                var boutClock = new Clock();
-                boutClock.set('total', 120000);
-                boutClock.set('left', 120000);
-                that.currentBout.set('clock', boutClock);
-                    that.curBoutView.render();
-                });
+                this.currentMatch.set('date', new Date());
+                this.currentMatch.set('schools', new Schools());
+                this.currentMatch.set('bouts', new Bouts() );
+                var matchView = new MatchView({model: this.currentMatch, el: $("#fullMatch")});
+                this.prepare_bout(new Bout());
+                this.on('bout:selectedBout', this.prepare_bout);
+                that = this;
                 green_school.fetch({
                     success: function(model, response, options) {
                         var rawWrest = _.values(model.get('wrestlers'));
@@ -66,12 +72,7 @@
                         });
                         var green_wrestlers = new Wrestlers(inList);
                         green_school.set('wrestlers', green_wrestlers);
-                        var gWrest = green_wrestlers.at(0);
-                        console.log("wrestler id: "+ gWrest.id)
-                        gWrest.set('available_moves', standing_moves);
-                        gWrest.set('position', "NEUTRAL");
-                        gWrest.set('points', 0);
-                        gWrest.set('stalling_count', 0);
+                        var gWrest = that.prepare_wrestler(green_wrestlers.at(0));
                         that.currentBout.set('green_wrestler', gWrest);
                         that.currentBout.set('weight_class', gWrest.get('normal_weight'));
                         console.log("the current bout: "+ JSON.stringify(that.currentBout.get('green_wrestler')));
@@ -93,12 +94,8 @@
                         });
                         var red_wrestlers = new Wrestlers(inList);
                         red_school.set('wrestlers', red_wrestlers);
-                        var rWrest = red_wrestlers.at(0);
+                        var rWrest = that.prepare_wrestler(red_wrestlers.at(0));
                         that.currentBout.set('red_wrestler', rWrest);
-                        rWrest.set('available_moves', standing_moves);
-                        rWrest.set('position', "NEUTRAL");
-                        rWrest.set('points', 0);
-                        rWrest.set('stalling_count', 0);
                         matchView.trigger("match:schoolloaded", model);
                         that.curBoutView.render();
                     },

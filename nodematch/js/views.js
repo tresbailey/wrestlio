@@ -277,6 +277,7 @@ var BoutsCollView = Backbone.View.extend({
 
 var MatchView = Backbone.View.extend({
     template: _.template( $("#mainMatchTemplate").html() ),
+    _boutIndex: 0,
     initialize: function() {
         // Should take a match object as model
         // iterate through the wrestlers of home(controlling) team and select the opponent from other team

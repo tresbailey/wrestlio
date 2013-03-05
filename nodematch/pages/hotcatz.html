@@ -30,30 +30,26 @@
             </a>
         </div>
       </div>
-  </div>
-
-  <div class="container">
-      <div class="row top-row">
-      </div>
-
-      <div class="row">
-          <h1><small>CURRENT</small></h1><h2><small>BOUT</small></h2>
-      </div>
-    
-    <div class="well">
-        <div id="mainMatch">
-        </div>
-    </div>
     </div>
 
     <div class="container">
       <div class="row top-row">
       </div>
-        <div class="row">
-            <h1><small>TEAM</small></h1><h2><small>ROSTERS</small></h2>
-        </div>
-            <div id="fullMatch" class="well">
-            </div>
+      <div class="row">
+          <h1><small>CURRENT</small></h1><h2><small>BOUT</small></h2>
+      </div>
+      <div id="mainMatch">
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row top-row">
+      </div>
+      <div class="row">
+          <h1><small>TEAM</small></h1><h2><small>ROSTERS</small></h2>
+      </div>
+      <div id="fullMatch" class="row well">
+      </div>
     </div>
 
       <hr>
@@ -77,16 +73,7 @@
 
     <script type="text/template" id="boutClockTemplate">
       <div id="boutClock" class="row">
-            <div class="span1">
-            </div>
-            <div class="span1 centered">
-                <h1>8</h1>
-            </div>
-            <div class="span1">
-            </div>
-            <div class="span1">
-            </div>
-            <div class="span2 centered">
+            <div class="span2 offset5 centered">
 				<div style="padding-left: 5px;">
                     <div class="photo-group thumbnail">
                         <div href="#" class="photo-wrapper">
@@ -116,16 +103,6 @@
                         </div>
                     </div>
 				</div>
-            </div>
-            <div class="span1">
-            </div>
-            <div class="span1">
-            </div>
-            <div class="span1">
-            </div>
-            <div class="span1 centered">
-            </div>
-            <div class="span1">
             </div>
         </div>
     </script>    
@@ -178,161 +155,158 @@
     </script>
     <script type="text/template" id="mainBoutTemplate">
     <%= _.template($("#boutClockTemplate").html())({model: bout.get('clock')}) %>
-    <div class="row"> 
-    <div class="span3">
-        <div class="photo-group thumbnail">
-            <div href="#" class="photo-wrapper">
-                <div class="photo">
-                    <img class="fixedHeight" src="../images/silhuoette.png" />
-                    <div class="photo-label-left">
-                        
-        <div class="vote-group">
-            <a href="#" id="voteBtn" class="vote-wrapper voteBtn">
-                <div class="vote">
-                    <img src="../images/left_tag.png" />
-                    <div class="vote-label-left">
-                        <h1 class="btnText">
-                            <small>
-                                <%= bout.get('green_wrestler').get('points') %>
-                                <%= bout.get('green_wrestler').get('first_name') %>
-                            </small>
-                        </h1>
-                    </div>
-                </div>
-            </a>
-        </div>
+        <div class="row">
+            <div class="span1">
+                <h1>
+                    <%= bout.get('green_wrestler').get('points') %>
+                </h1>
+            </div>
+            <div class="span2">
+                <div class="photo-group thumbnail">
+                    <div href="#" class="photo-wrapper">
+                        <div class="photo">
+                            <img class="fixedHeight" src="../images/silhuoette.png" />
+                            <div class="photo-label-left">        
+                                <div class="vote-group">
+                                    <a href="#" id="voteBtn" class="vote-wrapper voteBtn">
+                                    <div class="vote">
+                                        <img src="../images/left_tag.png" />
+                                        <div class="vote-label-left">
+                                            <h1 class="btnText">
+                                                <small>
+                                                    <%= bout.get('green_wrestler').get('first_name') %>
+                                                </small>
+                                            </h1>
+                                        </div>  
+                                    </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
             
-    <div class="span3">
-        <div id="greenMoves" class="well">
-            <% var green = this.model.get('green_wrestler');%>
-            <% var red = this.model.get('red_wrestler');%>
-            <%= _.template($("#movesAvail").html())({wrestler: green}) %>
-        </div>
-        <div class="accordion" id="accordion1">
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#1collapseOne">
-                        Round 1
-                    </a>
+            <div class="span3">
+                <div id="greenMoves" class="well">
+                    <% var green = this.model.get('green_wrestler');%>
+                    <% var red = this.model.get('red_wrestler');%>
+                    <%= _.template($("#movesAvail").html())({wrestler: green}) %>
                 </div>
-                <div class="accordion-body collapse <%= bout.get('current_round') == 1 ? 'in' : '' %>" 
-                id="<%= green.id %>collapse1">
-                    <div class="accordion-inner">
-                        <%= _.template($("#actionOccurred").html())({wrestler: green, round: 1, actions: bout.get('actions')}) %>
+                <div class="accordion" id="accordion1">
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#1collapseOne">
+                            Round 1
+                            </a>
+                        </div>
+                        <div class="accordion-body collapse <%= bout.get('current_round') == 1 ? 'in' : '' %>"  id="<%= green.id %>collapse1">
+                            <div class="accordion-inner">   
+                            <%= _.template($("#actionOccurred").html())({wrestler: green, round: 1, actions: bout.get('actions')}) %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#1collapseTwo">
+                            Round 2
+                            </a>
+                        </div>
+                        <div class="accordion-body collapse <%= bout.get('current_round') == 2 ? 'in' : '' %>" id="<%= green.id %>collapse2">
+                            <div class="accordion-inner">   
+                            <%= _.template($("#actionOccurred").html())({wrestler: green, round: 2, actions: bout.get('actions')}) %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#1collapseThree">
+                            Round 3
+                            </a>
+                        </div>
+                        <div class="accordion-body collapse <%= bout.get('current_round') == 3 ? 'in' : '' %>" id="<%= green.id %>collapse3">
+                            <div class="accordion-inner">   
+                            <%= _.template($("#actionOccurred").html())({wrestler: green, round: 3, actions: bout.get('actions')}) %>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#1collapseTwo">
-                        Round 2
-                    </a>
+            <div class="span3">
+                <div id="redMoves" class="well">
+                <%= _.template($("#movesAvail").html())({wrestler: red}) %>
                 </div>
-                <div class="accordion-body collapse <%= bout.get('current_round') == 2 ? 'in' : '' %>" 
-                id="<%= green.id %>collapse2">
-                    <div class="accordion-inner">
-                        <%= _.template($("#actionOccurred").html())({wrestler: green, round: 2, actions: bout.get('actions')}) %>
+                <div class="accordion" id="accordion2">
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
+                            Round 1
+                            </a>
+                        </div>
+                        <div class="accordion-body collapse <%= bout.get('current_round') == 1 ? 'in' : '' %>" id="<%= red.id %>collapse1">
+                            <div class="accordion-inner">
+                            <%= _.template($("#actionOccurred").html())({wrestler: red, round: 1, actions: bout.get('actions')}) %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                            Round 2
+                            </a>
+                        </div>
+                        <div class="accordion-body collapse <%= bout.get('current_round') == 2 ? 'in' : '' %>" id="<%= red.id %>collapse2">
+                            <div class="accordion-inner">
+                            <%= _.template($("#actionOccurred").html())({wrestler: red, round: 2, actions: bout.get('actions')}) %>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-group">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
+                            Round 3
+                            </a>
+                        </div>
+                        <div class="accordion-body collapse <%= bout.get('current_round') == 3 ? 'in' : '' %>" id="<%= red.id %>collapse3">
+                            <div class="accordion-inner">  
+                            <%= _.template($("#actionOccurred").html())({wrestler: red, round: 3, actions: bout.get('actions')}) %>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#1collapseThree">
-                        Round 3
-                    </a>
-                </div>
-                <div class="accordion-body collapse <%= bout.get('current_round') == 3 ? 'in' : '' %>" 
-                id="<%= green.id %>collapse3">
-                    <div class="accordion-inner">
-                        <%= _.template($("#actionOccurred").html())({wrestler: green, round: 3, actions: bout.get('actions')}) %>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-    <div class="span3">
-
-        <div id="redMoves" class="well">
-            <%= _.template($("#movesAvail").html())({wrestler: red}) %>
-        </div>
-        <div class="accordion" id="accordion2">
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">
-                        Round 1
-                    </a>
-                </div>
-                <div class="accordion-body collapse <%= bout.get('current_round') == 1 ? 'in' : '' %>" 
-                id="<%= red.id %>collapse1">
-                    <div class="accordion-inner">
-                        <%= _.template($("#actionOccurred").html())({wrestler: red, round: 1, actions: bout.get('actions')}) %>
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
-                        Round 2
-                    </a>
-                </div>
-                <div class="accordion-body collapse <%= bout.get('current_round') == 2 ? 'in' : '' %>" 
-                id="<%= red.id %>collapse2">
-                    <div class="accordion-inner">
-                        <%= _.template($("#actionOccurred").html())({wrestler: red, round: 2, actions: bout.get('actions')}) %>
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-group">
-                <div class="accordion-heading">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">
-                        Round 3
-                    </a>
-                </div>
-                <div class="accordion-body collapse <%= bout.get('current_round') == 3 ? 'in' : '' %>" 
-                id="<%= red.id %>collapse3">
-                    <div class="accordion-inner">
-                        <%= _.template($("#actionOccurred").html())({wrestler: red, round: 3, actions: bout.get('actions')}) %>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
               
-    <div class="span2">
-        <div class="photo-group thumbnail">
-            <div href="#" class="photo-wrapper">
-                <div class="photo">
-                    <img class="fixedHeight" src="../images/silhuoette.png" />
-                    <div class="photo-label-right">
-                        
-        <div class="vote-group">
-            <a href="#" id="voteBtn" class="vote-wrapper voteBtn">
-                <div class="vote">
-                    <img src="../images/right_tag.png" />
-                    <div class="vote-label-right">
-                        <h1 class="btnText">
-                            <small>
-                                <%= bout.get('red_wrestler').get('points') %>
-                                <%= bout.get('red_wrestler').get('first_name') %>
-                            </small>
-                        </h1>
-                    </div>
-                </div>
-            </a>
-        </div>
-
+            <div class="span2">
+                <div class="photo-group thumbnail">
+                    <div href="#" class="photo-wrapper">
+                        <div class="photo">
+                            <img class="fixedHeight" src="../images/silhuoette.png" />
+                            <div class="photo-label-right">                
+                                <div class="vote-group">
+                                    <a href="#" id="voteBtn" class="vote-wrapper voteBtn">
+                                    <div class="vote">
+                                        <img src="../images/right_tag.png" />
+                                        <div class="vote-label-right">
+                                            <h1 class="btnText">
+                                                <small>
+                                                <%= bout.get('red_wrestler').get('first_name') %>
+                                                </small>        
+                                            </h1>
+                                        </div>
+                                    </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="span1">
+                <h1>
+                    <%= bout.get('red_wrestler').get('points') %>
+                </h1>
+            </div>
         </div>
-    </div>
     </script>
 
     <script src="../js/base_url.js"></script>
