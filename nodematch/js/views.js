@@ -110,6 +110,7 @@ var BoutView = Backbone.View.extend({
         this.boutClockView = new ClockView({model: this.model.get('clock'), el: $("#boutClock")});
         $("#pie-countdown").removeClass("runningClock").addClass("stoppedClock");
         this.listenTo( this.boutClockView, 'boutClock:complete', this.advance_next_round );
+        this.on('bout:win', this.send_match_winner);
     },
     advance_next_round: function( ) {
         console.log('next round upcoming');
@@ -118,7 +119,7 @@ var BoutView = Backbone.View.extend({
             var green = this.model.get('green_wrestler');
             var red = this.model.get('red_wrestler');
             var winner = (red.get('points') > green.get('points')) ? red : green;
-            this.send_match_winner( winner, "DECISION" );
+            this.trigger("bout:win", winner, "DECISION");
         } else {
             this.model.set('current_round', roundC+1);
             var boutClock= new Clock();
@@ -178,7 +179,7 @@ var BoutView = Backbone.View.extend({
         this.model.set('green_score', this.model.get('green_wrestler').get('points'));
         this.model.set('red_score', this.model.get('red_wrestler').get('points'));
         if ( this.checkForWin() !== undefined ) {
-            this.send_match_winner( this.checkForWin(), "TECHNICAL_FALL" );
+            this.trigger("bout:win", this.checkForWin(), "TECHNICAL_FALL");
         }
         console.log("Move found: "+ JSON.stringify(move) );
     },
@@ -217,10 +218,10 @@ var BoutView = Backbone.View.extend({
             this.render();
         },
         "click a.voteBtn#greenPin": function(event) {
-            this.send_match_winner( this.model.get('green_wrestler'), "PIN" );
+            this.trigger("bout:win", this.model.get('green_wrestler'), "PIN");
         },
         "click a.voteBtn#redPin": function(event) {
-            this.send_match_winner( this.model.get('red_wrestler'), "PIN" );
+            this.trigger("bout:win", this.model.get('red_wrestler'), "PIN");
         },
         "click .runningClock#pie-countdown": function(event) { 
             var that = this.boutClockView;
@@ -266,7 +267,6 @@ var BoutsCollView = Backbone.View.extend({
     template: _.template( $("#mainMatchTemplate").html() ),
     initialize: function() {
         var that =  this;
-
     },
     render: function() {
         $(this.el).html( this.template( this ) );
@@ -275,9 +275,13 @@ var BoutsCollView = Backbone.View.extend({
             $(that.el).children("ul").append("<li></li>");
             var subview = new SmallBoutView( 
                 {model: model, el: $(that.el).children("ul").children("li:nth-child("+ index +")")});
+            that.listenTo( subview, 'bout:win', this.next_bout );
             subview.render();
         });
         return this;
+    },
+    next_bout: function() {
+        console.log("Getting next bout");
     }
 });
 
