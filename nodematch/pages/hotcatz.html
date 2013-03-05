@@ -162,21 +162,26 @@
                 </h1>
             </div>
             <div class="span2">
+                <div>
+                </div>
                 <div class="photo-group thumbnail">
                     <div href="#" class="photo-wrapper">
+                        <h2>
+                            <small>
+                                <%= bout.get('green_wrestler').get('first_name') %>
+                            </small>
+                        </h2>
                         <div class="photo">
                             <img class="fixedHeight" src="../images/silhuoette.png" />
                             <div class="photo-label-left">        
                                 <div class="vote-group">
-                                    <a href="#" id="voteBtn" class="vote-wrapper voteBtn">
+                                    <a href="#" id="greenPin" class="vote-wrapper voteBtn">
                                     <div class="vote">
                                         <img src="../images/left_tag.png" />
                                         <div class="vote-label-left">
-                                            <h1 class="btnText">
-                                                <small>
-                                                    <%= bout.get('green_wrestler').get('first_name') %>
-                                                </small>
-                                            </h1>
+                                            <small class="btnText">
+                                                PIN!
+                                            </small>        
                                         </div>  
                                     </div>
                                     </a>
@@ -279,19 +284,22 @@
             <div class="span2">
                 <div class="photo-group thumbnail">
                     <div href="#" class="photo-wrapper">
+                        <h2>
+                            <small>
+                                <%= bout.get('red_wrestler').get('first_name') %>
+                            </small>
+                        </h2>
                         <div class="photo">
                             <img class="fixedHeight" src="../images/silhuoette.png" />
                             <div class="photo-label-right">                
                                 <div class="vote-group">
-                                    <a href="#" id="voteBtn" class="vote-wrapper voteBtn">
+                                    <a href="#" id="redPin" class="vote-wrapper voteBtn">
                                     <div class="vote">
                                         <img src="../images/right_tag.png" />
                                         <div class="vote-label-right">
-                                            <h1 class="btnText">
-                                                <small>
-                                                <%= bout.get('red_wrestler').get('first_name') %>
-                                                </small>        
-                                            </h1>
+                                            <small class="btnText">
+                                                PIN!
+                                            </small>        
                                         </div>
                                     </div>
                                     </a>

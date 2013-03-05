@@ -216,6 +216,12 @@ var BoutView = Backbone.View.extend({
             this.makeMove(move, red, green); 
             this.render();
         },
+        "click a.voteBtn#greenPin": function(event) {
+            this.send_match_winner( this.model.get('green_wrestler'), "PIN" );
+        },
+        "click a.voteBtn#redPin": function(event) {
+            this.send_match_winner( this.model.get('red_wrestler'), "PIN" );
+        },
         "click .runningClock#pie-countdown": function(event) { 
             var that = this.boutClockView;
             that.pause_clock( );
