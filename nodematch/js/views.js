@@ -258,7 +258,7 @@ var SmallBoutView = Backbone.View.extend({
     events: {
         "click": function(event) {
             console.log('clocked btn');
-            mainV.trigger("bout:selectedBout", this.model);    
+            this.trigger("bout:selectedBout", this.model);    
         }
     }
 });
@@ -275,29 +275,52 @@ var BoutsCollView = Backbone.View.extend({
             $(that.el).children("ul").append("<li></li>");
             var subview = new SmallBoutView( 
                 {model: model, el: $(that.el).children("ul").children("li:nth-child("+ index +")")});
-            that.listenTo( subview, 'bout:win', this.next_bout );
+            that.listenTo( subview, 'bout:selectedBout', that.next_bout );
             subview.render();
         });
         return this;
     },
-    next_bout: function() {
-        console.log("Getting next bout");
+    next_bout: function(event_data) {
+        this.trigger("bout:selectedBout", event_data);
     }
 });
 
 var MatchView = Backbone.View.extend({
     template: _.template( $("#mainMatchTemplate").html() ),
     _boutIndex: 0,
+    currentBout: undefined,
     initialize: function() {
-        // Should take a match object as model
-        // iterate through the wrestlers of home(controlling) team and select the opponent from other team
-        // have a bout end event that would fire from bout and would trigger this to create the next matchup
-        // the render should load the selected matchup and have a clickable thing.
         this.on( 'match:schoolloaded', this.add_school );
     },
     render: function() {
         this.boutsView.render();
         return this;
+    },
+    prepare_bout: function(bout) {
+        this.currentBout = bout;
+        this.currentBout.set('current_round', 1);
+        var actis = new Actions();
+        this.currentBout.set('actions', actis);
+        this.currentBout.set('bout_date', new Date());
+        this.currentBout.url = this.model.url;
+        var boutClock = new Clock();
+        boutClock.set('total', 120000);
+        boutClock.set('left', 120000);
+        this.currentBout.set('clock', boutClock);
+        this.curBoutView = new BoutView({model: this.currentBout, el: $("#mainMatch")});
+        this.currentBout.set('green_wrestler',
+            this.prepare_wrestler(this.currentBout.get('green_wrestler')) );
+        this.currentBout.set('red_wrestler',
+            this.prepare_wrestler(this.currentBout.get('red_wrestler')) );
+        this.listenTo( this.curBoutView, 'bout:win', this.prepare_bout );
+        this.curBoutView.render();
+    },
+    prepare_wrestler: function(wrestler) {
+        wrestler.set('available_moves', standing_moves);
+        wrestler.set('position', "NEUTRAL");
+        wrestler.set('points', 0);
+        wrestler.set('stalling_count', 0);
+        return wrestler
     },
     create_bouts: function() {
         var green_wrestlers = _.sortBy( this.model.get('schools').at(0).get('wrestlers').models, function(wrestler) { return wrestler.get('normal_weight') });
@@ -311,6 +334,8 @@ var MatchView = Backbone.View.extend({
         });
         this.model.set('bouts', new Bouts(rawlist));
         this.boutsView = new BoutsCollView({collection: this.model.get('bouts'), el: this.el});
+        this.listenTo( this.boutsView, 'bout:selectedBout', this.prepare_bout );
+        this.prepare_bout( this.model.get('bouts').at(0) );
     },
     add_school: function(school) {
         var schools = this.model.get('schools');
