@@ -296,13 +296,27 @@ var MatchView = Backbone.View.extend({
         this.boutsView.render();
         return this;
     },
+    get_next_bout: function(winner, win_type) {
+        this._boutIndex += 1;
+        if ( this.currentBout.get('green_wrestler').get('id') == winner.get('id') ) {
+            var score = this.model.get('scores').at(0);
+            score += 6;
+            this.model.get('scores').at(0) = scores;;
+        } else {
+            var score = this.model.get('scores').at(1);
+            score += 6;
+            this.model.get('scores').at(1) = scores;;
+        }
+        this.prepare_bout( this.model.get('bouts').at(this._boutIndex) );
+    },
     prepare_bout: function(bout) {
         this.currentBout = bout;
         this.currentBout.set('current_round', 1);
         var actis = new Actions();
         this.currentBout.set('actions', actis);
         this.currentBout.set('bout_date', new Date());
-        this.currentBout.url = this.model.url;
+        this.currentBout.url = this.model.url();
+        this.currentBout.id = undefined;
         var boutClock = new Clock();
         boutClock.set('total', 120000);
         boutClock.set('left', 120000);
@@ -312,7 +326,7 @@ var MatchView = Backbone.View.extend({
             this.prepare_wrestler(this.currentBout.get('green_wrestler')) );
         this.currentBout.set('red_wrestler',
             this.prepare_wrestler(this.currentBout.get('red_wrestler')) );
-        this.listenTo( this.curBoutView, 'bout:win', this.prepare_bout );
+        this.listenTo( this.curBoutView, 'bout:win', this.get_next_bout );
         this.curBoutView.render();
     },
     prepare_wrestler: function(wrestler) {
