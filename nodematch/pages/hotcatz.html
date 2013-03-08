@@ -33,6 +33,15 @@
     </div>
 
     <div class="container">
+        <div class="row top-row">
+        </div>
+      <div class="row">
+          <h1><small>SCHOOL</small></h1><h2><small>MATCH</small></h2>
+      </div>
+        <div id="matchDetails">
+        </div>
+    </div>
+    <div class="container">
       <div class="row top-row">
       </div>
       <div class="row">
@@ -136,8 +145,34 @@
                 </div>
             </div>
     </script>
+    <script type="test/template" id="mainMatchTemplate">
+        <div class="row">
+            <div class="span2 centered">
+                <h2>
+                    <%= model.get('schools').at(0).get('school_name') %>
+                </h2>
+            </div>
+            <div class="span2 offset8 centered">
+                <h2>
+                    <%= model.get('schools').at(1).get('school_name') %>
+                </h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="span2 centered">
+                <h2>
+                    <%= model.get('scores')[0] %>
+                </h2>
+            </div>
+            <div class="span2 offset8 centered">
+                <h2>
+                    <%= model.get('scores')[1] %>
+                </h2>
+            </div>
+        </div>
+    </script>
 
-    <script type="text/template" id="mainMatchTemplate">
+    <script type="text/template" id="matchBoutsTemplate">
         <ul style="list-style-type: none">
         </ul>
     </script>

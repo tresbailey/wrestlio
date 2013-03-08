@@ -264,7 +264,7 @@ var SmallBoutView = Backbone.View.extend({
 });
     
 var BoutsCollView = Backbone.View.extend({
-    template: _.template( $("#mainMatchTemplate").html() ),
+    template: _.template( $("#matchBoutsTemplate").html() ),
     initialize: function() {
         var that =  this;
     },
@@ -290,9 +290,11 @@ var MatchView = Backbone.View.extend({
     _boutIndex: 0,
     currentBout: undefined,
     initialize: function() {
+        this.model.set('scores', [0,0]);
         this.on( 'match:schoolloaded', this.add_school );
     },
     render: function() {
+        $(this.el).html( this.template( this ) );
         this.boutsView.render();
         return this;
     },
@@ -308,6 +310,7 @@ var MatchView = Backbone.View.extend({
             this.model.get('scores')[1] = score;
         }
         this.prepare_bout( this.model.get('bouts').at(this._boutIndex) );
+        this.render();
     },
     prepare_bout: function(bout) {
         this.currentBout = bout;
@@ -347,7 +350,7 @@ var MatchView = Backbone.View.extend({
             }
         });
         this.model.set('bouts', new Bouts(rawlist));
-        this.boutsView = new BoutsCollView({collection: this.model.get('bouts'), el: this.el});
+        this.boutsView = new BoutsCollView({collection: this.model.get('bouts'), el: $("#fullMatch")});
         this.listenTo( this.boutsView, 'bout:selectedBout', this.prepare_bout );
         this.prepare_bout( this.model.get('bouts').at(0) );
     },

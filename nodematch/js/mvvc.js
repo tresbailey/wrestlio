@@ -17,18 +17,18 @@
                 var green_school = new School();
                 green_school.url = 'http://localhost:8001/High%20School/SC/3A/Region%20II/Seneca';
                 var schools = new Schools();
-                schools.add(red_school);
                 schools.add(green_school);
+                schools.add(red_school);
                 this.matches = new Matches();
                 this.matches.url = 'http://localhost:5001/matches';
                 this.matches.add( new Match() );
                 this.currentMatch = this.matches.at(0);
                 this.currentMatch.id = '510d3883319d7d3728000001';
                 this.currentMatch.set('date', new Date());
-                this.currentMatch.set('schools', new Schools());
+                this.currentMatch.set('schools', schools);
                 this.currentMatch.set('scores', []);
                 this.currentMatch.set('bouts', new Bouts() );
-                var matchView = new MatchView({model: this.currentMatch, el: $("#fullMatch")});
+                var matchView = new MatchView({model: this.currentMatch, el: $("#matchDetails")});
                 that = this;
                 green_school.fetch({
                     success: function(model, response, options) {
