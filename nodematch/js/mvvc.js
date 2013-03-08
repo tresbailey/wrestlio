@@ -26,6 +26,7 @@
                 this.currentMatch.id = '510d3883319d7d3728000001';
                 this.currentMatch.set('date', new Date());
                 this.currentMatch.set('schools', new Schools());
+                this.currentMatch.set('scores', []);
                 this.currentMatch.set('bouts', new Bouts() );
                 var matchView = new MatchView({model: this.currentMatch, el: $("#fullMatch")});
                 that = this;

@@ -298,14 +298,14 @@ var MatchView = Backbone.View.extend({
     },
     get_next_bout: function(winner, win_type) {
         this._boutIndex += 1;
-        if ( this.currentBout.get('green_wrestler').get('id') == winner.get('id') ) {
-            var score = this.model.get('scores').at(0);
+        if ( this.currentBout.get('green_wrestler') == winner ) {
+            var score = this.model.get('scores')[0];
             score += 6;
-            this.model.get('scores').at(0) = scores;;
+            this.model.get('scores')[0] = score;
         } else {
-            var score = this.model.get('scores').at(1);
+            var score = this.model.get('scores')[1];
             score += 6;
-            this.model.get('scores').at(1) = scores;;
+            this.model.get('scores')[1] = score;
         }
         this.prepare_bout( this.model.get('bouts').at(this._boutIndex) );
     },
