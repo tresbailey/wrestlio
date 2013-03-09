@@ -3,6 +3,7 @@ Markers
 
 Adding marker files to this directory will have the following effects:
 
+<<<<<<< HEAD
 force_clean_build - Will remove the python virtualenv and force rebuild it
     including any previously downloaded libraries
 
@@ -11,3 +12,15 @@ hot_deploy - Support not yet there - coming soon to a theatre near you.
 
 disable_auto_scaling - Will prevent scalable applications from scaling up
                        or down according to application load.
+=======
+force_clean_build - Will remove any previously installed npm modules and
+                    re-install all the required modules from scratch
+                    
+hot_deploy - Will run Node with Supervisor (https://npmjs.org/package/supervisor)
+			 so that changes to javascript files will be reloaded without requiring
+			 a restart of Node. NOTE: Node will be restarted and started with Supervisor
+			 the first time the hot_deploy marker appears
+
+disable_auto_scaling - Will prevent scalable applications from scaling up 
+                       or down according to application load.
+>>>>>>> 28c5555352a902c549c965da30cf7559c80f328e
