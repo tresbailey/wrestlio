@@ -1,3 +1,4 @@
+import os
 from setuptools import setup
 
 fn = os.path.join(os.path.dirname(__file__), 'requirements.txt')
