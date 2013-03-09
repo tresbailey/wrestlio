@@ -1,7 +1,7 @@
 import os
 from setuptools import setup
 
-fn = os.path.join(os.path.dirname(__file__), 'requirements.txt')
+fn = os.path.join(os.path.dirname(__file__), 'wsgi/requirements.txt')
 reqs_list = list()
 with open(fn, 'r') as reqs:
     for line in reqs.readlines():
