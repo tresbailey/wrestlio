@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import os
-virtenv = os.environ['APPDIR'] + '/virtenv/'
+virtenv = os.environ['OPENSHIFT_HOMEDIR'] + '/virtenv/'
 os.environ['PYTHON_EGG_CACHE'] = os.path.join(virtenv, 'lib/python2.7/site-packages')
 virtualenv = os.path.join(virtenv, 'bin/activate_this.py')
 try:
