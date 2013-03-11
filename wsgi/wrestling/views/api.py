@@ -4,6 +4,7 @@ Created on Sep 2, 2011
 
 @author: tres
 '''
+import sys
 from datetime import datetime
 from flask import Module, render_template, request, jsonify
 from pymongo import Connection
