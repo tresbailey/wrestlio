@@ -9,6 +9,7 @@ from flask import Module, render_template, request, jsonify
 from pymongo import Connection
 from pymongo.objectid import ObjectId
 from wrestling import db
+from wrestling.logs import log
 from wrestling.models.wrestler import WrestlingDocument, \
     Wrestler, Schools, Match, Bout, RoundActivity
 import json
@@ -43,6 +44,7 @@ def show_area_levels(competitionL):
 
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['GET'])
 def show_school_info(competition, area, size, conference, school_name):
+    log.debug( "Got a request for finding school: "+ school_name)
     school = find_school(**request.view_args)
     return json.dumps( school, default=remove_OIDs )
 

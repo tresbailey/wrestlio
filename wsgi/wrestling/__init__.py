@@ -5,8 +5,7 @@ import uuid
 from flaskext.mongoalchemy import MongoAlchemy
 from flask import Flask, request, url_for, session, flash,\
     render_template
-import logging
-from logging import handlers
+from wrestling.logs import log
 import os
 
 app = Flask(__name__)
@@ -39,10 +38,6 @@ db = MongoAlchemy(app)
 
 from wrestling.views.api import api
 
-handler = logging.handlers.RotatingFileHandler("wrestling.log")
-log = logging.getLogger('wrestling')
-log.setLevel("DEBUG")
-log.addHandler( handler)
 log.debug("First run of this....")
 
 app.register_blueprint(api)
