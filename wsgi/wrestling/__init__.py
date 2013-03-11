@@ -28,8 +28,8 @@ def add_headers(response):
     return response
 
 #TODO move this back to storage.__init__
-app.config['MONGOALCHEMY_SERVER'] = os.environ.get('MONGO_HOST', 'localhost')
-app.config['MONGOALCHEMY_PORT'] = int(os.environ.get('MONGO_PORT', 27017))
+app.config['MONGOALCHEMY_SERVER'] = os.environ.get('OPENSHIFT_MONGODB_DB_HOST', 'localhost')
+app.config['MONGOALCHEMY_PORT'] = int(os.environ.get('OPENSHIFT_MONGODB_DB_PORT', 27017))
 app.config['MONGOALCHEMY_DATABASE'] = os.environ.get('MONGO_DB', 'wrestlerdb')
 app.config['MONGOALCHEMY_SERVER_AUTH'] = False
 
