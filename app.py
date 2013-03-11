@@ -40,6 +40,11 @@ if __name__ == '__main__':
    port = 8080
    zapp = imp.load_source('application', 'wsgi/application')
 
+   handler = logging.handlers.RotatingFileHandler("wsgi.log")
+   log = logging.getLogger('wrestling')
+   log.setLevel("DEBUG")
+   log.addHandler( handler)
+   log.debug("Starting up the wsgi server, probably a simple one")
    #  Use gevent if we have it, otherwise run a simple httpd server.
    print 'Starting WSGIServer on %s:%d ... ' % (ip, port)
    try:
