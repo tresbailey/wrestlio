@@ -45,8 +45,12 @@ def show_area_levels(competitionL):
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['GET'])
 def show_school_info(competition, area, size, conference, school_name):
     log.debug( "Got a request for finding school: "+ school_name)
-    school = find_school(**request.view_args)
-    return json.dumps( school, default=remove_OIDs )
+    try:
+        school = find_school(**request.view_args)
+        return json.dumps( school, default=remove_OIDs )
+    except:
+        log.error("Unexpected error:", sys.exc_info()[0])
+        raise
 
 
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['PUT'])
