@@ -40,6 +40,8 @@ if __name__ == '__main__':
    port = 8080
    zapp = imp.load_source('application', 'wsgi/application')
 
+   import logging
+   from logging import handlers
    handler = logging.handlers.RotatingFileHandler("wsgi.log")
    log = logging.getLogger('wrestling')
    log.setLevel("DEBUG")
