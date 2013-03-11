@@ -10,6 +10,8 @@ try:
             os.environ['OPENSHIFT_REPO_DIR'] +'/wsgi', PYCART_DIR,
             'virtenv', 'bin', 'activate_this.py')
    execfile(zvirtenv, dict(__file__ = zvirtenv) )
+   pypath = os.path.join( os.environ['OPENSHIFT_REPO_DIR'], 'wsgi')
+   sys.path.append(pypath)
 except IOError:
    pass
 
