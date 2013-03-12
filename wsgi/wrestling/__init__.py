@@ -32,6 +32,8 @@ def add_headers(response):
 app.config['MONGOALCHEMY_SERVER'] = os.environ.get('OPENSHIFT_MONGODB_DB_HOST', 'localhost')
 app.config['MONGOALCHEMY_PORT'] = int(os.environ.get('OPENSHIFT_MONGODB_DB_PORT', 27017))
 app.config['MONGOALCHEMY_DATABASE'] = os.environ.get('MONGO_DB', 'wrestlerdb')
+app.config['MONGOALCHEMY_USER'] = os.environ.get('OPENSHIFT_MONGODB_DB_USERNAME')
+app.config['MONGOALCHEMY_PASSWORD'] = os.environ.get('OPENSHIFT_MONGODB_DB_PASSWORD')
 app.config['MONGOALCHEMY_SERVER_AUTH'] = False
 
 db = MongoAlchemy(app)
