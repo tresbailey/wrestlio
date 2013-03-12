@@ -22,7 +22,8 @@
                 schools.add(green_school);
                 schools.add(red_school);
                 this.matches = new Matches();
-                this.matches.url = 'http://localhost:5001/matches';
+                //this.matches.url = 'http://localhost:5001/matches';
+                this.matches.url = 'http://takedownRest-tresback.rhcloud.com/matches';
                 this.matches.add( new Match() );
                 this.currentMatch = this.matches.at(0);
                 this.currentMatch.id = '510d3883319d7d3728000001';
