@@ -81,9 +81,7 @@ def show_wrestler_info(competition, area, size, conference, school_name, wrestle
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['POST'])
 def create_wrestler(competition, area, size, conference, school_name):
     school = find_school(**request.view_args)
-    json_data = dict( json.loads(
-        request.form.items()[0][0])
-    )
+    json_data = request.data
     wrestler = Wrestler( **json_data )
     try:
         school.__getattribute__("wrestlers")
@@ -120,8 +118,7 @@ def get_school_matches():
 
 @api.route('/matches', methods=['POST'])
 def create_school_match():
-    json_data = dict( json.loads(
-        request.form.items()[0][0]))
+    json_data = request.data
     match = Match(**json_data)
     match.match_date = datetime.strptime(match.match_date, '%m/%d/%Y')
     match.schools = [ prepare_school(school, ObjectId) for school in match.schools ]
