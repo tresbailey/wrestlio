@@ -14,10 +14,10 @@
                 console.log("Initing the main view!!");
                 var red_school = new School();
                 //red_school.url = 'http://localhost:8001/High%20School/SC/3A/Region%20II/Walhalla';
-                red_school.url = 'http://localhost:8001/High%20School/SC/3A/Region%20II/Broome';
+                red_school.url = 'http://takedownRest-tresback.rhcloud.com/High%20School/SC/3A/Region%20II/Broome';
                 var green_school = new School();
                 //green_school.url = 'http://localhost:8001/High%20School/SC/3A/Region%20II/Seneca';
-                green_school.url = 'http://localhost:8001/High%20School/SC/3A/Region%20II/Chester';
+                green_school.url = 'http://takedownRest-tresback.rhcloud.com/High%20School/SC/3A/Region%20II/Chester';
                 var schools = new Schools();
                 schools.add(green_school);
                 schools.add(red_school);
