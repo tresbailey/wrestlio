@@ -56,11 +56,9 @@ def show_school_info(competition, area, size, conference, school_name):
 
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['PUT'])
 def create_school(competition, area, size, conference, school_name):
-    json_data = dict( json.loads(
-        request.form.items()[0][0]),
-        **request.view_args
-    )
+    json_data = request.data
     school = Schools( **json_data )
+    school._id = ObjectId()
     school.wrestlers = {}
     school.save()
     return json.dumps( school, default=remove_OIDs )
