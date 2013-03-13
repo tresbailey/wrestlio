@@ -103,8 +103,9 @@ var SampleApp = function() {
         };
 
         self.routes['/pages/*.html'] = function(req, res) {
+            console.log("Retrieving path: "+ req.path);
             res.setHeader('Content-Type', 'text/html');
-            res.send(fs.readFileSync(req.path.substring(1)));
+            res.send(fs.readFileSync('nodematch/'+req.path));
         };
     
         self.routes['/js/base_url.js'] = function(req, res) {
@@ -114,19 +115,15 @@ var SampleApp = function() {
 
         self.routes['/js/*.js'] = function(req, res) {
             res.setHeader('Content-Type', 'text/js');
-            res.send(fs.readFileSync(req.path.substring(1)));
+            res.send(fs.readFileSync('nodematch/'+req.path));
         }
         self.routes['/images/*.png'] = function(req, res) {
             res.setHeader('Content-Type', 'image/png');
-            res.send(fs.readFileSync(req.path.substring(1)));
+            res.send(fs.readFileSync('nodematch/'+req.path));
         }
         self.routes['/css/*.css'] = function(req, res) {
             res.setHeader('Content-Type', 'text/css');
-            res.send(fs.readFileSync(req.path.substring(1)));
-        }
-        self.routes['/upload_images/*'] = function(req, res) {
-            console.log( "Getting uploaded: "+ req.path.substring(14) );
-            res.send(fs.readFileSync('/data/files/'+ req.path.substring(14)));
+            res.send(fs.readFileSync('nodematch/'+req.path));
         }
     };
 
