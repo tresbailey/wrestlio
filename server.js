@@ -1,8 +1,13 @@
 #!/bin/env node
+// This whole file is a SHAMELESS RIPOFF from
+// OpenShift's standard nodejs server.
+// Only using this so that i can have a truly separated ui
+// and api layers.  Other options would be Apache or NGINX.
+// As this progresses, I reserve the right to switch over
+// to one of those web servers.
 //  OpenShift sample Node application
 var express = require('express');
 var fs      = require('fs');
-
 
 /**
  *  Define the sample application.
@@ -28,8 +33,9 @@ var SampleApp = function() {
         if (typeof self.ipaddress === "undefined") {
             //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
             //  allows us to run/test the app locally.
-            console.warn('No OPENSHIFT_INTERNAL_IP var, using 127.0.0.1');
-            self.ipaddress = "127.0.0.1";
+            var ip = process.env.HOMEIP
+            console.warn('No OPENSHIFT_INTERNAL_IP var, using '+ ip);
+            self.ipaddress = ip;
         };
     };
 
@@ -38,12 +44,7 @@ var SampleApp = function() {
      *  Populate the cache.
      */
     self.populateCache = function() {
-        if (typeof self.zcache === "undefined") {
-            self.zcache = { 'index.html': '' };
-        }
 
-        //  Local cache for static content.
-        self.zcache['index.html'] = fs.readFileSync('./index.html');
     };
 
 
@@ -94,21 +95,39 @@ var SampleApp = function() {
      */
     self.createRoutes = function() {
         self.routes = { };
-
-        // Routes for /health, /asciimo and /
-        self.routes['/health'] = function(req, res) {
-            res.send('1');
-        };
-
-        self.routes['/asciimo'] = function(req, res) {
-            var link = "http://i.imgur.com/kmbjB.png";
-            res.send("<html><body><img src='" + link + "'></body></html>");
-        };
+    
+        url_template = "var BASEURL='http://"+ process.env.OPENSHIFT_INTERNAL_IP+"'"
 
         self.routes['/'] = function(req, res) {
-            res.setHeader('Content-Type', 'text/html');
-            res.send(self.cache_get('index.html') );
+            res.redirect('http://'+ process.env.HOMEIP +':8080/pages/hotcatz.html');
         };
+
+        self.routes['/pages/*.html'] = function(req, res) {
+            res.setHeader('Content-Type', 'text/html');
+            res.send(fs.readFileSync(req.path.substring(1)));
+        };
+    
+        self.routes['/js/base_url.js'] = function(req, res) {
+            res.setHeader('Content-Type', 'text/javascript');
+            res.end(url_template);
+        };
+
+        self.routes['/js/*.js'] = function(req, res) {
+            res.setHeader('Content-Type', 'text/js');
+            res.send(fs.readFileSync(req.path.substring(1)));
+        }
+        self.routes['/images/*.png'] = function(req, res) {
+            res.setHeader('Content-Type', 'image/png');
+            res.send(fs.readFileSync(req.path.substring(1)));
+        }
+        self.routes['/css/*.css'] = function(req, res) {
+            res.setHeader('Content-Type', 'text/css');
+            res.send(fs.readFileSync(req.path.substring(1)));
+        }
+        self.routes['/upload_images/*'] = function(req, res) {
+            console.log( "Getting uploaded: "+ req.path.substring(14) );
+            res.send(fs.readFileSync('/data/files/'+ req.path.substring(14)));
+        }
     };
 
 
@@ -161,4 +180,11 @@ var SampleApp = function() {
 var zapp = new SampleApp();
 zapp.initialize();
 zapp.start();
+
+
+/**
+* Python code proxy
+**/
+httpProxy = require('http-proxy')
+httpProxy.createServer(5001, 'localhost').listen(8001);
 
