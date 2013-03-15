@@ -54,6 +54,16 @@ def show_school_info(competition, area, size, conference, school_name):
         raise
 
 
+@api.route('/schools/<school_list>', methods=['GET'])
+def get_school_list( school_list ):
+    """
+    Receives a query for a list of schools 
+    """
+    school_list = [ObjectId(school) for school in school_list.split(",")]
+    all_schools = Schools.query.filter(Schools._id.in_(*school_list)).all()
+    return json.dumps( all_schools, default=remove_OIDs )
+
+
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['PUT'])
 def create_school(competition, area, size, conference, school_name):
     json_data = request.data

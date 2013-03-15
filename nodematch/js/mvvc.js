@@ -13,17 +13,17 @@
             initialize: function() {
                 console.log("Initing the main view!!");
                 var red_school = new School();
-                //red_school.url = 'http://localhost:8001/High%20School/SC/3A/Region%20II/Walhalla';
-                red_school.url = 'https://takedownRest-tresback.rhcloud.com/High%20School/SC/3A/Region%20II/Broome';
+                red_school.url = 'http://localhost:5001/High%20School/SC/3A/Region%20II/Walhalla';
+                //red_school.url = 'https://takedownRest-tresback.rhcloud.com/High%20School/SC/3A/Region%20II/Broome';
                 var green_school = new School();
-                //green_school.url = 'http://localhost:8001/High%20School/SC/3A/Region%20II/Seneca';
-                green_school.url = 'https://takedownRest-tresback.rhcloud.com/High%20School/SC/3A/Region%20II/Chester';
+                green_school.url = 'http://localhost:5001/High%20School/SC/3A/Region%20II/Seneca';
+                //green_school.url = 'https://takedownRest-tresback.rhcloud.com/High%20School/SC/3A/Region%20II/Chester';
                 var schools = new Schools();
                 schools.add(green_school);
                 schools.add(red_school);
                 this.matches = new Matches();
-                //this.matches.url = 'http://localhost:5001/matches';
-                this.matches.url = 'https://takedownRest-tresback.rhcloud.com/matches';
+                this.matches.url = 'http://localhost:5001/matches';
+                //this.matches.url = 'https://takedownRest-tresback.rhcloud.com/matches';
                 this.matches.add( new Match() );
                 this.currentMatch = this.matches.at(0);
                 this.currentMatch.id = '510d3883319d7d3728000001';
@@ -71,6 +71,42 @@
         });
 
         mainV = new MainView();
+
+        var ScheduleView = Backbone.View.extend({
+            initialize: function(model, school_id) {
+                var matches = new Matches();
+                matches.url = 'http://localhost:5001/matches?qschool='+ school_id;
+                matches.fetch({
+                    success: function( model, response, options) {
+                        var opponents = [];
+                        _.each( model.models, function( match, index) {
+                            opponents = opponents.concat(match.get('schools'));
+                        });
+                        _.uniq(opponents);
+                        console.log("Got back a match: "+ opponents);
+                        var all_schools = new Schools();
+                        all_schools.url = 'http://localhost:5001/schools/'+ opponents;
+                        all_schools.fetch({
+                            success: function( collection, response, options) {
+                                console.log("Got back all schools: "+ collection);
+                            },
+                            error: function(collection, xhr, options) {
+                                console.log("Got an error");
+                            }
+                        });
+                    },
+                    error: function(model, xhr, options) {
+                        console.log("Got a failure");
+                    }
+                });
+            }
+
+        });
+    app_router.on("route:school_schedule", function(school_id) {
+        console.log("Clicked an id of a school: "+ school_id);
+        var schedule = new ScheduleView({},school_id);
+    });
+
 
     })(jQuery);
 

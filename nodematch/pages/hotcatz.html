@@ -138,11 +138,11 @@
     <script type="test/template" id="mainMatchTemplate">
         <h1>
             <small>
-               <%= model.get('schools').at(0).get('school_name') %>
+                <a href="#schedule/<%=model.get('schools').at(0).get('_id')%>"><%= model.get('schools').at(0).get('school_name') %></a>
                <%= model.get('scores')[0] %>
                |
                <%= model.get('scores')[1] %>
-               <%= model.get('schools').at(1).get('school_name') %>
+                <a href="#schedule/<%=model.get('schools').at(1).get('_id')%>"><%= model.get('schools').at(1).get('school_name') %></a>
             </small>
         </h1>
     </script>
@@ -332,6 +332,7 @@
     <script src="../js/collections.js"></script>
     <script src="../js/util.js"></script>
     <script src="../js/views.js"></script>
+    <script src="../js/routers.js"></script>
     <script src="../js/mvvc.js"></script>
 
   </body>
