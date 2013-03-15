@@ -60,8 +60,11 @@ def get_school_list( school_list ):
     Receives a query for a list of schools 
     """
     school_list = [ObjectId(school) for school in school_list.split(",")]
+    subdoc = [ Schools.school_name ]
     all_schools = Schools.query.filter(Schools._id.in_(*school_list)).all()
-    return json.dumps( all_schools, default=remove_OIDs )
+    all_schools = dict([ ('school_name', school.school_name)
+        for school in all_schools ])
+    return json.dumps( all_schools)
 
 
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['PUT'])

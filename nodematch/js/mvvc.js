@@ -84,11 +84,18 @@
                         });
                         _.uniq(opponents);
                         console.log("Got back a match: "+ opponents);
-                        var all_schools = new Schools();
-                        all_schools.url = 'http://localhost:5001/schools/'+ opponents;
-                        all_schools.fetch({
+                        this.all_schools = new Schools();
+                        this.all_schools.url = 'http://localhost:5001/schools/'+ opponents;
+                        this.match_obj = _.object( _.map(matches.models, function(item) {
+                            return [item.id, item];
+                        }));
+                        this.all_schools.fetch({
                             success: function( collection, response, options) {
                                 console.log("Got back all schools: "+ collection);
+                                _.each( collection.models, function(raw_school, index) {
+                                    this.all_schools.add(raw_school);
+                                });
+
                             },
                             error: function(collection, xhr, options) {
                                 console.log("Got an error");

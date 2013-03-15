@@ -365,8 +365,8 @@ var MatchView = Backbone.View.extend({
 });
 
 var ScheduleView = Backbone.View.extend({
-    initialize: function() {
-
+    initialize: function(matches, schools) {
+        console.log("Model: "+ this.model);
     },
     render: function() {
         $(this.el).html( this.template( this ) );
