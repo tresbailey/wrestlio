@@ -85,8 +85,10 @@ class Schools(WrestlingDocument):
 class Match(WrestlingDocument):
     _id = db.ObjectIdField()
     match_date = db.DateTimeField()
-    schools = db.ListField( db.ObjectIdField() )
-    school_scores = db.ListField( db.IntField() )
+    home_school = db.ObjectIdField()
+    visit_school = db.ObjectIdField()
+    home_score = db.IntField()
+    visit_score = db.IntField()
     individual_bouts = db.ListField( db.DocumentField( Bout ) )
 
     def clean4_dump(self):
@@ -96,7 +98,7 @@ class Match(WrestlingDocument):
         """
         response = dict(self._field_values)
         response['match_id'] = str(self._id)
-        response['schools'] = [str(value) for 
-                value in self.schools]
+        response['home_school'] = str(self.home_school)
+        response['visit_school'] = str(self.visit_school)
         response['match_date'] = self.match_date.strftime('%m/%d/%Y')
         return response

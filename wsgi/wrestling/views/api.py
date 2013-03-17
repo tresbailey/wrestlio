@@ -115,7 +115,8 @@ def prepare_school( school, converter=str ):
 def add_qparam_searches( query, query_params ):
     filter_list = list()
     if query_params.has_key('qschool'):
-        filter_list.append(Match.schools.in_(query_params.get('qschool')))
+        query = query.or_( Match.home_school == ObjectId(query_params.get('qschool')),
+                Match.visit_school == ObjectId(query_params.get('qschool')) )
     if query_params.has_key('qdate'):
         filter_list.append( Match.match_date == 
             datetime.strptime(query_params.get('qdate'),
@@ -131,10 +132,12 @@ def get_school_matches():
 
 @api.route('/matches', methods=['POST'])
 def create_school_match():
-    json_data = request.data
+    json_data = json.loads(request.form.items()[0][0])
     match = Match(**json_data)
     match.match_date = datetime.strptime(match.match_date, '%m/%d/%Y')
-    match.schools = [ prepare_school(school, ObjectId) for school in match.schools ]
+    match.home_school = prepare_school(match.home_school, ObjectId)
+    match.visit_school = prepare_school(match.visit_school, ObjectId)
+    match._id = ObjectId()
     bouts = []
     for bout in match.individual_bouts:
         bout = Bout( **bout )

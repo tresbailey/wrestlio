@@ -68,8 +68,10 @@ var Match = Backbone.Model.extend({
     default: {
         id: "",
         date: "",
-        schools: [],
-        scores: [],
+        home_school: "",
+        visit_school: "",
+        home_score: 0,
+        visit_score: 0,
         bouts: []
     }
 });

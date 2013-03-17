@@ -72,7 +72,9 @@
 
     <script type="text/template" id="scheduleTemplate">
         <ul>
-            <li><%= this.all_schools %></li>
+            <% _.each(this.all_schools.models, function( school, index) { %>
+                <li>Opponent: <%= school.get('school_name') %></li>
+            <% }) %>
         </ul>
     </script>
 
@@ -144,11 +146,11 @@
     <script type="test/template" id="mainMatchTemplate">
         <h1>
             <small>
-                <a href="#schedule/<%=model.get('schools').at(0).get('_id')%>"><%= model.get('schools').at(0).get('school_name') %></a>
+                <a href="#schedule/<%=model.get('home_school').get('_id')%>"><%= model.get('home_school').get('school_name') %></a>
                <%= model.get('scores')[0] %>
                |
                <%= model.get('scores')[1] %>
-                <a href="#schedule/<%=model.get('schools').at(1).get('_id')%>"><%= model.get('schools').at(1).get('school_name') %></a>
+                <a href="#schedule/<%=model.get('visit_school').get('_id')%>"><%= model.get('visit_school').get('school_name') %></a>
             </small>
         </h1>
     </script>

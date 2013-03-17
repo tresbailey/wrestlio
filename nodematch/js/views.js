@@ -340,8 +340,8 @@ var MatchView = Backbone.View.extend({
         return wrestler
     },
     create_bouts: function() {
-        var green_wrestlers = _.sortBy( this.model.get('schools').at(0).get('wrestlers').models, function(wrestler) { return wrestler.get('normal_weight') });
-        var red_wrestlers = _.sortBy( this.model.get('schools').at(1).get('wrestlers').models, function(wrestler) { return wrestler.get('normal_weight') });
+        var green_wrestlers = _.sortBy( this.model.get('home_school').get('wrestlers').models, function(wrestler) { return wrestler.get('normal_weight') });
+        var red_wrestlers = _.sortBy( this.model.get('visit_school').get('wrestlers').models, function(wrestler) { return wrestler.get('normal_weight') });
         var rawlist = [];
         _.each( _.zip(green_wrestlers, red_wrestlers), function(combo, index) {
             if (combo[0] !== undefined && combo[1] !== undefined) {
@@ -354,9 +354,7 @@ var MatchView = Backbone.View.extend({
         this.listenTo( this.boutsView, 'bout:selectedBout', this.prepare_bout );
         this.prepare_bout( this.model.get('bouts').at(0) );
     },
-    add_school: function(school) {
-        var schools = this.model.get('schools');
-        schools.push( school );
+    add_school: function(schools) {
         if ( schools.length == 2 ) {
             this.create_bouts();
             this.render();
@@ -364,12 +362,3 @@ var MatchView = Backbone.View.extend({
     }
 });
 
-var ScheduleView = Backbone.View.extend({
-    initialize: function(matches, schools) {
-        console.log("Model: "+ this.model);
-    },
-    render: function() {
-        $(this.el).html( this.template( this ) );
-        return this;
-    }
-});
