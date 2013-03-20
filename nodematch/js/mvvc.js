@@ -83,26 +83,35 @@
                 var that = this;
                 matches.fetch({
                     success: function( model, response, options) {
-                        var opponents = [];
+                        that.opponents = {};
+                        var opp_list = [];
+                        console.log("Got back a match: "+ that.opponents);
+                        that.all_schools = new Schools();
                         _.each( model.models, function( match, index) {
                             if ( match.get('home_school') != school_id )  {
-                                opponents = opponents.concat(match.get('home_school'));
+                                opp_list.push( match.get('home_school') );
                             } else {
-                                opponents = opponents.concat(match.get('visit_school'));
+                                opp_list.push( match.get('visit_school') );
                             }
                         });
-                        _.uniq(opponents);
-                        console.log("Got back a match: "+ opponents);
-                        that.all_schools = new Schools();
-                        that.all_schools.url = 'http://localhost:5001/schools/'+ opponents;
+                        that.all_schools.url = 'http://localhost:5001/schools/'+ opp_list[0];
                         that.match_obj = _.object( _.map(matches.models, function(item) {
                             return [item.id, item];
                         }));
                         that.all_schools.fetch({
                             success: function( collection, response, options) {
                                 console.log("Got back all schools: "+ collection);
-                                _.each( collection.models, function(raw_school, index) {
-                                    that.all_schools.add(raw_school);
+                                var lookup = collection.models[0].attributes;
+                                _.each( model.models, function( match, index) {
+                                    if ( match.get('home_school') != school_id )  {
+                                        that.opponents[match.get('match_date')] = {
+                                            opp: lookup[match.get('home_school')],
+                                            at_home: false };
+                                    } else {
+                                        that.opponents[match.get('match_date')] = {
+                                            opp: lookup[match.get('visit_school')],
+                                            at_home: true };
+                                    }
                                 });
                                 that.render();
                             },

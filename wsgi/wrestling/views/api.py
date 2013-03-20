@@ -62,7 +62,7 @@ def get_school_list( school_list ):
     school_list = [ObjectId(school) for school in school_list.split(",")]
     subdoc = [ Schools.school_name ]
     all_schools = Schools.query.filter(Schools._id.in_(*school_list)).all()
-    all_schools = dict([ ('school_name', school.school_name)
+    all_schools = dict([ (str(school._id), school.school_name)
         for school in all_schools ])
     return json.dumps( all_schools)
 
