@@ -75,55 +75,9 @@
         mainV = new MainView();
 
         var ScheduleView = Backbone.View.extend({
-            initialize: function(model, school_id) {
-                var matches = new Matches();
-                matches.url = 'http://localhost:5001/matches?qschool='+ school_id;
-                this.el = $("#mainMatch");
-                this.template = _.template( $("#scheduleTemplate").html() );
-                var that = this;
-                matches.fetch({
-                    success: function( model, response, options) {
-                        that.opponents = {};
-                        var opp_list = [];
-                        console.log("Got back a match: "+ that.opponents);
-                        that.all_schools = new Schools();
-                        _.each( model.models, function( match, index) {
-                            if ( match.get('home_school') != school_id )  {
-                                opp_list.push( match.get('home_school') );
-                            } else {
-                                opp_list.push( match.get('visit_school') );
-                            }
-                        });
-                        that.all_schools.url = 'http://localhost:5001/schools/'+ opp_list[0];
-                        that.match_obj = _.object( _.map(matches.models, function(item) {
-                            return [item.id, item];
-                        }));
-                        that.all_schools.fetch({
-                            success: function( collection, response, options) {
-                                console.log("Got back all schools: "+ collection);
-                                var lookup = collection.models[0].attributes;
-                                _.each( model.models, function( match, index) {
-                                    if ( match.get('home_school') != school_id )  {
-                                        that.opponents[match.get('match_date')] = {
-                                            opp: lookup[match.get('home_school')],
-                                            at_home: false };
-                                    } else {
-                                        that.opponents[match.get('match_date')] = {
-                                            opp: lookup[match.get('visit_school')],
-                                            at_home: true };
-                                    }
-                                });
-                                that.render();
-                            },
-                            error: function(collection, xhr, options) {
-                                console.log("Got an error");
-                            }
-                        });
-                    },
-                    error: function(model, xhr, options) {
-                        console.log("Got a failure");
-                    }
-                });
+            el: $("#mainMatch"),
+            template: _.template( $("#scheduleTemplate").html() ),
+            initialize: function() {
             },
             render: function() {
                 $(this.el).html( this.template( this ) );
@@ -131,10 +85,43 @@
             }
 
         });
-    app_router.on("route:school_schedule", function(school_id) {
-        console.log("Clicked an id of a school: "+ school_id);
-        var schedule = new ScheduleView({},school_id);
-    });
+
+        var RosterEditView = Backbone.View.extend({
+            
+            el: $("#fullMatch"),
+            template: _.template( $("#createWrestlerTemplate").html() ),
+            initialize: function( ) {
+            },
+            render: function() {
+                $(this.el).html( this.template( this ) );
+                return this;
+            }
+        });
+
+    var load_school_page = function( school_id ) {
+        var school = new School();
+        school.id = school_id;
+        school.url = 'http://localhost:5001/schools/'+ school.id +'?qschedule=true';
+        var matches;
+        school.fetch({
+            success: function(model, response, options) {
+                school = model;
+                matches = new Matches(model.attributes[0].schedule);
+                var schedule = new ScheduleView();
+                schedule.school = school;
+                schedule.matches = matches;
+                schedule.render();
+                var roster = new RosterEditView(school);
+                roster.render();
+            },
+            error: function(xhr, response, options) {
+                console.log("Got an error");
+            }
+        });
+        
+    }
+
+    app_router.on("route:school_schedule", load_school_page);
 
 
     })(jQuery);

@@ -54,17 +54,27 @@ def show_school_info(competition, area, size, conference, school_name):
         raise
 
 
+def append_schedule(school):
+    all_matches = Match.query.or_(Match.home_school == school._id,
+        Match.visit_school == school._id).all()
+    school.schedule = all_matches
+    return school
+
+
 @api.route('/schools/<school_list>', methods=['GET'])
 def get_school_list( school_list ):
     """
     Receives a query for a list of schools 
     """
     school_list = [ObjectId(school) for school in school_list.split(",")]
-    subdoc = [ Schools.school_name ]
     all_schools = Schools.query.filter(Schools._id.in_(*school_list)).all()
-    all_schools = dict([ (str(school._id), school.school_name)
-        for school in all_schools ])
-    return json.dumps( all_schools)
+    if request.args.get('qschedule'):
+        all_schools = [ append_schedule(school) for school in all_schools]
+        custom_def = lambda x: [dict(schedule=remove_OIDs(school.schedule), 
+            **remove_OIDs(school)) 
+            for school in x]
+        return json.dumps( custom_def(all_schools) )
+    return json.dumps( all_schools, default=remove_OIDs )
 
 
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['PUT'])
@@ -112,11 +122,12 @@ def prepare_school( school, converter=str ):
     school = converter(school)
     return school
 
-def add_qparam_searches( query, query_params ):
+
+def add_qparam_searches( query, query_params, school_param='qschool' ):
     filter_list = list()
-    if query_params.has_key('qschool'):
-        query = query.or_( Match.home_school == ObjectId(query_params.get('qschool')),
-                Match.visit_school == ObjectId(query_params.get('qschool')) )
+    if query_params.has_key( school_param ):
+        query = query.or_( Match.home_school == ObjectId(query_params.get(school_param)),
+                Match.visit_school == ObjectId(query_params.get(school_param)) )
     if query_params.has_key('qdate'):
         filter_list.append( Match.match_date == 
             datetime.strptime(query_params.get('qdate'),

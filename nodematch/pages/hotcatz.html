@@ -72,9 +72,13 @@
 
     <script type="text/template" id="scheduleTemplate">
         <ul>
-            <% _.each( _.pairs(this.opponents), function(pair, index) { %>
-                <li> <%= pair[0] %><% if (pair[1].at_home) {%> - VS - <% } else {%> - At - <%}%>
-                <%= pair[1].opp %> </li>
+            <% _.each(matches.models, function(match, index) { %>
+                <%= match.get('match_date') %> - 
+                <% if ( match.get('home_school') == school.id ) { %>
+                    VS - <%= match.get('visit_school') %>
+                <% } else { %>
+                    AT - <%= match.get('home_school') %>
+                <% } %>
             <% }) %>
 
         </ul>
@@ -125,6 +129,26 @@
         </div>
         </div>
     </script>
+
+    <script type="text/template" id="createWrestlerTemplate">
+        <div> 
+            <form>
+                <div class="row">
+                    <div class="span2">First Name:</div>
+                    <div class="span3"><input type="text" name="first_name" /></div>
+                    <div class="span2">Last Name:</div>
+                    <div class="span3"><input type="text" name="last_name" /></div>
+                </div>
+                <div class="row">
+                    <div class="span2">Average Weight:</div>
+                    <div class="span3"><input type="text" name="avg_wt" /></div>
+                    <div class="span2">Qualified Weight:</div>
+                    <div class="span3"><input type="text" name="qual_wt" /></div>
+                </div>
+            </form>
+        </div>
+    </script>
+
 
     <script type="text/template" id="smallBoutTemplate">
             <div id="<%=model.get('weight_class')%>Bout" class="row">
