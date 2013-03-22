@@ -4,6 +4,7 @@ Created on Sep 2, 2011
 
 @author: tres
 '''
+from sets import Set
 import sys
 from datetime import datetime
 from flask import Module, render_template, request, jsonify
@@ -53,10 +54,19 @@ def show_school_info(competition, area, size, conference, school_name):
         log.error("Unexpected error:", sys.exc_info()[0])
         raise
 
+get_school_by_list = lambda sclist: Schools.query.filter(Schools._id.in_(*sclist)).all()
 
 def append_schedule(school):
     all_matches = Match.query.or_(Match.home_school == school._id,
         Match.visit_school == school._id).all()
+    pick_other = lambda match: match.home_school if school._id == match.visit_school else match.visit_school
+    school_list = Set( [pick_other(match) for match in all_matches] )
+    schools_full = dict([(school._id, school.school_name) for school in get_school_by_list( school_list )])
+    for match in all_matches:
+        # Replace the school id with the school repr if its in schools_full
+        # which means its not equal to this school.  if not found just id will be there
+        match.home_school = schools_full.get(match.home_school, match.home_school)
+        match.visit_school = schools_full.get(match.visit_school, match.visit_school)
     school.schedule = all_matches
     return school
 
@@ -67,7 +77,8 @@ def get_school_list( school_list ):
     Receives a query for a list of schools 
     """
     school_list = [ObjectId(school) for school in school_list.split(",")]
-    all_schools = Schools.query.filter(Schools._id.in_(*school_list)).all()
+    #all_schools = Schools.query.filter(Schools._id.in_(*school_list)).all()
+    all_schools = get_school_by_list(school_list)
     if request.args.get('qschedule'):
         all_schools = [ append_schedule(school) for school in all_schools]
         custom_def = lambda x: [dict(schedule=remove_OIDs(school.schedule), 
