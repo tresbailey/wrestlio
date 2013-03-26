@@ -22,13 +22,15 @@ var WrestlersView = Backbone.View.extend({
     /*
     Renders the list view of all cats
     */
+    template: _.template( $("#teamWrestlersTemplate").html() ),
     initialize: function(models, options) {
+        this.collection = models;
         console.log("Initiing the list view: "+ this.collection);
         this.collection.bind("add", this.addWrestler);
     },
     render: function() {
         console.log( "Got a first Model: "+ this.collection);
-        $(this.el).html( this.template( this.collection ) );
+        $(this.el).html( this.template( this ) );
         return this;
     },
     addWrestler: function(model) {

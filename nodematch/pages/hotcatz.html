@@ -120,32 +120,39 @@
         </div>
     </script>    
     <script type="text/template" id="smallWrestlerTemplate">
-        <div class="span2 thumbnail smallCat">
-        <div class="pagination-centered">
-            Name: <%= wrestler.get('first_name') %> <%= wrestler.get('last_name') %>
-            Weight: <%= wrestler.get('normal_weight') %>
-            Wins: <%= wrestler.get('wins') %>
-            Losses: <%= wrestler.get('losses') %>
-        </div>
-        </div>
+    </script>
+
+    <script type="text/template" id="teamWrestlersTemplate">
+        <% _.each( collection.models, function(wrestler, index) { %>
+            <div class="row">
+                <div class="span2 thumbnail smallCat">
+                    <div class="pagination-centered">
+                        Name: <%= wrestler.get('first_name') %> <%= wrestler.get('last_name') %>
+                        Weight: <%= wrestler.get('normal_weight') %>
+                        Wins: <%= wrestler.get('wins') %>
+                        Losses: <%= wrestler.get('losses') %>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
     </script>
 
     <script type="text/template" id="createWrestlerTemplate">
         <div> 
             <form>
                 <div class="row">
-                    <div class="span2">First Name:</div>
-                    <div class="span3"><input type="text" name="first_name" /></div>
-                    <div class="span2">Last Name:</div>
-                    <div class="span3"><input type="text" name="last_name" /></div>
+                <div class="span6 thumbnail smallCat">
+                    <div class="pagination-centered">
+                        <div>First Name: <input type="text" name="first_name" /></div>
+                        <div>Last Name: <input type="text" name="last_name" /></div>
+                        <div>Normal Weight: <input type="text" name="avg_wt" /></div>
+                        <div>Qualified Weight: <input type="text" name="qual_wt" /></div>
+                    </div>
                 </div>
-                <div class="row">
-                    <div class="span2">Average Weight:</div>
-                    <div class="span3"><input type="text" name="avg_wt" /></div>
-                    <div class="span2">Qualified Weight:</div>
-                    <div class="span3"><input type="text" name="qual_wt" /></div>
-                </div>
+            </div>
             </form>
+            <div id="existingRoster">
+            </div>
         </div>
     </script>
 

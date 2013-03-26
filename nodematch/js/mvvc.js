@@ -90,10 +90,20 @@
             
             el: $("#fullMatch"),
             template: _.template( $("#createWrestlerTemplate").html() ),
-            initialize: function( ) {
+            initialize: function( school ) {
+                this.model = school;
+                this.wrestlers = new Wrestlers();
+                var that = this;
+                _.each( _.values(this.model.attributes[0].wrestlers), function(wrest, index) {
+                    var wrestler = new Wrestler(wrest);
+                    that.wrestlers.add( wrestler );
+                });
             },
             render: function() {
+                var wrview = new WrestlersView(this.wrestlers);
                 $(this.el).html( this.template( this ) );
+                wrview.el = $(this.el).children("div").children("div#existingRoster");
+                wrview.render();
                 return this;
             }
         });

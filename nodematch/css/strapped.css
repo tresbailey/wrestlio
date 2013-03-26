@@ -152,3 +152,7 @@ h1.btnText small {
     position: relative;
     left: 2em;
 }
+
+input {
+    width: 80px;
+}
