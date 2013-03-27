@@ -93,6 +93,9 @@
             initialize: function( school ) {
                 this.model = school;
                 this.wrestlers = new Wrestlers();
+                this.model.url = 'http://localhost:5001/'+ this.model.get('competition') 
+                    +'/'+ this.model.get('area') +'/'+ this.model.get('size')
+                    +'/'+ this.model.get('conference') +'/'+ this.model.get('school_name');
                 var that = this;
                 _.each( _.values(this.model.attributes[0].wrestlers), function(wrest, index) {
                     var wrestler = new Wrestler(wrest);
@@ -105,6 +108,17 @@
                 wrview.el = $(this.el).children("div").children("div#existingRoster");
                 wrview.render();
                 return this;
+            },
+            events: {
+                'click .btn#create_wrestler': "store_wrestler"
+            },
+            store_wrestler: function(event) {
+                var raw = { first_name: this.$('input[name=first_name]').val(),
+                    last_name: this.$('input[name=last_name]').val(),
+                    normal_weight: this.$('input[name=avg_wt]').val(),
+                    qualified_weight: this.$('input[name=qual_wt]').val()
+                };
+                var nwrest = new Wrestler(raw);
             }
         });
 

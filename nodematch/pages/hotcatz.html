@@ -124,8 +124,10 @@
 
     <script type="text/template" id="teamWrestlersTemplate">
         <% _.each( collection.models, function(wrestler, index) { %>
+            <% if ( index % 2 == 1 ) { %>
             <div class="row">
-                <div class="span2 thumbnail smallCat">
+            <% } %>
+                <div class="span5 thumbnail smallCat">
                     <div class="pagination-centered">
                         Name: <%= wrestler.get('first_name') %> <%= wrestler.get('last_name') %>
                         Weight: <%= wrestler.get('normal_weight') %>
@@ -133,7 +135,9 @@
                         Losses: <%= wrestler.get('losses') %>
                     </div>
                 </div>
+            <% if ( index % 2 == 1 ) { %>
             </div>
+            <% } %>
         <% }) %>
     </script>
 
@@ -141,12 +145,13 @@
         <div> 
             <form>
                 <div class="row">
-                <div class="span6 thumbnail smallCat">
+                <div class="span6 offset3 thumbnail smallCat">
                     <div class="pagination-centered">
                         <div>First Name: <input type="text" name="first_name" /></div>
                         <div>Last Name: <input type="text" name="last_name" /></div>
                         <div>Normal Weight: <input type="text" name="avg_wt" /></div>
                         <div>Qualified Weight: <input type="text" name="qual_wt" /></div>
+                        <a href="#" id="create_wrestler" class="btn btn-inverse">Save Wrestler</a>
                     </div>
                 </div>
             </div>
