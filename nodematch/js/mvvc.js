@@ -13,15 +13,15 @@
             initialize: function() {
                 console.log("Initing the main view!!");
                 var red_school = new School();
-                red_school.url = 'http://localhost:5001/High%20School/SC/3A/Region%20II/Walhalla';
-                //red_school.url = 'https://takedownRest-tresback.rhcloud.com/High%20School/SC/3A/Region%20II/Broome';
+                //red_school.url = 'http://localhost:5001/High%20School/SC/3A/Region%20II/Walhalla';
+                red_school.url = 'https://takedownRest-tresback.rhcloud.com/High%20School/SC/3A/Region%20II/Broome';
                 var green_school = new School();
-                green_school.url = 'http://localhost:5001/High%20School/SC/3A/Region%20II/Seneca';
-                //green_school.url = 'https://takedownRest-tresback.rhcloud.com/High%20School/SC/3A/Region%20II/Chester';
+                //green_school.url = 'http://localhost:5001/High%20School/SC/3A/Region%20II/Seneca';
+                green_school.url = 'https://takedownRest-tresback.rhcloud.com/High%20School/SC/3A/Region%20II/Chester';
                 var schools = new Schools();
                 this.matches = new Matches();
-                this.matches.url = 'http://localhost:5001/matches';
-                //this.matches.url = 'https://takedownRest-tresback.rhcloud.com/matches';
+                //this.matches.url = 'http://localhost:5001/matches';
+                this.matches.url = 'https://takedownRest-tresback.rhcloud.com/matches';
                 this.matches.add( new Match() );
                 this.currentMatch = this.matches.at(0);
                 this.currentMatch.id = '510d3883319d7d3728000001';
@@ -35,14 +35,7 @@
                 that = this;
                 green_school.fetch({
                     success: function(model, response, options) {
-                        var rawWrest = _.values(model.get('wrestlers'));
-                        var inList = [];
-                        _(rawWrest).each(function(raw, index) {
-                            var rw = new Wrestler(raw);
-                            rw.id = raw['wrestler_id'];
-                            inList.push(rw);
-                        });
-                        var green_wrestlers = new Wrestlers(inList);
+                        var green_wrestlers = setup_school_wrestlers(model.get('wrestlers'));
                         green_school.set('wrestlers', green_wrestlers);
                         schools.add(green_school);
                         matchView.trigger("match:schoolloaded", schools);
@@ -53,14 +46,7 @@
                 });
                 red_school.fetch({
                     success: function(model, response, options) {
-                        var rawWrest = _.values(model.get('wrestlers'));
-                        var inList = [];
-                        _(rawWrest).each(function(raw, index) {
-                            var rw = new Wrestler(raw);
-                            rw.id = raw['wrestler_id'];
-                            inList.push(rw);
-                        });
-                        var red_wrestlers = new Wrestlers(inList);
+                        var red_wrestlers = setup_school_wrestlers(model.get('wrestlers'));
                         red_school.set('wrestlers', red_wrestlers);
                         schools.add(red_school);
                         matchView.trigger("match:schoolloaded", schools);
@@ -71,6 +57,17 @@
                 });
             },
         });
+
+        setup_school_wrestlers = function( wrestlers ) {
+            var rawWrest = _.values(wrestlers);
+            var inList = [];
+            _(rawWrest).each(function(raw, index) {
+                var rw = new Wrestler(raw);
+                rw.id = raw['wrestler_id'];
+                inList.push(rw);
+            });
+            return new Wrestlers(inList);
+        }
 
         mainV = new MainView();
 
@@ -93,17 +90,16 @@
             initialize: function( school ) {
                 this.model = school;
                 this.wrestlers = new Wrestlers();
-                this.model.url = 'http://localhost:5001/'+ this.model.get('competition') 
+                //this.model.url = 'http://localhost:5001/'+ this.model.get('competition') 
+                this.model.url = 'https://takedownRest-tresback.rhcloud.com/'+ this.model.get('competition') 
                     +'/'+ this.model.get('area') +'/'+ this.model.get('size')
                     +'/'+ this.model.get('conference') +'/'+ this.model.get('school_name');
                 var that = this;
-                _.each( _.values(this.model.attributes[0].wrestlers), function(wrest, index) {
-                    var wrestler = new Wrestler(wrest);
-                    that.wrestlers.add( wrestler );
-                });
+                this.model.set('wrestlers', setup_school_wrestlers(this.model.attributes[0].wrestlers));
+                this.model.get('wrestlers').on('add', this.render, this);
             },
             render: function() {
-                var wrview = new WrestlersView(this.wrestlers);
+                var wrview = new WrestlersView(this.model.get('wrestlers'));
                 $(this.el).html( this.template( this ) );
                 wrview.el = $(this.el).children("div").children("div#existingRoster");
                 wrview.render();
@@ -119,13 +115,15 @@
                     qualified_weight: this.$('input[name=qual_wt]').val()
                 };
                 var nwrest = new Wrestler(raw);
+                this.model.get('wrestlers').add(nwrest);
             }
         });
 
     var load_school_page = function( school_id ) {
         var school = new School();
         school.id = school_id;
-        school.url = 'http://localhost:5001/schools/'+ school.id +'?qschedule=true';
+        //school.url = 'http://localhost:5001/schools/'+ school.id +'?qschedule=true';
+        school.url = 'https://takedownRest-tresback.rhcloud.com/schools/'+ school.id +'?qschedule=true';
         var matches;
         school.fetch({
             success: function(model, response, options) {
