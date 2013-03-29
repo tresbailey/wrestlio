@@ -98,7 +98,9 @@ var SampleApp = function() {
     
         var host_name = process.env.OPENSHIFT_APP_DNS ? 'http://'+process.env.OPENSHIFT_APP_DNS : 
                 'http://localhost:8080'
-        url_template = "var BASEURL='"+ host_name +"'"
+        var service_host = process.env.OPENSHIFT_APP_DNS ? 'http://takedownRest-tresback.rhcloud.com': 
+                'http://localhost:5001'
+        url_template = "var BASEURL='"+ service_host +"'"
 
         self.routes['/'] = function(req, res) {
             res.redirect(host_name +'/pages/hotcatz.html');
