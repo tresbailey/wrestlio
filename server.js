@@ -98,7 +98,7 @@ var SampleApp = function() {
     
         var host_name = process.env.OPENSHIFT_APP_DNS ? 'http://'+process.env.OPENSHIFT_APP_DNS : 
                 'http://localhost:8080'
-        var service_host = process.env.OPENSHIFT_APP_DNS ? 'http://takedownRest-tresback.rhcloud.com': 
+        var service_host = process.env.OPENSHIFT_APP_DNS ? 'https://takedownRest-tresback.rhcloud.com': 
                 'http://localhost:5001'
         url_template = "var BASEURL='"+ service_host +"'"
 
