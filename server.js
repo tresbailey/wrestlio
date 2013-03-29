@@ -96,7 +96,9 @@ var SampleApp = function() {
     self.createRoutes = function() {
         self.routes = { };
     
-        url_template = "var BASEURL='http://"+ process.env.OPENSHIFT_INTERNAL_IP+"'"
+        var host_name = process.env.OPENSHIFT_APP_DNS ? 'https://'+process.env.OPENSHIFT_APP_DNS : 
+                'http://localhost:8080'
+        url_template = "var BASEURL='"+ host_name +"'"
 
         self.routes['/'] = function(req, res) {
             res.redirect('http://'+ process.env.HOMEIP +':8080/pages/hotcatz.html');

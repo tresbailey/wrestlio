@@ -13,15 +13,18 @@
             initialize: function() {
                 console.log("Initing the main view!!");
                 var red_school = new School();
+                red_school.url = BASEURL + '/High%20School/SC/3A/Region%20II/Walhalla';
                 //red_school.url = 'http://localhost:5001/High%20School/SC/3A/Region%20II/Walhalla';
-                red_school.url = 'https://takedownRest-tresback.rhcloud.com/High%20School/SC/3A/Region%20II/Broome';
+                //red_school.url = 'https://takedownRest-tresback.rhcloud.com/High%20School/SC/3A/Region%20II/Broome';
                 var green_school = new School();
+                green_school.url = BASEURL + '/High%20School/SC/3A/Region%20II/Seneca';
                 //green_school.url = 'http://localhost:5001/High%20School/SC/3A/Region%20II/Seneca';
-                green_school.url = 'https://takedownRest-tresback.rhcloud.com/High%20School/SC/3A/Region%20II/Chester';
+                //green_school.url = 'https://takedownRest-tresback.rhcloud.com/High%20School/SC/3A/Region%20II/Chester';
                 var schools = new Schools();
                 this.matches = new Matches();
+                this.matches.url = BASEURL + '/matches';
                 //this.matches.url = 'http://localhost:5001/matches';
-                this.matches.url = 'https://takedownRest-tresback.rhcloud.com/matches';
+                //this.matches.url = 'https://takedownRest-tresback.rhcloud.com/matches';
                 this.matches.add( new Match() );
                 this.currentMatch = this.matches.at(0);
                 this.currentMatch.id = '510d3883319d7d3728000001';
@@ -90,12 +93,13 @@
             initialize: function( school ) {
                 this.model = school;
                 this.wrestlers = new Wrestlers();
+                this.model.url = BASEURL + '/'+ this.model.get('competition') 
                 //this.model.url = 'http://localhost:5001/'+ this.model.get('competition') 
-                this.model.url = 'https://takedownRest-tresback.rhcloud.com/'+ this.model.get('competition') 
+                //this.model.url = 'https://takedownRest-tresback.rhcloud.com/'+ this.model.get('competition') 
                     +'/'+ this.model.get('area') +'/'+ this.model.get('size')
                     +'/'+ this.model.get('conference') +'/'+ this.model.get('school_name');
                 var that = this;
-                this.model.set('wrestlers', setup_school_wrestlers(this.model.attributes[0].wrestlers));
+                this.model.set('wrestlers', setup_school_wrestlers(this.model.get('wrestlers')));
                 this.model.get('wrestlers').on('add', this.render, this);
             },
             render: function() {
@@ -115,20 +119,26 @@
                     qualified_weight: this.$('input[name=qual_wt]').val()
                 };
                 var nwrest = new Wrestler(raw);
+                nwrest.set('wins', 0);
+                nwrest.set('losses', 0);
                 this.model.get('wrestlers').add(nwrest);
+                this.model.get('wrestlers').url = this.model.url;
+                nwrest.url = this.model.url;
+                nwrest.save(nwrest.attributes[0]);
             }
         });
 
     var load_school_page = function( school_id ) {
         var school = new School();
         school.id = school_id;
+        school.url = BASEURL + '/schools/'+ school.id +'?qschedule=true';
         //school.url = 'http://localhost:5001/schools/'+ school.id +'?qschedule=true';
-        school.url = 'https://takedownRest-tresback.rhcloud.com/schools/'+ school.id +'?qschedule=true';
+        //school.url = 'https://takedownRest-tresback.rhcloud.com/schools/'+ school.id +'?qschedule=true';
         var matches;
         school.fetch({
             success: function(model, response, options) {
-                school = model;
-                matches = new Matches(model.attributes[0].schedule);
+                school = new School(model.attributes[0]);
+                matches = new Matches(model.get('schedule'));
                 var schedule = new ScheduleView();
                 schedule.school = school;
                 schedule.matches = matches;

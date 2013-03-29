@@ -111,12 +111,22 @@ def show_wrestler_info(competition, area, size, conference, school_name, wrestle
             None)
     return json.dumps( wrestler, default=remove_OIDs )
 
+def prepare_wrestler(wrestler):
+    wrestler.wins = int(wrestler.wins)
+    wrestler.losses = int(wrestler.losses)
+    wrestler.qualified_weight = int(wrestler.qualified_weight)
+    wrestler.normal_weight = int(wrestler.normal_weight)
+    return wrestler
+
 
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['POST'])
 def create_wrestler(competition, area, size, conference, school_name):
+    import pdb
+    pdb.set_trace()
     school = find_school(**request.view_args)
     json_data = request.data
     wrestler = Wrestler( **json_data )
+    wrestler = prepare_wrestler(wrestler)
     try:
         school.__getattribute__("wrestlers")
     except AttributeError: 
