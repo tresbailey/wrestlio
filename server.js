@@ -183,9 +183,4 @@ zapp.initialize();
 zapp.start();
 
 
-/**
-* Python code proxy
-**/
-httpProxy = require('http-proxy')
-httpProxy.createServer(5001, 'localhost').listen(8001);
 
