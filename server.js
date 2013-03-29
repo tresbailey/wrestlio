@@ -96,12 +96,12 @@ var SampleApp = function() {
     self.createRoutes = function() {
         self.routes = { };
     
-        var host_name = process.env.OPENSHIFT_APP_DNS ? 'https://'+process.env.OPENSHIFT_APP_DNS : 
+        var host_name = process.env.OPENSHIFT_APP_DNS ? 'http://'+process.env.OPENSHIFT_APP_DNS : 
                 'http://localhost:8080'
         url_template = "var BASEURL='"+ host_name +"'"
 
         self.routes['/'] = function(req, res) {
-            res.redirect('http://'+ process.env.HOMEIP +':8080/pages/hotcatz.html');
+            res.redirect(host_name +'/pages/hotcatz.html');
         };
 
         self.routes['/pages/*.html'] = function(req, res) {
