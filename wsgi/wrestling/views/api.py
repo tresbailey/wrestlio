@@ -7,16 +7,43 @@ Created on Sep 2, 2011
 from sets import Set
 import sys
 from datetime import datetime
-from flask import Module, render_template, request, jsonify
+from flask import Module, render_template, request, jsonify, \
+    url_for, session, redirect
 from pymongo import Connection
 from pymongo.objectid import ObjectId
-from wrestling import db
+from wrestling import db, facebook
 from wrestling.logs import log
 from wrestling.models.wrestler import WrestlingDocument, \
     Wrestler, Schools, Match, Bout, RoundActivity
 import json
 
 api = Module(__name__)
+
+
+@api.route('/login')
+def login():
+    return facebook.authorize(callback=url_for('facebook_authorized',
+        next=request.args.get('next') or request.referrer or None,
+        _external=True))
+
+
+@api.route('/login/authorized')
+@facebook.authorized_handler
+def facebook_authorized(resp):
+    if resp is None:
+        return 'Access denied: reason=%s error=%s' % (
+            request.args['error_reason'],
+            request.args['error_description']
+        )
+    session['oauth_token'] = (resp['access_token'], '')
+    me = facebook.get('/me')
+    return 'Logged in as id=%s name=%s redirect=%s' % \
+        (me.data['id'], me.data['name'], request.args.get('next'))
+
+
+@facebook.tokengetter
+def get_facebook_oauth_token():
+    return session.get('oauth_token')
 
 
 def remove_OIDs(obj, recursive=False):

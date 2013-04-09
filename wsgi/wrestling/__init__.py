@@ -5,6 +5,7 @@ import uuid
 from flaskext.mongoalchemy import MongoAlchemy
 from flask import Flask, request, url_for, session, flash,\
     render_template
+from flask_oauth import OAuth
 from wrestling.logs import log
 import os
 
@@ -38,9 +39,27 @@ app.config['MONGOALCHEMY_SERVER_AUTH'] = True
 
 db = MongoAlchemy(app)
 
-from wrestling.views.api import api
 
-log.debug("First run of this....")
+SECRET_KEY = 'wrestlio_key'
+DEBUG = True
+FACEBOOK_APP_ID = '273015446166960'
+FACEBOOK_APP_SECRET = '181c18cae3bbed1c05359154124eab91'
+
+app.debug = DEBUG
+app.secret_key = SECRET_KEY
+oauth = OAuth()
+
+facebook = oauth.remote_app('facebook',
+    base_url='https://graph.facebook.com/',
+    request_token_url=None,
+    access_token_url='/oauth/access_token',
+    authorize_url='https://www.facebook.com/dialog/oauth',
+    consumer_key=FACEBOOK_APP_ID,
+    consumer_secret=FACEBOOK_APP_SECRET,
+    request_token_params={'scope': 'email'}
+)
+
+from wrestling.views.api import api
 
 app.register_blueprint(api)
 
