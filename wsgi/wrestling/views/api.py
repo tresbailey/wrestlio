@@ -93,7 +93,7 @@ def create_school(competition, area, size, conference, school_name):
     json_data = request.data
     school = Schools( **json_data )
     school._id = ObjectId()
-    school.wrestlers = {}
+    school.wrestlers = dict([ ( wrestler.get('wrestler_id'), prepare_wrestler(Wrestler(**wrestler))) for wrestler in school.wrestlers])
     school.save()
     return json.dumps( school, default=remove_OIDs )
 
@@ -112,6 +112,7 @@ def show_wrestler_info(competition, area, size, conference, school_name, wrestle
     return json.dumps( wrestler, default=remove_OIDs )
 
 def prepare_wrestler(wrestler):
+    wrestler.wrestler_id = ObjectId()
     wrestler.wins = int(wrestler.wins)
     wrestler.losses = int(wrestler.losses)
     wrestler.qualified_weight = int(wrestler.qualified_weight)
@@ -121,8 +122,6 @@ def prepare_wrestler(wrestler):
 
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['POST'])
 def create_wrestler(competition, area, size, conference, school_name):
-    import pdb
-    pdb.set_trace()
     school = find_school(**request.view_args)
     json_data = request.data
     wrestler = Wrestler( **json_data )
@@ -131,7 +130,6 @@ def create_wrestler(competition, area, size, conference, school_name):
         school.__getattribute__("wrestlers")
     except AttributeError: 
         school.wrestlers = {}
-    wrestler.wrestler_id = ObjectId()
     wrestler_dict = school.wrestlers
     wrestler_dict[wrestler.wrestler_id] = wrestler
     school.wrestlers = wrestler_dict
