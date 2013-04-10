@@ -24,6 +24,7 @@
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
         <p id="matchDetails" class="navbar-text pull-right">
+            <a>Login with Facebook</a>
         </p>
         <a class="brand brandTxt" href="#">
             <h1>TAKEdown</h1>
@@ -81,6 +82,14 @@
                 <% } %>
             <% }) %>
 
+        </ul>
+    </script>
+
+    <script type="text/template" id="landingSchoolsTemplate">
+        <ul>
+        <% _.each(schools.models, function(school, index) { %>
+            <li><%= school.get('school_name') %></li>
+        <% }) %>
         </ul>
     </script>
 

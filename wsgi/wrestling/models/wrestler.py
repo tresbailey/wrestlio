@@ -103,3 +103,13 @@ class Match(WrestlingDocument):
         response['match_date'] = self.match_date.strftime('%m/%d/%Y')
         del response['_id']
         return response
+
+
+class FacebookUser(db.Document):
+    _id = db.ObjectIdField()
+    face_id = db.StringField()
+    school_id = db.ObjectIdField(required=False)
+    wrestler_id = db.ObjectIdField(required=False)
+    roles = ( 'wrestler', 'coach', 'unmapped')
+    role = db.EnumField( db.StringField(),
+        *roles )

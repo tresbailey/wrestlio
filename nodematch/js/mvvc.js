@@ -6,7 +6,31 @@
         
         var App = App || {};
         App.Views = App.Views || {};
+
+        var LandingView = Backbone.View.extend({
+            el: $("#mainMatch"),
+            template: _.template( $("#landingSchoolsTemplate").html() ),
+            initialize: function() {
+                this.schools = new Schools();
+                this.schools.url = BASEURL + '/';
+                var that = this;
+                this.schools.fetch({
+                    success: function(models, response, options) {
+                        that.schools = models;
+                        that.render();
+                    },
+                    error: function(xhr, response, options) {
+
+                    }
+                });
+            },
+            render: function() {
+                $(this.el).html( this.template( this ) );
+                return this;
+            }
+        });
         
+        var landing = new LandingView();
 
         var MainView = Backbone.View.extend({
 
@@ -72,7 +96,7 @@
             return new Wrestlers(inList);
         }
 
-        mainV = new MainView();
+        //mainV = new MainView();
 
         var ScheduleView = Backbone.View.extend({
             el: $("#mainMatch"),

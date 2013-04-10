@@ -14,7 +14,8 @@ from pymongo.objectid import ObjectId
 from wrestling import db, facebook
 from wrestling.logs import log
 from wrestling.models.wrestler import WrestlingDocument, \
-    Wrestler, Schools, Match, Bout, RoundActivity
+    Wrestler, Schools, Match, Bout, RoundActivity, \
+    FacebookUser
 import json
 
 api = Module(__name__)
@@ -37,6 +38,13 @@ def facebook_authorized(resp):
         )
     session['oauth_token'] = (resp['access_token'], '')
     me = facebook.get('/me')
+    local_user = FacebookUser.query.filter(FacebookUser.face_id == me.data['id']).all()
+    if len(local_user) == 0:
+        local_user = FacebookUser()
+        local_user._id = ObjectId()
+        local_user.face_id = me.data['id']
+        local_user.role = 'unmapped'
+        local_user.save()
     return 'Logged in as id=%s name=%s redirect=%s' % \
         (me.data['id'], me.data['name'], request.args.get('next'))
 
@@ -65,10 +73,12 @@ def find_school(competition="", area="", size="", conference="", school_name="",
         Schools.school_name == school_name) ).one()
 
 
-@api.route('/<competitionL>/', methods=['GET'])
-def show_area_levels(competitionL):
-    level_curs = CompetitionLevel.query.filter(CompetitionLevel.competition == competitionL ).one()
-    return json.dumps( level_curs, default=remove_OIDs )
+@api.route('/', methods=['GET'])
+def get_all_schools():
+    log.debug("Looking for all schools")
+    all_schools = Schools.query.all()
+    return json.dumps( all_schools, default=remove_OIDs )
+    
 
 
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['GET'])
