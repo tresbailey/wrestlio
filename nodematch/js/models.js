@@ -84,3 +84,23 @@ var Clock = Backbone.Model.extend({
         timeout_keeper: "",
     }
 });
+
+( function() {
+var parentSync = Backbone.sync;
+Backbone.sync = function( method, model, options ) {
+    options.error = function(xhr, status, error_message) {
+        if ( xhr.status == 302 ) {
+            console.log("Got a redirect");
+        }
+    }
+    return parentSync(method, model, options);
+}
+})()
+
+var Session = Backbone.Model.extend({
+    default: {
+        id: "",
+        facebook_id: "",
+        wrestler_id: "",
+    }
+});

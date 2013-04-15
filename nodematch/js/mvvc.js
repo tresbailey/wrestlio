@@ -25,8 +25,27 @@
                 });
             },
             render: function() {
-                $(this.el).html( this.template( this ) );
+                $(this.el).html( this.template( this )  + _.template($('#landingLogin').html())() );
                 return this;
+            },
+            events: {
+                'click .btn': "login_user"
+            },
+            login_user: function() {
+                userSession = new Session();
+                userSession.url = BASEURL + '/login';
+                userSession.fetch({}, {
+                    success: function(model, response, options) {
+                        console.log('success'+response);
+                    },
+                    error: function(xhr, response, options) {
+                        console.log('got back a fail: '+ xhr);
+                        if(xhr.status == 302) {
+                            window.location.replace(response)
+                        }
+
+                    }
+                });
             }
         });
         

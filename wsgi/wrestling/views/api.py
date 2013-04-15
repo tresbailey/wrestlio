@@ -21,6 +21,10 @@ import json
 api = Module(__name__)
 
 
+def get_local_user(remote_id):
+    return FacebookUser.query.filter(FacebookUser.face_id == remote_id).all()
+
+
 @api.route('/login')
 def login():
     return facebook.authorize(callback=url_for('facebook_authorized',
@@ -38,7 +42,7 @@ def facebook_authorized(resp):
         )
     session['oauth_token'] = (resp['access_token'], '')
     me = facebook.get('/me')
-    local_user = FacebookUser.query.filter(FacebookUser.face_id == me.data['id']).all()
+    local_user = get_local_user(me.data['id'])
     if len(local_user) == 0:
         local_user = FacebookUser()
         local_user._id = ObjectId()
