@@ -23,8 +23,7 @@
 
     <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
-        <p id="matchDetails" class="navbar-text pull-right">
-            <a>Login with Facebook</a>
+        <p id="loginDetails" class="navbar-text pull-right">
         </p>
         <a class="brand brandTxt" href="#">
             <h1>TAKEdown</h1>
@@ -54,6 +53,8 @@
 
       <hr>
 
+<div id="fb-root"></div>
+
       <footer>
         <div class="navbar">&copy; 2013, TAKEdown.  All rights reserved.</div>
       </footer>
@@ -69,6 +70,7 @@
     <script src="../js/bootstrap-collapse.js"></script>
     <script src="../js/underscore.js"></script>
     <script src="../js/backbone.js"></script>
+    <script src="../js/require.js"></script>
     <script src="../js/clock.js"></script>
 
     <script type="text/template" id="scheduleTemplate">
@@ -94,15 +96,9 @@
     </script>
 
     <script type="text/template" id="landingLogin">
-        <div class="modal show">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3>Log In Using Facebook</h3>
-          </div>
-          <div class="modal-body">
+        <% if ( !userSession.get('facebook_id') ) { %>
             <button type="button" class="btn btn-primary">Facebook</button>
-          </div>
-        </div
+        <% } %>
     </script>
 
     <script type="text/template" id="boutClockTemplate">
@@ -429,6 +425,7 @@
     </script>
 
     <script src="../js/base_url.js"></script>
+    <script src="../js/fbapi.js"></script>
     <script src="../js/models.js"></script>
     <script src="../js/collections.js"></script>
     <script src="../js/util.js"></script>

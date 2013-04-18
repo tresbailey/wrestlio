@@ -1,4 +1,3 @@
-from wrestling.views.api import 
 
 
 class OAuthMiddleware(object):

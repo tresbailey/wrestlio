@@ -2,8 +2,6 @@
 
     (function($) {
 
-
-        
         var App = App || {};
         App.Views = App.Views || {};
 
@@ -13,43 +11,34 @@
             initialize: function() {
                 this.schools = new Schools();
                 this.schools.url = BASEURL + '/';
+                this.userSession = new Session();
                 var that = this;
                 this.schools.fetch({
                     success: function(models, response, options) {
                         that.schools = models;
-                        that.render();
                     },
                     error: function(xhr, response, options) {
 
                     }
                 });
+                checkForLogin(this);
             },
             render: function() {
-                $(this.el).html( this.template( this )  + _.template($('#landingLogin').html())() );
+                $(this.el).html( this.template( this ) );
+                $("#loginDetails").html(_.template($('#landingLogin').html())({userSession: this.userSession }) );
                 return this;
             },
             events: {
                 'click .btn': "login_user"
             },
             login_user: function() {
-                userSession = new Session();
-                userSession.url = BASEURL + '/login';
-                userSession.fetch({}, {
-                    success: function(model, response, options) {
-                        console.log('success'+response);
-                    },
-                    error: function(xhr, response, options) {
-                        console.log('got back a fail: '+ xhr);
-                        if(xhr.status == 302) {
-                            window.location.replace(response)
-                        }
-
-                    }
-                });
+                login(this.userSession);
             }
         });
         
         var landing = new LandingView();
+
+        window.userSession = landing.userSession;
 
         var MainView = Backbone.View.extend({
 
