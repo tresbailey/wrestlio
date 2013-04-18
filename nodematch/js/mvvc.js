@@ -6,8 +6,8 @@
         App.Views = App.Views || {};
 
         var LandingView = Backbone.View.extend({
-            el: $("#mainMatch"),
-            template: _.template( $("#landingSchoolsTemplate").html() ),
+            el: $("#loginDetails"),
+            template: _.template( $("#landingLogin").html() ),
             initialize: function() {
                 this.schools = new Schools();
                 this.schools.url = BASEURL + '/';
@@ -21,18 +21,18 @@
 
                     }
                 });
-                checkForLogin(this);
+                this.render();
             },
             render: function() {
+                $("#mainMatch").html(_.template($('#landingSchoolsTemplate').html())({schools: this.schools }) );
                 $(this.el).html( this.template( this ) );
-                $("#loginDetails").html(_.template($('#landingLogin').html())({userSession: this.userSession }) );
                 return this;
             },
             events: {
                 'click .btn': "login_user"
             },
             login_user: function() {
-                login(this.userSession);
+                login(this);
             }
         });
         

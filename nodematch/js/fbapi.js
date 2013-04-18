@@ -20,35 +20,27 @@ window.fbAsyncInit = function() {
 
 };
 
-function login(userSession) {
-    FB.login(function(response) {
-        if (response.authResponse) {
-            // connected
-            FB.api('/me', function(response) {
-                userSession.set('facebook_id', response.id);
-            });
-        } else {
-            // cancelled
-        }
+function getUser(loginView) {
+    FB.api('/me', function(response) {
+        loginView.userSession.set('facebook_id', response.id);
+        loginView.render();
     });
 }
 
-function checkForLogin( userSession ) {
-    FB.getLoginStatus(function(response) {
-      if (response.status === 'connected') {
-        // connected
-        console.log("CONNECTED TO FACEBOOK");
-        userSession = window.userSession;
-        FB.api('/me', function(response) {
-            userSession.set('facebook_id', response.id);
-        });
-      } else if (response.status === 'not_authorized') {
-        // not_authorized
-      } else {
-        // not_logged_in
-      }
+function login(loginView) {
+    FB.getLoginStatus( function(response) {
+        if ( response.status !== 'connected' && response.status !== 'not_authorized' ) { 
+            FB.login(function(response) {
+                if (response.authResponse) {
+                    getUser( loginView );
+                } else {
+                    // cancelled
+                }
+            });
+        } else {
+            getUser( loginView );
+        }
     });
-    
 }
 
 
