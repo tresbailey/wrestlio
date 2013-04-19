@@ -5,6 +5,14 @@
         var App = App || {};
         App.Views = App.Views || {};
 
+        Backbone._nativeSync = Backbone.sync;
+
+        Backbone.defaultSyncOptions = {};
+
+        Backbone.sync = function( method, model, options ) {
+            Backbone._nativeSync( method, model, _.extend( {}, Backbone.defaultSyncOptions, options ) );
+        }
+
         var LandingView = Backbone.View.extend({
             el: $("#loginDetails"),
             template: _.template( $("#landingLogin").html() ),

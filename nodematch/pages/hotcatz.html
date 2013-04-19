@@ -98,6 +98,9 @@
     <script type="text/template" id="landingLogin">
         <% if ( !userSession.get('facebook_id') ) { %>
             <button type="button" class="btn btn-primary">Facebook</button>
+        <% } else { %>
+            <%= userSession.get('fb_first')%> <%= userSession.get('fb_last') %>
+            <img src="<%= userSession.get('fb_pic')%>" />
         <% } %>
     </script>
 

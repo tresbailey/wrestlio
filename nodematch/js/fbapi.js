@@ -10,6 +10,11 @@ window.fbAsyncInit = function() {
       if (response.status === 'connected') {
         // connected
         console.log("CONNECTED TO FACEBOOK");
+        FB.api('/me', function(response) {
+            Backbone.defaultSyncOptions = {
+                headers: { Authorization: response.id }
+            };
+        });
       } else if (response.status === 'not_authorized') {
         // not_authorized
       } else {
@@ -23,7 +28,15 @@ window.fbAsyncInit = function() {
 function getUser(loginView) {
     FB.api('/me', function(response) {
         loginView.userSession.set('facebook_id', response.id);
-        loginView.render();
+        loginView.userSession.set('fb_first', response.first_name);
+        loginView.userSession.set('fb_last', response.last_name);
+        FB.api('/me/picture', function(picres) {
+            loginView.userSession.set('fb_pic', picres.data.url);
+            loginView.render();
+        });
+        Backbone.defaultSyncOptions = { 
+            'headers': {'Authorization': response.id}
+        };
     });
 }
 

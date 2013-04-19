@@ -1,4 +1,4 @@
-
+from wrestling.views.api import get_local_user
 
 class OAuthMiddleware(object):
     """
@@ -10,5 +10,8 @@ class OAuthMiddleware(object):
 
     def __call__(self, environ, start_response):
         request_path = environ.get('PATH_INFO', '/')
+        auth_header = environ.get('Authorization', '')
+        authorized_user = get_local_user( auth_header )
+        environ['LOGIN_USER'] = authorized_user
         app_iterator = self.application(environ, start_response)
         return app_iterator
