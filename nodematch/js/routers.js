@@ -1,6 +1,7 @@
 var AppRouter = Backbone.Router.extend({
     routes: {
-        "schedule/:school_id": "school_schedule"
+        "schedule/:school_id": "school_schedule",
+        "facebook/:facebook_id": "user_login"
     }
 });
 

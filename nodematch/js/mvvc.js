@@ -39,7 +39,7 @@
             events: {
                 'click .btn': "login_user"
             },
-            login_user: function() {
+            login_user: function( ) {
                 login(this);
             }
         });
@@ -193,7 +193,12 @@
         
     }
 
+    var load_login_user = function( login_id ) {
+        landing.login_user();
+    }
+
     app_router.on("route:school_schedule", load_school_page);
+    app_router.on("route:user_login", load_login_user);
 
 
     })(jQuery);

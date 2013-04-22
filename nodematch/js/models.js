@@ -104,6 +104,7 @@ var Session = Backbone.Model.extend({
         wrestler_id: "",
         fb_first: "",
         fb_last: "",
-        fb_pic: ""
+        fb_pic: "",
+        role: ""
     }
 });

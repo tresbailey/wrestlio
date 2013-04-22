@@ -14,6 +14,7 @@ window.fbAsyncInit = function() {
             Backbone.defaultSyncOptions = {
                 headers: { Authorization: response.id }
             };
+            document.location.hash = "facebook/"+ response.id;
         });
       } else if (response.status === 'not_authorized') {
         // not_authorized

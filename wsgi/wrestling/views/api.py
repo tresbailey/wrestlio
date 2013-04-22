@@ -25,11 +25,10 @@ def get_local_user(remote_id):
     return FacebookUser.query.filter(FacebookUser.face_id == remote_id).all()
 
 
-@api.route('/login')
-def login():
-    return facebook.authorize(callback=url_for('facebook_authorized',
-        next=request.args.get('next') or request.referrer or None,
-        _external=True))
+@api.route('/login_user/<fb_user>', methods=['GET'])
+def find_by_login(fb_user):
+    return json_dumps( get_local_user(fb_user), 
+            default=remove_OIDs)
 
 
 @api.route('/login/authorized')
