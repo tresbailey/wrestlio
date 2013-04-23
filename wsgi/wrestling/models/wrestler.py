@@ -105,7 +105,7 @@ class Match(WrestlingDocument):
         return response
 
 
-class FacebookUser(db.Document):
+class FacebookUser(WrestlingDocument):
     _id = db.ObjectIdField()
     face_id = db.StringField()
     school_id = db.ObjectIdField(required=False)

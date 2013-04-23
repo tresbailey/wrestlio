@@ -73,6 +73,27 @@
     <script src="../js/require.js"></script>
     <script src="../js/clock.js"></script>
 
+    <script type="text/template" id="setupUser">
+        <div class="modal ">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3>You're Almost Ready</h3>
+          </div>
+          <div class="modal-body">
+            <div>
+                Tell us about yourself:
+                <div class="btn-group" data-toggle="buttons-radio">
+                  <button type="button" class="btn btn-warning">Odd</button>
+                  <button type="button" class="btn btn-info">Even</button>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a href="#" class="btn btn-inverse">Start match</a>
+          </div>
+        </div
+    </script>
+
     <script type="text/template" id="scheduleTemplate">
         <ul>
             <% _.each(matches.models, function(match, index) { %>

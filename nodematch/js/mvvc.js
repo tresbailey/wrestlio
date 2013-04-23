@@ -13,38 +13,68 @@
             Backbone._nativeSync( method, model, _.extend( {}, Backbone.defaultSyncOptions, options ) );
         }
 
+        var CreateUserView = Backbone.View.extend({
+            el: $("#mainMatch"),
+            template: _.template( $("#setupUser").html() ),
+            initialize: function( options ) {
+                this.userSession = options.model;
+                this.render();
+            },
+            render: function() {
+                $(this.el).html( this.template( this ) );
+                return this;
+            },
+            events: {
+                'click .btn#makeUser': "store_user_fields"
+            },
+            store_user_fields: function() {
+
+            }
+        });
+
         var LandingView = Backbone.View.extend({
-            el: $("#loginDetails"),
-            template: _.template( $("#landingLogin").html() ),
+            el: $("#mainMatch"),
+            template: _.template( $("#landingSchoolsTemplate").html() ),
             initialize: function() {
                 this.schools = new Schools();
                 this.schools.url = BASEURL + '/';
-                this.userSession = new Session();
                 var that = this;
                 this.schools.fetch({
                     success: function(models, response, options) {
                         that.schools = models;
+                        that.render();
                     },
                     error: function(xhr, response, options) {
 
                     }
                 });
-                this.render();
             },
             render: function() {
-                $("#mainMatch").html(_.template($('#landingSchoolsTemplate').html())({schools: this.schools }) );
                 $(this.el).html( this.template( this ) );
                 return this;
             },
-            events: {
-                'click .btn': "login_user"
+        });
+
+        var SessionView = Backbone.View.extend({
+            el: $("#loginDetails"),
+            template: _.template( $("#landingLogin").html() ),
+            initialize: function() {
+                this.userSession = new Session();
+                this.render();
             },
-            login_user: function( ) {
+            render: function() {
+                $(this.el).html( this.template( this ) );
+            },
+            events: {
+                'click .btn': 'login_user'
+            },
+            login_user: function() {
                 login(this);
             }
         });
         
         var landing = new LandingView();
+        var sessionView = new SessionView();
 
         window.userSession = landing.userSession;
 
@@ -194,7 +224,21 @@
     }
 
     var load_login_user = function( login_id ) {
-        landing.login_user();
+        sessionView.login_user();
+        var userSession = sessionView.userSession;
+        userSession.id = login_id;
+        userSession.url = BASEURL + '/login_user/' + login_id;
+        sessionView.login_user();
+        userSession.on('error', function(model, error) {
+            if ( error.status == 404 ) {
+                console.log("User not found, add to the DB");
+                var createUserView = new CreateUserView(sessionView.userSession);
+                userSession.save({face_id: userSession.facebook_id, 
+                    role: userSession.role ? userSession.role : 'unmapped'
+                });
+            }
+        }, userSession);
+        userSession.fetch();
     }
 
     app_router.on("route:school_schedule", load_school_page);

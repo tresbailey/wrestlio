@@ -8,7 +8,7 @@ from sets import Set
 import sys
 from datetime import datetime
 from flask import Module, render_template, request, jsonify, \
-    url_for, session, redirect
+    url_for, session, redirect, abort
 from pymongo import Connection
 from pymongo.objectid import ObjectId
 from wrestling import db, facebook
@@ -27,7 +27,20 @@ def get_local_user(remote_id):
 
 @api.route('/login_user/<fb_user>', methods=['GET'])
 def find_by_login(fb_user):
-    return json_dumps( get_local_user(fb_user), 
+    user = get_local_user(fb_user)
+    return json.dumps( user, 
+            default=remove_OIDs) if user else abort(404)
+
+
+@api.route('/login_user/<fb_user>', methods=['PUT'])
+def save_new_login(fb_user):
+    import pdb
+    pdb.set_trace()
+    remote_user = FacebookUser(request.data)
+    remote_user.face_id = fb_user
+    remote_user._id = ObjectId()
+    remote_user.save()
+    return json.dumps(remote_user,
             default=remove_OIDs)
 
 

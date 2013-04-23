@@ -31,6 +31,11 @@ function getUser(loginView) {
         loginView.userSession.set('facebook_id', response.id);
         loginView.userSession.set('fb_first', response.first_name);
         loginView.userSession.set('fb_last', response.last_name);
+        _.each( response.education, function(model, index) {
+            if ( model.type == 'High School' ) {
+                loginView.userSession.set('fb_school', model.school.name);
+            }
+        });
         FB.api('/me/picture', function(picres) {
             loginView.userSession.set('fb_pic', picres.data.url);
             loginView.render();
