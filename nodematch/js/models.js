@@ -106,6 +106,7 @@ var Session = Backbone.Model.extend({
         fb_last: "",
         fb_pic: "",
         role: "",
-        fb_school: ""
+        fb_school: "",
+        email: ""
     }
 });

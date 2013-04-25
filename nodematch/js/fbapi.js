@@ -28,18 +28,31 @@ window.fbAsyncInit = function() {
 
 function getUser(loginView) {
     FB.api('/me', function(response) {
-        loginView.userSession.set('facebook_id', response.id);
-        loginView.userSession.set('fb_first', response.first_name);
-        loginView.userSession.set('fb_last', response.last_name);
+        var userSession = loginView.userSession;
+        userSession.set('facebook_id', response.id);
+        userSession.set('fb_first', response.first_name);
+        userSession.set('fb_last', response.last_name);
+        userSession.set('email', response.email);
         _.each( response.education, function(model, index) {
             if ( model.type == 'High School' ) {
-                loginView.userSession.set('fb_school', model.school.name);
+                userSession.set('fb_school', model.school.name);
             }
         });
         FB.api('/me/picture', function(picres) {
-            loginView.userSession.set('fb_pic', picres.data.url);
+            userSession.set('fb_pic', picres.data.url);
             loginView.render();
         });
+        userSession.on('error', function(model, error) {
+            if ( error.status == 404 ) {
+                console.log("User not found, add to the DB");
+                var createUserView = loginView.createUserView;
+                userSession.save({face_id: userSession.get('facebook_id'), 
+                    role: userSession.get('role') ? userSession.get('role') : 'unmapped',
+                    email: userSession.get('email')
+                });
+            }
+        }, userSession);
+        userSession.fetch();
         Backbone.defaultSyncOptions = { 
             'headers': {'Authorization': response.id}
         };

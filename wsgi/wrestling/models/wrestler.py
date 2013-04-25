@@ -108,6 +108,7 @@ class Match(WrestlingDocument):
 class FacebookUser(WrestlingDocument):
     _id = db.ObjectIdField()
     face_id = db.StringField()
+    email = db.StringField()
     school_id = db.ObjectIdField(required=False)
     wrestler_id = db.ObjectIdField(required=False)
     roles = ( 'wrestler', 'coach', 'unmapped')

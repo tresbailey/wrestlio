@@ -17,7 +17,7 @@
             el: $("#mainMatch"),
             template: _.template( $("#setupUser").html() ),
             initialize: function( options ) {
-                this.userSession = options.model;
+                this.userSession = options;
                 this.render();
             },
             render: function() {
@@ -60,6 +60,7 @@
             template: _.template( $("#landingLogin").html() ),
             initialize: function() {
                 this.userSession = new Session();
+                this.createUserView = new CreateUserView( this.userSession );
                 this.render();
             },
             render: function() {
@@ -224,21 +225,10 @@
     }
 
     var load_login_user = function( login_id ) {
-        sessionView.login_user();
         var userSession = sessionView.userSession;
         userSession.id = login_id;
         userSession.url = BASEURL + '/login_user/' + login_id;
         sessionView.login_user();
-        userSession.on('error', function(model, error) {
-            if ( error.status == 404 ) {
-                console.log("User not found, add to the DB");
-                var createUserView = new CreateUserView(sessionView.userSession);
-                userSession.save({face_id: userSession.facebook_id, 
-                    role: userSession.role ? userSession.role : 'unmapped'
-                });
-            }
-        }, userSession);
-        userSession.fetch();
     }
 
     app_router.on("route:school_schedule", load_school_page);

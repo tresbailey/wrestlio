@@ -34,9 +34,12 @@ def find_by_login(fb_user):
 
 @api.route('/login_user/<fb_user>', methods=['PUT'])
 def save_new_login(fb_user):
-    import pdb
-    pdb.set_trace()
-    remote_user = FacebookUser(request.data)
+    json_data = request.data
+    del json_data['fb_first']
+    del json_data['fb_last']
+    del json_data['fb_school']
+    del json_data['facebook_id']
+    remote_user = FacebookUser(**json_data)
     remote_user.face_id = fb_user
     remote_user._id = ObjectId()
     remote_user.save()
