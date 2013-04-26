@@ -72,7 +72,7 @@ var Match = Backbone.Model.extend({
         visit_school: "",
         home_score: 0,
         visit_score: 0,
-        bouts: []
+        individual_bouts: []
     }
 });
 

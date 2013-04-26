@@ -311,7 +311,7 @@ var MatchView = Backbone.View.extend({
             score += 6;
             this.model.get('scores')[1] = score;
         }
-        this.prepare_bout( this.model.get('bouts').at(this._boutIndex) );
+        this.prepare_bout( this.model.get('individual_bouts').at(this._boutIndex) );
         this.render();
     },
     prepare_bout: function(bout) {
@@ -351,10 +351,10 @@ var MatchView = Backbone.View.extend({
             rawlist.push( bout );
             }
         });
-        this.model.set('bouts', new Bouts(rawlist));
-        this.boutsView = new BoutsCollView({collection: this.model.get('bouts'), el: $("#fullMatch")});
+        this.model.set('individual_bouts', new Bouts(rawlist));
+        this.boutsView = new BoutsCollView({collection: this.model.get('individual_bouts'), el: $("#fullMatch")});
         this.listenTo( this.boutsView, 'bout:selectedBout', this.prepare_bout );
-        this.prepare_bout( this.model.get('bouts').at(0) );
+        this.prepare_bout( this.model.get('individual_bouts').at(0) );
     },
     add_school: function(schools) {
         if ( schools.length == 2 ) {

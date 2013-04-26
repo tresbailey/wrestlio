@@ -104,7 +104,7 @@
                 this.currentMatch.set('visit_school', red_school);
                 this.currentMatch.set('home_score', 0);
                 this.currentMatch.set('visit_score', 0);
-                this.currentMatch.set('bouts', new Bouts() );
+                this.currentMatch.set('individual_bouts', new Bouts() );
                 var matchView = new MatchView({model: this.currentMatch, el: $("#matchDetails")});
                 that = this;
                 green_school.fetch({
@@ -153,6 +153,23 @@
             render: function() {
                 $(this.el).html( this.template( this ) );
                 return this;
+            },
+            events: {
+                'click .btn#create_match': "store_match"
+            },
+            store_match: function(event) {
+                var home_away = $("#home_away .activte").data("value");
+                var opponent = this.$('input[name=opponent]').val();
+                var home = home_away == 'away' ? opponent : this.school.id;
+                var away = home_away == 'home' ? this.school.id : opponent;
+                var raw = { match_date: this.$('input[name=date]').val(),
+                    home_school: home, visit_school: away, 
+                    home_score: 0, visit_score: 0, individual_bouts: []
+                };
+                var match = new Match(raw);
+                this.matches.add(match);
+                this.matches.url = BASEURL + '/matches';
+                match.save();
             }
 
         });
@@ -209,7 +226,8 @@
         school.fetch({
             success: function(model, response, options) {
                 school = new School(model.attributes[0]);
-                matches = new Matches(model.get('schedule'));
+                school.id = model.attributes[0]._id;
+                matches = new Matches(model.attributes[0].schedule);
                 var schedule = new ScheduleView();
                 schedule.school = school;
                 schedule.matches = matches;

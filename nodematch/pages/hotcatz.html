@@ -92,6 +92,22 @@
     </script>
 
     <script type="text/template" id="scheduleTemplate">
+       <form>
+           <div class="row">
+                <div class="span6 offset3 thumbnail smallCat">
+                    <div class="pagination-centered">
+                        <div>Opponent: <input type="text" name="opponent" /></div>
+                        My team is 
+                        <div class="btn-group" id="home_away" data-toggle="buttons-radio">
+                          <button type="button" class="btn btn-info" data-value="away">Away</button>
+                          <button type="button" class="btn btn-warning" data-value="home">Home</button>
+                        </div>
+                        <div>Date: <input type="date" name="date" /></div>
+                        <a href="#" id="create_match" class="btn btn-inverse">Save Match</a>
+                    </div>
+                </div>
+            </div>
+        </form>
         <ul>
             <% _.each(matches.models, function(match, index) { %>
                 <%= match.get('match_date') %> - 
@@ -108,7 +124,7 @@
     <script type="text/template" id="landingSchoolsTemplate">
         <ul>
         <% _.each(schools.models, function(school, index) { %>
-            <li><%= school.get('school_name') %></li>
+            <li><a href="#schedule/<%= school.get('_id') %>"><%= school.get('school_name') %></a></li>
         <% }) %>
         </ul>
     </script>

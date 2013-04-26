@@ -218,16 +218,15 @@ def get_school_matches():
 
 @api.route('/matches', methods=['POST'])
 def create_school_match():
-    json_data = json.loads(request.form.items()[0][0])
-    match = Match(**json_data)
-    match.match_date = datetime.strptime(match.match_date, '%m/%d/%Y')
+    match = Match(**request.data)
+    match.match_date = datetime.strptime(match.match_date, '%Y-%m-%d')
     match.home_school = prepare_school(match.home_school, ObjectId)
     match.visit_school = prepare_school(match.visit_school, ObjectId)
     match._id = ObjectId()
     bouts = []
     for bout in match.individual_bouts:
         bout = Bout( **bout )
-        bout.bout_date =  datetime.strptime( bout.bout_date, '%m/%d/%Y' )
+        bout.bout_date =  datetime.strptime( bout.bout_date, '%Y-%m-%d' )
         bouts.append(bout)
     match.individual_bouts = bouts
     match.save()
