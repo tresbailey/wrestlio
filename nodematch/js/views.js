@@ -364,3 +364,16 @@ var MatchView = Backbone.View.extend({
     }
 });
 
+
+var SchoolSelectView = Backbone.View.extend({
+    el: $("#createMatchOpp"),
+    template: _.template( $("#breakoutSchoolSelect").html() ),
+    initialize: function() {
+        
+    },
+    render: function() {
+        var tester = {"SC": {"4A": {}, "2A": ['Region I', 'Region II', 'Region III']}};
+        $("#createMatchOpp").html( this.template( {tester: tester} ) );
+        return this;
+    }
+});

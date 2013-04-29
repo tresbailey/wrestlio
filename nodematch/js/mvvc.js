@@ -152,6 +152,8 @@
             },
             render: function() {
                 $(this.el).html( this.template( this ) );
+                this.selectSchool = new SchoolSelectView(); 
+                this.selectSchool.render();
                 return this;
             },
             events: {
