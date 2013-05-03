@@ -77,17 +77,21 @@
     <script type="text/template" id="breakoutSchoolSelect">
     <ul class="nav nav-pills">
         <li class="dropdown">
-          <a href="#" data-toggle="dropdown" class="dropdown-toggle">Opponent <b class="caret"></b></a>
+          <a href="#" data-toggle="dropdown" id="school_selection" class="dropdown-toggle">Opponent <b class="caret"></b></a>
           <ul class="dropdown-menu" id="menu1">
-            <% _.each(_.pairs(tester), function(states, ind1) { %>
+            <% _.each(_.pairs(select_values), function(states, ind1) { %>
             <li class="dropdown-submenu">
               <a href="#"><%= states[0] %></a>
               <ul class="dropdown-menu">
                 <% _.each(_.pairs(states[1]), function(classes, ind2) { %>
                 <li class="dropdown-submenu"><a href="#"><%=classes[0] %></a>
                     <ul class="dropdown-menu">
-                    <% _.each(classes[1], function(region, ind3) { %>
-                        <li><a href="#"><%= region %></a></li>
+                    <% _.each(_.pairs(classes[1]), function(region, ind3) { %>
+                        <li class="dropdown-submenu"><a href="#"><%=region[0] %></a>
+                            <ul class="dropdown-menu">
+                                <li><a class="school_select" href="#"><%= region[1].school_name %></a></li>
+                            </ul>
+                        </li>
                     <% }) %>
                     </ul>
                 </li>

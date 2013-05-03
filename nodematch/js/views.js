@@ -369,11 +369,26 @@ var SchoolSelectView = Backbone.View.extend({
     el: $("#createMatchOpp"),
     template: _.template( $("#breakoutSchoolSelect").html() ),
     initialize: function() {
-        
+        select_request = $.ajax( {
+            url: BASEURL +'/staticData/school_hash',
+            type: 'GET',
+            dataType: 'json'
+        });
+        var that = this;
+        select_request.done( function(data) {
+            that.select_values = data;
+            that.render();
+        });
     },
     render: function() {
-        var tester = {"SC": {"4A": {}, "2A": ['Region I', 'Region II', 'Region III']}};
-        $("#createMatchOpp").html( this.template( {tester: tester} ) );
+        $("#createMatchOpp").html( this.template( {select_values: this.select_values['High School']} ) );
         return this;
+    },
+    events: {
+        'click .school_select': function() {
+            $(".btn:first-child").text($(this).text());
+            $(".btn:first-child").val($(this).text());
+        }
     }
+
 });

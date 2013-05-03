@@ -1,6 +1,7 @@
 __author__ = 'tresback'
 
 import json
+import redis
 import uuid
 from flaskext.mongoalchemy import MongoAlchemy
 from flask import Flask, request, url_for, session, flash,\
@@ -58,6 +59,9 @@ facebook = oauth.remote_app('facebook',
     consumer_secret=FACEBOOK_APP_SECRET,
     request_token_params={'scope': 'email', 'type': 'user_agent'}
 )
+
+redis_cli = redis.Redis(os.environ.get('OPENSHIFT_REDIS_HOST', 'localhost'))
+
 
 from wrestling.views.api import api
 

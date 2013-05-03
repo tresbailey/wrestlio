@@ -5,13 +5,15 @@ Created on Sep 2, 2011
 @author: tres
 '''
 from sets import Set
+import pickle
 import sys
 from datetime import datetime
+from functools import partial
 from flask import Module, render_template, request, jsonify, \
     url_for, session, redirect, abort
 from pymongo import Connection
 from pymongo.objectid import ObjectId
-from wrestling import db, facebook
+from wrestling import db, facebook, redis_cli
 from wrestling.logs import log
 from wrestling.models.wrestler import WrestlingDocument, \
     Wrestler, Schools, Match, Bout, RoundActivity, \
@@ -92,6 +94,29 @@ def find_school(competition="", area="", size="", conference="", school_name="",
         Schools.school_name == school_name) ).one()
 
 
+def redis_save(savee, key_field='', value_fields=(), serializer=str, deserializer=dict, store_func=set):
+    loaded_str = redis_cli.get('school_hash')
+    hashed = pickle.loads(loaded_str) if loaded_str is not None else {}
+    dlist_keys = lambda obj, key: {key: obj}
+    base = savee._field_values
+    for keyf in reversed(value_fields):
+        base = dlist_keys(base, keyf)
+    base.update(hashed) 
+    redis_cli.set('school_hash', pickle.dumps(base) )    
+    return base
+    #key = "_".join([ getattr(savee, keyf) for keyf in key_fields])
+    #value = serializer(getattr(savee,value_field))
+    #getattr(redis_cli, store_func)(key, value)
+
+@api.route('/staticData/<static_key>', methods=['GET'])
+def get_static_data(static_key):
+    lookup_value = redis_cli.get(static_key)
+    lookup_value = pickle.loads(lookup_value) if lookup_value is not None else {}
+    return json.dumps( lookup_value, default=remove_OIDs )
+   
+
+
+
 @api.route('/', methods=['GET'])
 def get_all_schools():
     log.debug("Looking for all schools")
@@ -136,7 +161,8 @@ def get_school_list( school_list ):
     #all_schools = Schools.query.filter(Schools._id.in_(*school_list)).all()
     all_schools = get_school_by_list(school_list)
     if request.args.get('qschedule'):
-        all_schools = [ append_schedule(school) for school in all_schools]
+        all_schools = [ append_schedule(school)
+            for school in all_schools]
         custom_def = lambda x: [dict(schedule=remove_OIDs(school.schedule), 
             **remove_OIDs(school)) 
             for school in x]
@@ -146,10 +172,12 @@ def get_school_list( school_list ):
 
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['PUT'])
 def create_school(competition, area, size, conference, school_name):
-    json_data = request.data
+    json_data = dict(dict(**request.data), **request.view_args)
     school = Schools( **json_data )
     school._id = ObjectId()
     school.wrestlers = dict([ ( wrestler.get('wrestler_id'), prepare_wrestler(Wrestler(**wrestler))) for wrestler in school.wrestlers])
+    redis_save(school, school.school_name, value_fields=(school.competition, school.area, school.size, 
+        school.conference), store_func='rpush')
     school.save()
     return json.dumps( school, default=remove_OIDs )
 

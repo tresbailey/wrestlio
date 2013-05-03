@@ -157,7 +157,10 @@
                 return this;
             },
             events: {
-                'click .btn#create_match': "store_match"
+                'click .btn#create_match': "store_match",
+                'click a.school_select': function(event) {
+                    $(".dropdown-toggle#school_selection:first-child").text($(event.target).html());
+                }
             },
             store_match: function(event) {
                 var home_away = $("#home_away .activte").data("value");
