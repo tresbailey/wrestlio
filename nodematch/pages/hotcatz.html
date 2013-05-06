@@ -89,7 +89,12 @@
                     <% _.each(_.pairs(classes[1]), function(region, ind3) { %>
                         <li class="dropdown-submenu"><a href="#"><%=region[0] %></a>
                             <ul class="dropdown-menu">
-                                <li><a class="school_select" href="#"><%= region[1].school_name %></a></li>
+                                <% _.each(region[1], function(school, ind4) { %>
+                                <li><a class="school_select" href="#">
+                                    <%= school.school_name %>
+                                    <input type="hidden" value="<%=school._id %>" />
+                                </a></li>
+                                <% }) %>
                             </ul>
                         </li>
                     <% }) %>
@@ -124,11 +129,12 @@
     </script>
 
     <script type="text/template" id="scheduleTemplate">
-       <form>
+       <form name="create_match">
            <div class="row">
                 <div class="span6 offset3 thumbnail smallCat">
                     <div class="pagination-centered">
-                        <div id="createMatchOpp">Opponent: <input type="text" name="opponent" /></div>
+                        <div id="createMatchOpp">Opponent</div>
+                        <input type="hidden" name="opponent" />
                         My team is 
                         <div class="btn-group" id="home_away" data-toggle="buttons-radio">
                           <button type="button" class="btn btn-info" data-value="away">Away</button>
@@ -142,12 +148,14 @@
         </form>
         <ul>
             <% _.each(matches.models, function(match, index) { %>
+                <li>
                 <%= match.get('match_date') %> - 
                 <% if ( match.get('home_school') == school.id ) { %>
-                    VS - <%= match.get('visit_school') %>
+                    VS - <a href="#match/<%= school.id %>/<%= match.get('visit_school') %>/<%= match.get('match_id') %>"><%= match.get('visit_school') %></a>
                 <% } else { %>
-                    AT - <%= match.get('home_school') %>
+                    AT - <a href="#match/<%= school.id %>/<%= match.get('home_school') %>/<%=match.get('match_id')%>"><%= match.get('home_school') %></a>
                 <% } %>
+                </li>
             <% }) %>
 
         </ul>

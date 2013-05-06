@@ -384,11 +384,4 @@ var SchoolSelectView = Backbone.View.extend({
         $("#createMatchOpp").html( this.template( {select_values: this.select_values['High School']} ) );
         return this;
     },
-    events: {
-        'click .school_select': function() {
-            $(".btn:first-child").text($(this).text());
-            $(".btn:first-child").val($(this).text());
-        }
-    }
-
 });

@@ -101,7 +101,7 @@ class Match(WrestlingDocument):
         response['home_school'] = str(self.home_school)
         response['visit_school'] = str(self.visit_school)
         response['match_date'] = self.match_date.strftime('%m/%d/%Y')
-        del response['_id']
+        response['_id'] = str(response['_id'])
         return response
 
 

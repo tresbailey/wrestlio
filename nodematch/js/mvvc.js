@@ -159,7 +159,8 @@
             events: {
                 'click .btn#create_match': "store_match",
                 'click a.school_select': function(event) {
-                    $(".dropdown-toggle#school_selection:first-child").text($(event.target).html());
+                    $("form[name=create_match] input[name=opponent]").val($(event.target).children("input").val());
+                    $(".dropdown-toggle#school_selection:first-child").text($(event.target).text());
                 }
             },
             store_match: function(event) {
@@ -174,7 +175,10 @@
                 var match = new Match(raw);
                 this.matches.add(match);
                 this.matches.url = BASEURL + '/matches';
-                match.save();
+                var that = this;
+                match.save(match.attributes, {success: function(model, response, options) {
+                    that.render();
+                }});
             }
 
         });
@@ -254,8 +258,54 @@
         sessionView.login_user();
     }
 
+    var show_matchup = function( school_id, opponent_id, match_id ) {
+        var match = new Match();
+        match.url = BASEURL + '/matches/'+ match_id;
+        match.id = match_id;
+        match.fetch({
+            success: function(model, response, options) {
+                match = model;
+                match.set('home_score', 0);
+                match.set('visit_score', 0);
+                match.set('individual_bouts', new Bouts() );
+                var matchView = new MatchView({model: match, el: $("#matchDetails")});
+                get_teams = $.ajax( {
+                    url: BASEURL +'/schools/'+ school_id +','+ opponent_id,
+                    type: 'GET',
+                    dataType: 'json'
+                });
+                var schools = new Schools();
+                get_teams.done( function(data) {
+                    my_team = new School(data[0]);
+                    my_team.url = BASEURL + '/'+ my_team.get('competition') +'/'+
+                        my_team.get('area') +'/'+ my_team.get('size') +'/'+
+                        my_team.get('conference');
+                    var my_wrestlers = setup_school_wrestlers(my_team.get('wrestlers'));
+                    my_team.set('wrestlers', my_wrestlers);
+                    schools.add(my_team);
+                    matchView.trigger("match:schoolloaded", schools);
+                    opponent = new School(data[1]);
+                    opponent.url = BASEURL + '/'+ opponent.get('competition') +'/'+
+                        opponent.get('area') +'/'+ opponent.get('size') +'/'+
+                        opponent.get('conference');
+                    var opp_wrestlers = setup_school_wrestlers(opponent.get('wrestlers'));
+                    my_team.set('wrestlers', opp_wrestlers);
+                    schools.add(opponent);
+                    match.set('home_school', my_team.id == match.get('home_school') ? my_team : opponent);
+                    match.set('visit_school', my_team.id == match.get('home_school') ? opponent: my_team );
+                    matchView.trigger("match:schoolloaded", schools);
+                });
+            },
+            error: function(model, xhr, options) {
+
+            }
+        });
+    
+    }
+
     app_router.on("route:school_schedule", load_school_page);
     app_router.on("route:user_login", load_login_user);
+    app_router.on("route:show_match", show_matchup);
 
 
     })(jQuery);

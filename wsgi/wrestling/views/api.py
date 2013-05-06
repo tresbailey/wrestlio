@@ -99,10 +99,19 @@ def redis_save(savee, key_field='', value_fields=(), serializer=str, deserialize
     loaded_str = redis_cli.get('school_hash')
     hashed = pickle.loads(loaded_str) if loaded_str is not None else {}
     dlist_keys = lambda obj, key: {key: obj}
-    base = savee._field_values
+    base = []
     for keyf in reversed(value_fields):
         base = dlist_keys(base, keyf)
     base.update(hashed) 
+    search = base
+    def add_last(ref, key): 
+        ref.__setitem__( key, [] ) 
+        return ref
+    for keyf in value_fields:
+        search = search.get(keyf) if search.has_key(keyf) else add_last(search, keyf)
+    savee = savee._field_values
+    savee['_id'] =  str(savee['_id'])
+    search.append(savee)
     redis_cli.set('school_hash', pickle.dumps(base) )    
     return base
     #key = "_".join([ getattr(savee, keyf) for keyf in key_fields])
@@ -121,7 +130,15 @@ def get_static_data(static_key):
 @api.route('/', methods=['GET'])
 def get_all_schools():
     log.debug("Looking for all schools")
-    all_schools = Schools.query.all()
+    mongo_q = lambda: Schools.query.all()
+    redis_q = lambda: redis_cli.get('school_dict')
+    pickle_oad = lambda str_val: pickle.loads(str_val) if str_val is not None else mongo_q
+    if request.args.get('qschoolId'):
+        all_schools = redis_q()
+        all_schools = pickle_oad(all_schools)
+        
+    else:
+        all_schools = mongo_q()
     return json.dumps( all_schools, default=remove_OIDs )
     
 
@@ -177,9 +194,9 @@ def create_school(competition, area, size, conference, school_name):
     school = Schools( **json_data )
     school._id = ObjectId()
     school.wrestlers = dict([ ( wrestler.get('wrestler_id'), prepare_wrestler(Wrestler(**wrestler))) for wrestler in school.wrestlers])
+    school.save()
     redis_save(school, school.school_name, value_fields=(school.competition, school.area, school.size, 
         school.conference), store_func='rpush')
-    school.save()
     return json.dumps( school, default=remove_OIDs )
 
 
