@@ -153,7 +153,6 @@
             render: function() {
                 $(this.el).html( this.template( this ) );
                 this.selectSchool = new SchoolSelectView(); 
-                this.selectSchool.render();
                 return this;
             },
             events: {
@@ -268,7 +267,6 @@
                 match.set('home_score', 0);
                 match.set('visit_score', 0);
                 match.set('individual_bouts', new Bouts() );
-                var matchView = new MatchView({model: match, el: $("#matchDetails")});
                 get_teams = $.ajax( {
                     url: BASEURL +'/schools/'+ school_id +','+ opponent_id,
                     type: 'GET',
@@ -283,17 +281,17 @@
                     var my_wrestlers = setup_school_wrestlers(my_team.get('wrestlers'));
                     my_team.set('wrestlers', my_wrestlers);
                     schools.add(my_team);
-                    matchView.trigger("match:schoolloaded", schools);
                     opponent = new School(data[1]);
                     opponent.url = BASEURL + '/'+ opponent.get('competition') +'/'+
                         opponent.get('area') +'/'+ opponent.get('size') +'/'+
                         opponent.get('conference');
                     var opp_wrestlers = setup_school_wrestlers(opponent.get('wrestlers'));
-                    my_team.set('wrestlers', opp_wrestlers);
+                    opponent.set('wrestlers', opp_wrestlers);
                     schools.add(opponent);
                     match.set('home_school', my_team.id == match.get('home_school') ? my_team : opponent);
                     match.set('visit_school', my_team.id == match.get('home_school') ? opponent: my_team );
-                    matchView.trigger("match:schoolloaded", schools);
+                    var matchView = new MatchView({model: match, el: $("#matchDetails")});
+                    matchView.create_bouts();
                 });
             },
             error: function(model, xhr, options) {

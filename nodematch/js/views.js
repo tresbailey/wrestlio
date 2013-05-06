@@ -320,7 +320,7 @@ var MatchView = Backbone.View.extend({
         var actis = new Actions();
         this.currentBout.set('actions', actis);
         this.currentBout.set('bout_date', new Date());
-        this.currentBout.url = this.model.url();
+        this.currentBout.url = this.model.url;
         this.currentBout.id = undefined;
         var boutClock = new Clock();
         boutClock.set('total', 120000);

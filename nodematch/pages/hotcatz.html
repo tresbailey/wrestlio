@@ -328,13 +328,13 @@
     
     <script type="text/template" id="actionOccurred">
         <% _(_.filter(actions.models, function(mod) { return (mod.get('actor') == wrestler.id && round == mod.get('round_number')) ;})).each(function(val, index) { %>
-            <button class="btn btn-primary"><%= val.get('point_value') %></button>
+            <button class="btn btn-<%= color == 'red' ? 'danger': 'success' %>"><%= val.get('point_value') %></button>
         <%});%>
     </script>
 
     <script type="text/template" id="movesAvail">
         <% _(_.filter(_.values(move_lookup), function(val) { return moveComparison(val, wrestler);})).each(function(move, index) { %>
-            <button class="btn btn-primary" id="<%= move.get('move_id') %>"><%= move.get('move_name') %></button>
+            <button class="btn btn-<%= color == 'red' ? 'danger': 'success' %>" id="<%= move.get('move_id') %>"><%= move.get('move_name') %></button>
         <%});%>
     </script>
     <script type="text/template" id="mainBoutTemplate">
@@ -361,10 +361,9 @@
                                 <div class="vote-group">
                                     <a href="#" id="greenPin" class="vote-wrapper voteBtn">
                                     <div class="vote">
-                                        <img src="../images/left_tag.png" />
+                                        <button class="btn btn-success" >PIN!</button>
                                         <div class="vote-label-left">
                                             <small class="btnText">
-                                                PIN!
                                             </small>        
                                         </div>  
                                     </div>
@@ -380,7 +379,7 @@
                 <div id="greenMoves" class="well">
                     <% var green = this.model.get('green_wrestler');%>
                     <% var red = this.model.get('red_wrestler');%>
-                    <%= _.template($("#movesAvail").html())({wrestler: green}) %>
+                    <%= _.template($("#movesAvail").html())({wrestler: green, color: 'green'}) %>
                 </div>
                 <div class="accordion" id="accordion1">
                     <div class="accordion-group">
@@ -391,7 +390,7 @@
                         </div>
                         <div class="accordion-body collapse <%= bout.get('current_round') == 1 ? 'in' : '' %>"  id="<%= green.id %>collapse1">
                             <div class="accordion-inner">   
-                            <%= _.template($("#actionOccurred").html())({wrestler: green, round: 1, actions: bout.get('actions')}) %>
+                            <%= _.template($("#actionOccurred").html())({wrestler: green, round: 1, color: 'green', actions: bout.get('actions')}) %>
                             </div>
                         </div>
                     </div>
@@ -403,7 +402,7 @@
                         </div>
                         <div class="accordion-body collapse <%= bout.get('current_round') == 2 ? 'in' : '' %>" id="<%= green.id %>collapse2">
                             <div class="accordion-inner">   
-                            <%= _.template($("#actionOccurred").html())({wrestler: green, round: 2, actions: bout.get('actions')}) %>
+                            <%= _.template($("#actionOccurred").html())({wrestler: green, round: 2, color: 'green', actions: bout.get('actions')}) %>
                             </div>
                         </div>
                     </div>
@@ -415,7 +414,7 @@
                         </div>
                         <div class="accordion-body collapse <%= bout.get('current_round') == 3 ? 'in' : '' %>" id="<%= green.id %>collapse3">
                             <div class="accordion-inner">   
-                            <%= _.template($("#actionOccurred").html())({wrestler: green, round: 3, actions: bout.get('actions')}) %>
+                            <%= _.template($("#actionOccurred").html())({wrestler: green, round: 3, color: 'green', actions: bout.get('actions')}) %>
                             </div>
                         </div>
                     </div>
@@ -423,7 +422,7 @@
             </div>
             <div class="span3">
                 <div id="redMoves" class="well">
-                <%= _.template($("#movesAvail").html())({wrestler: red}) %>
+                <%= _.template($("#movesAvail").html())({wrestler: red, color: 'red'}) %>
                 </div>
                 <div class="accordion" id="accordion2">
                     <div class="accordion-group">
@@ -434,7 +433,7 @@
                         </div>
                         <div class="accordion-body collapse <%= bout.get('current_round') == 1 ? 'in' : '' %>" id="<%= red.id %>collapse1">
                             <div class="accordion-inner">
-                            <%= _.template($("#actionOccurred").html())({wrestler: red, round: 1, actions: bout.get('actions')}) %>
+                            <%= _.template($("#actionOccurred").html())({wrestler: red, round: 1, color: 'red', actions: bout.get('actions')}) %>
                             </div>
                         </div>
                     </div>
@@ -446,7 +445,7 @@
                         </div>
                         <div class="accordion-body collapse <%= bout.get('current_round') == 2 ? 'in' : '' %>" id="<%= red.id %>collapse2">
                             <div class="accordion-inner">
-                            <%= _.template($("#actionOccurred").html())({wrestler: red, round: 2, actions: bout.get('actions')}) %>
+                            <%= _.template($("#actionOccurred").html())({wrestler: red, round: 2, color: 'red', actions: bout.get('actions')}) %>
                             </div>
                         </div>
                     </div>
@@ -458,7 +457,7 @@
                         </div>
                         <div class="accordion-body collapse <%= bout.get('current_round') == 3 ? 'in' : '' %>" id="<%= red.id %>collapse3">
                             <div class="accordion-inner">  
-                            <%= _.template($("#actionOccurred").html())({wrestler: red, round: 3, actions: bout.get('actions')}) %>
+                            <%= _.template($("#actionOccurred").html())({wrestler: red, round: 3, color: 'red', actions: bout.get('actions')}) %>
                             </div>
                         </div>
                     </div>
@@ -479,10 +478,9 @@
                                 <div class="vote-group">
                                     <a href="#" id="redPin" class="vote-wrapper voteBtn">
                                     <div class="vote">
-                                        <img src="../images/right_tag.png" />
+                                        <button class="btn btn-danger" >PIN!</button>
                                         <div class="vote-label-right">
                                             <small class="btnText">
-                                                PIN!
                                             </small>        
                                         </div>
                                     </div>
