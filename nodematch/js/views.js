@@ -287,11 +287,47 @@ var BoutsCollView = Backbone.View.extend({
     }
 });
 
+var BoutSetupView = Backbone.View.extend({
+    template: _.template( $("#boutSetupTemplate").html() ),
+    initialize: function(options) {
+        get_weight_classes = $.ajax( {
+            url: BASEURL + '/staticData/hsWeightClasses',
+            type: 'GET',
+            dataType: 'json'
+        });
+        var that = this;
+        get_weight_classes.done( function(data) {
+            that.weightClasses = data
+            that.render();
+        });
+        green_build = {};
+        _.each(options.green_wrestlers, function(green, index) {
+            green_build[green.get('normal_weight')] = _.has(green_build, green.get('normal_weight')) ?
+                green_build[green.get('normal_weight')].push(green) :
+                [green];
+        });
+        red_build = {};
+        _.each(options.red_wrestlers, function(red, index) {
+            red_build[red.get('normal_weight')] = _.has(red_build, red.get('normal_weight')) ?
+                red_build[red.get('normal_weight')].push(red) :
+                [red];
+        });
+        this.green_wrestlers = green_build;
+        this.red_wrestlers = red_build;
+    },
+    render: function() {
+        $(this.el).append( this.template( this ) );
+        return this;
+    }
+});
+
 var MatchView = Backbone.View.extend({
     template: _.template( $("#mainMatchTemplate").html() ),
     _boutIndex: 0,
     currentBout: undefined,
-    initialize: function() {
+    initialize: function(options) {
+        this.model = options.model;
+        this.el = options.el;
         this.model.set('scores', [0,0]);
         this.on( 'match:schoolloaded', this.add_school );
     },
@@ -344,6 +380,11 @@ var MatchView = Backbone.View.extend({
     create_bouts: function() {
         var green_wrestlers = _.sortBy( this.model.get('home_school').get('wrestlers').models, function(wrestler) { return wrestler.get('normal_weight') });
         var red_wrestlers = _.sortBy( this.model.get('visit_school').get('wrestlers').models, function(wrestler) { return wrestler.get('normal_weight') });
+        var createBouts = new BoutSetupView({
+            el: $("#mainMatch"),
+            green_wrestlers: green_wrestlers,
+            red_wrestlers: red_wrestlers
+        });
         var rawlist = [];
         _.each( _.zip(green_wrestlers, red_wrestlers), function(combo, index) {
             if (combo[0] !== undefined && combo[1] !== undefined) {

@@ -114,9 +114,14 @@ def redis_save(savee, key_field='', value_fields=(), serializer=str, deserialize
     search.append(savee)
     redis_cli.set('school_hash', pickle.dumps(base) )    
     return base
-    #key = "_".join([ getattr(savee, keyf) for keyf in key_fields])
-    #value = serializer(getattr(savee,value_field))
-    #getattr(redis_cli, store_func)(key, value)
+
+
+@api.route('/staticData/<static_key>', methods=['PUT'])
+def save_static_data(static_key):
+    savee = request.data
+    redis_cli.set(static_key, pickle.dumps(savee))
+    return json.dumps( savee )
+
 
 @api.route('/staticData/<static_key>', methods=['GET'])
 def get_static_data(static_key):
