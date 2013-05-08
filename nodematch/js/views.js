@@ -287,7 +287,7 @@ var BoutsCollView = Backbone.View.extend({
     }
 });
 
-var BoutSetupView = Backbone.View.extend({
+var BoutSetupView = ModalView.extend({
     template: _.template( $("#boutSetupTemplate").html() ),
     initialize: function(options) {
         get_weight_classes = $.ajax( {
@@ -321,7 +321,7 @@ var BoutSetupView = Backbone.View.extend({
     }
 });
 
-var MatchView = Backbone.View.extend({
+var MatchView = ModalView.extend({
     template: _.template( $("#mainMatchTemplate").html() ),
     _boutIndex: 0,
     currentBout: undefined,
@@ -396,6 +396,7 @@ var MatchView = Backbone.View.extend({
         this.boutsView = new BoutsCollView({collection: this.model.get('individual_bouts'), el: $("#fullMatch")});
         this.listenTo( this.boutsView, 'bout:selectedBout', this.prepare_bout );
         this.prepare_bout( this.model.get('individual_bouts').at(0) );
+        this.boutsView.render();
     },
     add_school: function(schools) {
         if ( schools.length == 2 ) {

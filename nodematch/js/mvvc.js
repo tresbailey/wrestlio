@@ -13,7 +13,7 @@
             Backbone._nativeSync( method, model, _.extend( {}, Backbone.defaultSyncOptions, options ) );
         }
 
-        var CreateUserView = Backbone.View.extend({
+        var CreateUserView = ModalView.extend({
             el: $("#mainMatch"),
             template: _.template( $("#setupUser").html() ),
             initialize: function( options ) {
