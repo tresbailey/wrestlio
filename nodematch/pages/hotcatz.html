@@ -213,8 +213,6 @@
             </div>
         </div>
     </script>    
-    <script type="text/template" id="smallWrestlerTemplate">
-    </script>
 
     <script type="text/template" id="teamWrestlersTemplate">
         <% var total = 0 %>
@@ -275,8 +273,8 @@
             Wins: <%= model.get('green_wrestler').get('wins') %>
             Losses: <%= model.get('green_wrestler').get('losses') %>
                 </div>
-                <div class="span3">
-                    <button class="btn btn-primary">Let's Wrestle!</button>
+                <div class="span3 pagination-centered">
+                    <button class="btn btn-inverse">Let's Wrestle!</button>
                 </div>
                 <div class="span4">
             Name: <%= model.get('red_wrestler').get('first_name') %> <%= model.get('red_wrestler').get('last_name') %>
@@ -321,6 +319,22 @@
         </div
     </script>
 
+    <script type="text/template" id="smallWrestlerTemplate">
+    <div class="span1 smallCat ">
+        <h3>
+        <small>
+            <div><b>Name:</b> <%= wrestler.get('first_name') %> <%= wrestler.get('last_name') %></div>
+            <div><b>Weight:</b> <%= wrestler.get('normal_weight') %></div>
+            <div><b>Wins:</b> <%= wrestler.get('wins') %></div>
+            <div><b>Losses:</b> <%= wrestler.get('losses') %></div>
+            <input type="hidden" value="<%= wrestler.id %>" name="wrest_id" />
+        </small>
+        </h3>
+        </div>
+        <div class="span1 smallCat">
+            <button class="btn btn-<%= color %>"><b>Select</b></button>
+        </div>
+    </script>
 
     <script type="text/template" id="boutSetupTemplate">
         <div class="modal show">
@@ -332,45 +346,25 @@
               <% _.each(weightClasses, function(weight, index) { %>
                 <div class="row thumbnail">
                 <% _.each(green_wrestlers[weight], function(wrestler, ind2) { %>
-                <div class="span1 smallCat ">
-                    <h3>
-                    <small>
-                        <div>Name: <%= wrestler.get('first_name') %> <%= wrestler.get('last_name') %></div>
-                        <div>Weight: <%= wrestler.get('normal_weight') %></div>
-                        <div>Wins: <%= wrestler.get('wins') %></div>
-                        <div>Losses: <%= wrestler.get('losses') %></div>
-                        <input type="hidden" value="<%= wrestler.id %>" name="wrest_id" />
-                    </small>
-                    </h3>
-                </div>
-                <div class="span1 smallCat">
-                        <button class="btn btn-success">Select</button>
-                </div>
+                    <div class="green">
+                    <%= wrestler.render() %>
+                    </div>
                 <% }) %>
-                <div class="span1">
-                <%= weight %>      
+                <div class="span1 pagination-centered ">
+                <h3><small><b>
+                <%= weight %> 
+                </b></small></h3>     
                 </div>   
                 <% _.each(red_wrestlers[weight], function(wrestler, ind2) { %>
-                <div class="span1 smallCat ">
-                    <h3>
-                    <small>
-                        <div>Name: <%= wrestler.get('first_name') %> <%= wrestler.get('last_name') %></div>
-                        <div>Weight: <%= wrestler.get('normal_weight') %></div>
-                        <div>Wins: <%= wrestler.get('wins') %></div>
-                        <div>Losses: <%= wrestler.get('losses') %></div>
-                        <input type="hidden" value="<%= wrestler.id %>" name="wrest_id" />
-                    </small>
-                    </h3>
-                </div>
-                <div class="span1 smallCat">
-                        <button class="btn btn-danger">Select</button>
-                </div>
+                    <div class="red">
+                    <%= wrestler.render() %>
+                    </div>
                 <% }) %>
                 </div>
               <% }) %>
           </div>
           <div class="modal-footer">
-            <a href="#" class="btn btn-inverse">Start match</a>
+            <a href="#" class="btn btn-inverse"><b>Start Match</b></a>
           </div>
         </div
         

@@ -4,16 +4,19 @@ var SmallWrestlerView = Backbone.View.extend({
     Renders a single wrestler in the list view
     */
     template: _.template( $("#smallWrestlerTemplate").html() ),
+    initialize: function(options) {
+        this.weight = options.weight;
+        this.color = options.color;
+        this.index = options.index;
+    },
     render: function() {
-        console.log("Wrestler Model: "+ this.model);
-        $(this.el).html( this.template( {wrestler: this.model} ) );
-        return this;
+        return this.template( {wrestler: this.model, color: this.color, weight: this.weight} ) ;
     },
     events: {
-        "click .smallWrestler": "showDetails"
+        "click .btn": "choose_for_weight"
     },
-    showDetails: function() {
-        console.log("Hovered a model: "+ (this.model.get("first_name")) );
+    choose_for_weight: function() {
+        console.log("Clicked on the wrestler: "+ this.model.id + " with weight set to "+ this.weight);   
     }
 });
 
@@ -303,14 +306,14 @@ var BoutSetupView = ModalView.extend({
         green_build = {};
         _.each(options.green_wrestlers, function(green, index) {
             green_build[green.get('normal_weight')] = _.has(green_build, green.get('normal_weight')) ?
-                green_build[green.get('normal_weight')].push(green) :
-                [green];
+                green_build[green.get('normal_weight')].push(new SmallWrestlerView({el: this.el, model: green, weight: green.get('normal_weight'), color: 'success'})) :
+                [new SmallWrestlerView({el: this.el, model: green, weight: green.get('normal_weight'), color: 'success'})];
         });
         red_build = {};
         _.each(options.red_wrestlers, function(red, index) {
             red_build[red.get('normal_weight')] = _.has(red_build, red.get('normal_weight')) ?
-                red_build[red.get('normal_weight')].push(red) :
-                [red];
+                red_build[red.get('normal_weight')].push(new SmallWrestlerView({el: this.el, model: red, weight: red.get('normal_weight'), color: 'danger'})) :
+                [new SmallWrestlerView({el: this.el, model: red, weight: red.get('normal_weight'), color: 'danger'})];
         });
         this.green_wrestlers = green_build;
         this.red_wrestlers = red_build;
