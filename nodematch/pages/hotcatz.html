@@ -332,7 +332,7 @@
         </h3>
         </div>
         <div class="span1 smallCat">
-            <button class="btn btn-<%= color %>"><b>Select</b></button>
+            <button class="btn choose btn-<%= color=='green'? 'success' : 'danger' %>">Select</button>
         </div>
     </script>
 
@@ -344,27 +344,19 @@
           </div>
           <div class="modal-body">
               <% _.each(weightClasses, function(weight, index) { %>
-                <div class="row thumbnail">
-                <% _.each(green_wrestlers[weight], function(wrestler, ind2) { %>
-                    <div class="green">
-                    <%= wrestler.render() %>
-                    </div>
-                <% }) %>
-                <div class="span1 pagination-centered ">
-                <h3><small><b>
-                <%= weight %> 
-                </b></small></h3>     
-                </div>   
-                <% _.each(red_wrestlers[weight], function(wrestler, ind2) { %>
-                    <div class="red">
-                    <%= wrestler.render() %>
-                    </div>
-                <% }) %>
+                <div id="matchup_select_<%= weight %>" class="row thumbnail">
+                    <div class="green"></div>
+                    <div class="span1 pagination-centered ">
+                    <h3><small><b>
+                    <%= weight %> 
+                    </b></small></h3>     
+                    </div>   
+                    <div class="red"></div>
                 </div>
               <% }) %>
           </div>
           <div class="modal-footer">
-            <a href="#" class="btn btn-inverse"><b>Start Match</b></a>
+            <a href="#" class="btn completed btn-inverse"><b>Start Match</b></a>
           </div>
         </div
         

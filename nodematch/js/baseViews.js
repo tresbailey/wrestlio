@@ -4,7 +4,7 @@ var ModalView = Backbone.View.extend({
 
     },
     events: {
-        "click button.close": "close_modal"
+        "click .close": "close_modal"
     },
     close_modal: function(event) {
         var parentModal = $(this.el).children(".modal"); 

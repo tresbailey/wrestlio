@@ -10,7 +10,8 @@ var SmallWrestlerView = Backbone.View.extend({
         this.index = options.index;
     },
     render: function() {
-        return this.template( {wrestler: this.model, color: this.color, weight: this.weight} ) ;
+        $(this.el).append(this.template( {wrestler: this.model, color: this.color, weight: this.weight} ) );
+        return this;
     },
     events: {
         "click .btn": "choose_for_weight"
@@ -307,20 +308,58 @@ var BoutSetupView = ModalView.extend({
         _.each(options.green_wrestlers, function(green, index) {
             green_build[green.get('normal_weight')] = _.has(green_build, green.get('normal_weight')) ?
                 green_build[green.get('normal_weight')].push(new SmallWrestlerView({el: this.el, model: green, weight: green.get('normal_weight'), color: 'success'})) :
-                [new SmallWrestlerView({el: this.el, model: green, weight: green.get('normal_weight'), color: 'success'})];
+                [new SmallWrestlerView({el: this.el, model: green, weight: green.get('normal_weight'), color: 'green'})];
         });
         red_build = {};
         _.each(options.red_wrestlers, function(red, index) {
             red_build[red.get('normal_weight')] = _.has(red_build, red.get('normal_weight')) ?
                 red_build[red.get('normal_weight')].push(new SmallWrestlerView({el: this.el, model: red, weight: red.get('normal_weight'), color: 'danger'})) :
-                [new SmallWrestlerView({el: this.el, model: red, weight: red.get('normal_weight'), color: 'danger'})];
+                [new SmallWrestlerView({el: this.el, model: red, weight: red.get('normal_weight'), color: 'red'})];
         });
         this.green_wrestlers = green_build;
         this.red_wrestlers = red_build;
+        this.wrestler_selection = {};
+        this.wrestler_selection['green'] = {};
+        this.wrestler_selection['red'] = {};
     },
     render: function() {
         $(this.el).append( this.template( this ) );
+        var that = this;
+        _.each(this.weightClasses, function(weight, index) { 
+            _.each(that.green_wrestlers[weight], function(wrestler, ind2) { 
+                wrestler.el = $(that.el).find("#matchup_select_"+weight + " .green");
+                wrestler.render(); 
+            });
+            _.each(that.red_wrestlers[weight], function(wrestler, ind2) { 
+                wrestler.el = $(that.el).find("#matchup_select_"+weight + " .red");
+                wrestler.render(); 
+            });
+        }); 
         return this;
+    },
+    events: {
+        "click .choose": "choose_for_weight",
+        "click .close": "close_modal",
+        "click .completed": "complete_matchups"
+    },
+    choose_for_weight: function(event) {
+        var chosen_wrestler = $(event.target).parent().parent();
+        var wrestler_collection = chosen_wrestler.hasClass("green") ? this.green_wrestlers : this.red_wrestlers;
+        var color = chosen_wrestler.hasClass("green") ? 'green' : 'red';
+        var wrestler_id = chosen_wrestler.find('input[name=wrest_id]');
+        var chosen_weight = chosen_wrestler.parent().attr('id');
+        chosen_weight = chosen_weight.substring( chosen_weight.search(/(\d){3}/) );
+        this.wrestler_selection[color][chosen_weight] = wrestler_collection[chosen_weight];
+        chosen_wrestler.find('button').hide();
+        $(chosen_wrestler.find('.span1').get(1)).text("Selected");
+    },
+    close_modal: function(event) {
+        var parentModal = $(this.el).children(".modal"); 
+        $(parentModal).removeClass("show");
+        $(parentModal).addClass("hide");
+    },
+    complete_matchups: function() {
+       this.trigger("match:bouts_selected", this.wrestler_selection); 
     }
 });
 
@@ -380,14 +419,7 @@ var MatchView = ModalView.extend({
         wrestler.set('stalling_count', 0);
         return wrestler
     },
-    create_bouts: function() {
-        var green_wrestlers = _.sortBy( this.model.get('home_school').get('wrestlers').models, function(wrestler) { return wrestler.get('normal_weight') });
-        var red_wrestlers = _.sortBy( this.model.get('visit_school').get('wrestlers').models, function(wrestler) { return wrestler.get('normal_weight') });
-        var createBouts = new BoutSetupView({
-            el: $("#mainMatch"),
-            green_wrestlers: green_wrestlers,
-            red_wrestlers: red_wrestlers
-        });
+    create_bouts: function(chosen_weights) {
         var rawlist = [];
         _.each( _.zip(green_wrestlers, red_wrestlers), function(combo, index) {
             if (combo[0] !== undefined && combo[1] !== undefined) {
@@ -401,11 +433,15 @@ var MatchView = ModalView.extend({
         this.prepare_bout( this.model.get('individual_bouts').at(0) );
         this.boutsView.render();
     },
-    add_school: function(schools) {
-        if ( schools.length == 2 ) {
-            this.create_bouts();
-            this.render();
-        }
+    add_schools: function() {
+        var green_wrestlers = _.sortBy( this.model.get('home_school').get('wrestlers').models, function(wrestler) { return wrestler.get('normal_weight') });
+        var red_wrestlers = _.sortBy( this.model.get('visit_school').get('wrestlers').models, function(wrestler) { return wrestler.get('normal_weight') });
+        var createBouts = new BoutSetupView({
+            el: $("#mainMatch"),
+            green_wrestlers: green_wrestlers,
+            red_wrestlers: red_wrestlers
+        });
+        this.listenTo( createBouts, 'match:bouts_selected', this.create_bouts);
     }
 });
 

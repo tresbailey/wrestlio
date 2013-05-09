@@ -291,7 +291,7 @@
                     match.set('home_school', my_team.id == match.get('home_school') ? my_team : opponent);
                     match.set('visit_school', my_team.id == match.get('home_school') ? opponent: my_team );
                     var matchView = new MatchView({model: match, el: $("#matchDetails")});
-                    matchView.create_bouts();
+                    matchView.add_schools();
                 });
             },
             error: function(model, xhr, options) {

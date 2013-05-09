@@ -187,3 +187,6 @@ h1.btnText small {
 input {
     width: 80px;
 }
+.smallCat {
+    font-weight: bold;
+}
