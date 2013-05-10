@@ -28,7 +28,7 @@
                 'click .btn#makeUser': "store_user_fields"
             },
             store_user_fields: function() {
-
+                $(this).children(".modal").addClass("hide");
             }
         });
 
