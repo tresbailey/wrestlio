@@ -109,7 +109,8 @@ def redis_save(savee, key_field='', value_fields=(), serializer=str, deserialize
         return ref
     for keyf in value_fields:
         search = search.get(keyf) if search.has_key(keyf) else add_last(search, keyf)
-    savee = savee._field_values
+    if hasattr(savee, '_field_values'):
+        savee = savee._field_values
     savee['_id'] =  str(savee['_id'])
     search.append(savee)
     redis_cli.set('school_hash', pickle.dumps(base) )    
