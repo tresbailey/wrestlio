@@ -128,6 +128,7 @@ def save_static_data(static_key):
 def get_static_data(static_key):
     lookup_value = redis_cli.get(static_key)
     lookup_value = pickle.loads(lookup_value) if lookup_value is not None else {}
+    log.debug("GOt back a pickle: %s " % lookup_value)
     return json.dumps( lookup_value, default=remove_OIDs )
    
 
