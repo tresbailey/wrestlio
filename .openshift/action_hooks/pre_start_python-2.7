@@ -12,3 +12,10 @@
 # prevent your application from stopping cleanly or starting at all.
 # Application start and stop is subject to different timeouts
 # throughout the system.
+
+export OPENSHIFT_REDIS_PORT = 15008
+
+echo "REDIS PORT is $OPENSHIFT_REDIS_PORT"
+cd ~/app-root/data/redis/src
+echo "Starting REDIS on OSHIFT"
+./redis-server redis.conf
