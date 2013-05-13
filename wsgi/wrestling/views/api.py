@@ -146,7 +146,7 @@ def get_all_schools():
         
     else:
         all_schools = mongo_q()
-        [ redis_save(school, school.school_name, value_fields=(school.competition, school.area, school.size, 
+        [ redis_save(remove_OIDs(school), school.school_name, value_fields=(school.competition, school.area, school.size, 
             school.conference), store_func='rpush')
             for school in all_schools]
     return json.dumps( all_schools, default=remove_OIDs )
@@ -205,7 +205,7 @@ def create_school(competition, area, size, conference, school_name):
     school._id = ObjectId()
     school.wrestlers = dict([ ( wrestler.get('wrestler_id'), prepare_wrestler(Wrestler(**wrestler))) for wrestler in school.wrestlers])
     school.save()
-    redis_save(school, school.school_name, value_fields=(school.competition, school.area, school.size, 
+    redis_save(remove_OIDs(school), school.school_name, value_fields=(school.competition, school.area, school.size, 
         school.conference), store_func='rpush')
     return json.dumps( school, default=remove_OIDs )
 
