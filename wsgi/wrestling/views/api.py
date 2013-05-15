@@ -95,26 +95,39 @@ def find_school(competition="", area="", size="", conference="", school_name="",
         Schools.school_name == school_name) ).one()
 
 
+class hashabledict(dict):
+  def __key(self):
+    return tuple((k,self[k]) for k in sorted(self))
+  def __hash__(self):
+    return hash(self.__key())
+  def __eq__(self, other):
+    return self.__key() == other.__key()
+
 def redis_save(savee, key_field='', value_fields=(), serializer=str, deserializer=dict, store_func=set):
     loaded_str = redis_cli.get('school_hash')
     hashed = pickle.loads(loaded_str) if loaded_str is not None else {}
     dlist_keys = lambda obj, key: {key: obj}
-    base = []
-    for keyf in reversed(value_fields):
-        base = dlist_keys(base, keyf)
-    base.update(hashed) 
-    search = base
-    def add_last(ref, key): 
-        ref.__setitem__( key, [] ) 
-        return ref
-    for keyf in value_fields:
-        search = search.get(keyf) if search.has_key(keyf) else add_last(search, keyf)
     if hasattr(savee, '_field_values'):
         savee = savee._field_values
+    savee = hashabledict(savee)
+    base = [savee]
+    for keyf in reversed(value_fields):
+        base = dlist_keys(base, keyf)
+    search = hashed
+    for keyf in value_fields:
+        if keyf not in search:
+            search[keyf] = base[keyf]
+        elif isinstance(base[keyf], list):
+            search[keyf] = base[keyf] + search[keyf] if base[keyf] != search[keyf] else search[keyf]
+        search = search[keyf]
+        base = base[keyf]
     savee['_id'] =  str(savee['_id'])
-    search.append(savee)
-    redis_cli.set('school_hash', pickle.dumps(base) )    
+    redis_cli.set('school_hash', pickle.dumps(hashed) )    
     return base
+   
+
+mongo_q = lambda: Schools.query.all()
+redis_q = lambda: redis_cli.get('school_dict')
 
 
 @api.route('/staticData/<static_key>', methods=['PUT'])
@@ -126,19 +139,19 @@ def save_static_data(static_key):
 
 @api.route('/staticData/<static_key>', methods=['GET'])
 def get_static_data(static_key):
+    if bool(request.args.get('qrefresh')):
+        [ redis_save(remove_OIDs(school), school.school_name, value_fields=(school.competition, school.area, school.size, 
+            school.conference), store_func='rpush')
+            for school in mongo_q()]
     lookup_value = redis_cli.get(static_key)
     lookup_value = pickle.loads(lookup_value) if lookup_value is not None else {}
     log.debug("GOt back a pickle: %s " % lookup_value)
     return json.dumps( lookup_value, default=remove_OIDs )
-   
-
 
 
 @api.route('/', methods=['GET'])
 def get_all_schools():
     log.debug("Looking for all schools")
-    mongo_q = lambda: Schools.query.all()
-    redis_q = lambda: redis_cli.get('school_dict')
     pickle_oad = lambda str_val: pickle.loads(str_val) if str_val is not None else mongo_q
     if request.args.get('qschoolId'):
         all_schools = redis_q()
@@ -146,9 +159,6 @@ def get_all_schools():
         
     else:
         all_schools = mongo_q()
-        [ redis_save(remove_OIDs(school), school.school_name, value_fields=(school.competition, school.area, school.size, 
-            school.conference), store_func='rpush')
-            for school in all_schools]
     return json.dumps( all_schools, default=remove_OIDs )
     
 
