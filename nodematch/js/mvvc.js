@@ -36,17 +36,15 @@
             el: $("#mainMatch"),
             template: _.template( $("#landingSchoolsTemplate").html() ),
             initialize: function() {
-                this.schools = new Schools();
-                this.schools.url = BASEURL + '/';
+                select_request = $.ajax( {
+                    url: BASEURL +'/staticData/school_hash',
+                    type: 'GET',
+                    dataType: 'json'
+                });
                 var that = this;
-                this.schools.fetch({
-                    success: function(models, response, options) {
-                        that.schools = models;
-                        that.render();
-                    },
-                    error: function(xhr, response, options) {
-
-                    }
+                select_request.done( function(data) {
+                    that.select_values = data;
+                    that.render();
                 });
             },
             render: function() {
