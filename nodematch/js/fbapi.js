@@ -33,6 +33,7 @@ function getUser(loginView) {
         userSession.set('fb_first', response.first_name);
         userSession.set('fb_last', response.last_name);
         userSession.set('email', response.email);
+        userSession.set('school_id', response.school_id);
         _.each( response.education, function(model, index) {
             if ( model.type == 'High School' ) {
                 userSession.set('fb_school', model.school.name);
@@ -52,7 +53,15 @@ function getUser(loginView) {
                 });
             }
         }, userSession);
-        userSession.fetch();
+        userSession.fetch({
+            success: function(model, response, options) {
+                userSession.set('school_id', response[0].school_id);
+                window.userSession = userSession;
+            },
+            error: function(model, xhr, options) {
+                console.log("error: "+ model);
+            }
+        });
         Backbone.defaultSyncOptions = { 
             'headers': {'Authorization': response.id}
         };

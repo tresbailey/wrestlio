@@ -95,21 +95,12 @@ def find_school(competition="", area="", size="", conference="", school_name="",
         Schools.school_name == school_name) ).one()
 
 
-class hashabledict(dict):
-  def __key(self):
-    return tuple((k,self[k]) for k in sorted(self))
-  def __hash__(self):
-    return hash(self.__key())
-  def __eq__(self, other):
-    return self.__key() == other.__key()
-
 def redis_save(savee, key_field='', value_fields=(), serializer=str, deserializer=dict, store_func=set):
     loaded_str = redis_cli.get('school_hash')
     hashed = pickle.loads(loaded_str) if loaded_str is not None else {}
     dlist_keys = lambda obj, key: {key: obj}
     if hasattr(savee, '_field_values'):
         savee = savee._field_values
-    savee = hashabledict(savee)
     base = [savee]
     for keyf in reversed(value_fields):
         base = dlist_keys(base, keyf)

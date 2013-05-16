@@ -102,6 +102,7 @@ var Session = Backbone.Model.extend({
         id: "",
         facebook_id: "",
         wrestler_id: "",
+        school_id: "",
         fb_first: "",
         fb_last: "",
         fb_pic: "",

@@ -129,6 +129,7 @@
     </script>
 
     <script type="text/template" id="scheduleTemplate">
+        <% if (userSession.get('school_id') == school.id) { %>
        <form name="create_match">
            <div class="row">
                 <div class="span6 offset3 thumbnail smallCat">
@@ -146,6 +147,7 @@
                 </div>
             </div>
         </form>
+        <% } %>
         <ul>
             <% _.each(matches.models, function(match, index) { %>
                 <li>
@@ -236,16 +238,11 @@
         <% if ( total % 2 == 0 ) { %>
         </div>
         <% } %>
-        
-        <div class="row">
-            <div class="span5 offset5">
-                <a href="#" id="update_roster" class="btn btn-primary">Save Roster</a>
-            </div>
-        </div>
     </script>
 
     <script type="text/template" id="createWrestlerTemplate">
         <div> 
+        <% if (userSession.get('school_id') == id) { %>
             <form>
                 <div class="row">
                 <div class="span6 offset3 thumbnail smallCat">
@@ -259,6 +256,7 @@
                 </div>
             </div>
             </form>
+        <% } %>
             <div id="existingRoster">
             </div>
         </div>
