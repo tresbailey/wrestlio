@@ -40,7 +40,9 @@ function getUser(loginView) {
             }
         });
         FB.api('/me/picture', function(picres) {
-            userSession.set('fb_pic', picres.data.url);
+            if ( picres != undefined ) {
+                userSession.set('fb_pic', picres.data.url);
+            }
             loginView.render();
         });
         userSession.on('error', function(model, error) {
