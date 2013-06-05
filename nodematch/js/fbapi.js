@@ -18,6 +18,7 @@ window.fbAsyncInit = function() {
         });
       } else if (response.status === 'not_authorized') {
         // not_authorized
+        FB.login()
       } else {
         // not_logged_in
       }
