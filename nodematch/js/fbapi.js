@@ -18,12 +18,44 @@ window.fbAsyncInit = function() {
         });
       } else if (response.status === 'not_authorized') {
         // not_authorized
-        FB.login()
+        FB.login(function(inner_response) {
+            console.log(1);
+            if (inner_response.authResponse) {
+                getUser( loginView );
+            } else {
+                // cancelled
+                console.log("response: "+ JSON.stringify(inner_response));
+            }
+        }, {scope: 'email,read_friendlists'});
       } else {
         // not_logged_in
       }
    });
     // Additional init code here
+    FB.Event.subscribe('auth.authResponseChange', function(response) {
+      if (response.status === 'connected') {
+        // connected
+        console.log("CONNECTED TO FACEBOOK");
+        FB.api('/me', function(response) {
+            Backbone.defaultSyncOptions = {
+                headers: { Authorization: response.id }
+            };
+            document.location.hash = "facebook/"+ response.id;
+        });
+      } else if (response.status === 'not_authorized') {
+        // not_authorized
+        FB.login(function(response) {
+            if (response.authResponse) {
+                getUser( loginView );
+            } else {
+                // cancelled
+            }
+        });
+      } else {
+        // not_logged_in
+      }
+   });
+        
 
 };
 

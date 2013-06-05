@@ -10,6 +10,7 @@ from flask_oauth import OAuth
 from wrestling.logs import log
 import os
 
+
 app = Flask(__name__)
 app.debug = True
 
