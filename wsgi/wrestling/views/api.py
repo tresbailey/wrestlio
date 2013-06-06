@@ -39,7 +39,6 @@ def save_new_login(fb_user):
     json_data = request.data
     del json_data['fb_first']
     del json_data['fb_last']
-    del json_data['fb_school']
     del json_data['fb_pic']
     del json_data['facebook_id']
     remote_user = FacebookUser(**json_data)
