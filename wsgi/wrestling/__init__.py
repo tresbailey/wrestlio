@@ -60,7 +60,7 @@ facebook = oauth.remote_app('facebook',
     request_token_params={'scope': 'email', 'type': 'user_agent'}
 )
 
-redis_cli = redis.Redis(host=os.environ.get('OPENSHIFT_INTERNAL_IP', 'localhost'), 
+redis_cli = redis.Redis(host=os.environ.get('OPENSHIFT_PYTHON_IP', 'localhost'), 
         port=int(os.environ.get('OPENSHIFT_REDIS_PORT', '6379')))
 
 

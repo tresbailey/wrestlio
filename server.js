@@ -27,14 +27,14 @@ var SampleApp = function() {
      */
     self.setupVariables = function() {
         //  Set the environment variables we need.
-        self.ipaddress = process.env.OPENSHIFT_INTERNAL_IP;
-        self.port      = process.env.OPENSHIFT_INTERNAL_PORT || 8080;
+        self.ipaddress = process.env.OPENSHIFT_NODE_IP;
+        self.port      = process.env.OPENSHIFT_NODE_PORT || 8080;
 
         if (typeof self.ipaddress === "undefined") {
             //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
             //  allows us to run/test the app locally.
             var ip = process.env.HOMEIP
-            console.warn('No OPENSHIFT_INTERNAL_IP var, using '+ ip);
+            console.warn('No OPENSHIFT_NODE_IP var, using '+ ip);
             self.ipaddress = ip;
         };
     };
