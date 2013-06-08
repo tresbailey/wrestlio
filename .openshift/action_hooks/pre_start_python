@@ -13,12 +13,7 @@
 # Application start and stop is subject to different timeouts
 # throughout the system.
 
-export OPENSHIFT_REDIS_PORT="15008"
 
-echo "REDIS PORT is $OPENSHIFT_REDIS_PORT"
-cd ~/app-root/data/redis
-echo "Starting REDIS on OSHIFT"
-./src/redis-server redis.conf
 
 sudo yum install httpd
 mkdir ~/httpd
