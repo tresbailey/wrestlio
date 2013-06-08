@@ -110,7 +110,6 @@ function login(loginView) {
                 if (response.authResponse) {
                     getUser( loginView );
                 } else {
-                    // cancelled
                 }
             });
         } else {
