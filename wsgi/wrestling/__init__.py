@@ -61,7 +61,8 @@ facebook = oauth.remote_app('facebook',
 )
 
 redis_cli = redis.Redis(host=os.environ.get('OPENSHIFT_REDIS_DB_HOST', 'localhost'), 
-        port=int(os.environ.get('OPENSHIFT_REDIS_DB_PORT', '6379')))
+        port=int(os.environ.get('OPENSHIFT_REDIS_DB_PORT', '6379')),
+        password=os.environ.get('REDIS_PASSWORD', None))
 
 
 from wrestling.views.api import api
