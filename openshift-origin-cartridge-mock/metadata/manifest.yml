@@ -9,7 +9,6 @@ Cartridge-Version: 0.0.1
 Cartridge-Vendor: customcarts
 Categories:
   - service
-  - web_framework
 Provides:
   - httpd
 Cart-Data:
