@@ -1,10 +1,4 @@
 #!/bin/env node
-// This whole file is a SHAMELESS RIPOFF from
-// OpenShift's standard nodejs server.
-// Only using this so that i can have a truly separated ui
-// and api layers.  Other options would be Apache or NGINX.
-// As this progresses, I reserve the right to switch over
-// to one of those web servers.
 //  OpenShift sample Node application
 var express = require('express');
 var fs      = require('fs');
@@ -44,7 +38,12 @@ var SampleApp = function() {
      *  Populate the cache.
      */
     self.populateCache = function() {
+        if (typeof self.zcache === "undefined") {
+            self.zcache = { 'index.html': '' };
+        }
 
+        //  Local cache for static content.
+        self.zcache['index.html'] = fs.readFileSync('./index.html');
     };
 
 
@@ -95,6 +94,7 @@ var SampleApp = function() {
      */
     self.createRoutes = function() {
         self.routes = { };
+<<<<<<< HEAD
     
         var host_name = process.env.OPENSHIFT_APP_DNS ? 'http://'+process.env.OPENSHIFT_APP_DNS : 
                 'http://localhost:8080'
@@ -181,6 +181,4 @@ var SampleApp = function() {
 var zapp = new SampleApp();
 zapp.initialize();
 zapp.start();
-
-
 
