@@ -6,4 +6,4 @@
 
 echo "RUNNING THE DEPLOY HOOK"
 
-yum install httpd
+
