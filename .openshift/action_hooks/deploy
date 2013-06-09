@@ -6,4 +6,4 @@
 
 echo "RUNNING THE DEPLOY HOOK"
 
-sudo yum install httpd
+yum install httpd
