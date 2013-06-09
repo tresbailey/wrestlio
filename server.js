@@ -94,7 +94,6 @@ var SampleApp = function() {
      */
     self.createRoutes = function() {
         self.routes = { };
-<<<<<<< HEAD
     
         var host_name = process.env.OPENSHIFT_APP_DNS ? 'http://'+process.env.OPENSHIFT_APP_DNS : 
                 'http://localhost:8080'
