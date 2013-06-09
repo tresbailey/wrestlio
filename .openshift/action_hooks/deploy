@@ -5,3 +5,5 @@
 # ruby, etc.
 
 echo "RUNNING THE DEPLOY HOOK"
+
+sudo yum install httpd
