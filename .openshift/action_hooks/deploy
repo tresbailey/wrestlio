@@ -8,7 +8,7 @@ echo "RUNNING THE DEPLOY HOOK"
 
 app_name='takedown'
 
-if ["$OPENSHIFT_GEAR_NAME" == app_name]; then
+if [-n "${OPENSHIFT_GEAR_NAME:+x}"]; then
     cp -r $OPENSHIFT_REPO_DIR/nodematch/* $HOME/app-root/repo/diy
 
     echo "var BASEURL='https://takedownRest-tresback.rhcloud.com'" > $HOME/app-root/repo/diy/js/base_url.js 
