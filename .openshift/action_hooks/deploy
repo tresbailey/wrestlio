@@ -11,5 +11,5 @@ app_name='takedown'
 if [ -n "${OPENSHIFT_GEAR_DNS:+x}" ]; then
 
     ln -s $OPENSHIFT_REPO_DIR/nodematch $OPENSHIFT_REPO_DIR/wsgi/wrestling/static
-    echo "var BASEURL='https://${OPENSHIFT_GEAR_DNS}'" > $OPENSHIFT_REPO_DIR/static/js/base_url.js 
+    echo "var BASEURL='https://${OPENSHIFT_GEAR_DNS}'" > $OPENSHIFT_REPO_DIR/wsgi/wrestling/static/js/base_url.js 
 fi
