@@ -59,7 +59,20 @@ if (typeof(console.log) == "undefined") { console.log = function() { return 0; }
             template: _.template( $("#landingLogin").html() ),
             initialize: function() {
                 this.userSession = new Session();
-                this.createUserView = new CreateUserView( this.userSession );
+                if ($.cookie('remember_token')) {
+                    this.userSession.url = 'http://local.tresback.rhcloud.com:5001/me';
+                    var that = this;
+                    this.userSession.fetch({
+                        success: function(model, response, options) {
+                            that.userSession = model;
+                            that.render();
+                            window.userSession = that.userSession;
+                        },
+                        error: function(model, xhr, options) {
+                            console.log(xhr);
+                        }
+                    });
+                }
                 this.render();
             },
             render: function() {

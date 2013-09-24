@@ -40,34 +40,35 @@ app.config['MONGOALCHEMY_SERVER_AUTH'] = True
 
 db = MongoAlchemy(app)
 
-
-SECRET_KEY = 'wrestlio_key'
+app.secret_key = str(uuid.uuid4())
 DEBUG = True
-FACEBOOK_APP_ID = '273015446166960'
-FACEBOOK_APP_SECRET = '181c18cae3bbed1c05359154124eab91'
-
-app.debug = DEBUG
-app.secret_key = SECRET_KEY
-oauth = OAuth()
-
-facebook = oauth.remote_app('facebook',
-    base_url='https://graph.facebook.com/',
-    request_token_url=None,
-    access_token_url='/oauth/access_token',
-    authorize_url='https://www.facebook.com/dialog/oauth',
-    consumer_key=FACEBOOK_APP_ID,
-    consumer_secret=FACEBOOK_APP_SECRET,
-    request_token_params={'scope': 'email', 'type': 'user_agent'}
-)
 
 redis_cli = redis.Redis(host=os.environ.get('OPENSHIFT_REDIS_DB_HOST', 'localhost'), 
         port=int(os.environ.get('OPENSHIFT_REDIS_DB_PORT', '6379')),
         password=os.environ.get('REDIS_PASSWORD', None))
 
+import os
+from flask.ext.login import LoginManager
+from flask.ext.openid import OpenID
+from flask.ext.principal import Principal, Permission, RoleNeed
+
+lm = LoginManager()
+lm.init_app(app)
+lm.login_view = 'auth.login'
+oid = OpenID( app, os.path.join('', 'tmp'))
+
+principal = Principal()
+
+principal.init_app(app)
+
+coach_permission = Permission(RoleNeed('coach'))
+
+HOME_URL = 'http://local.tresback.rhcloud.com:5001'
 
 from wrestling.views.api import api
-
 app.register_blueprint(api)
+from wrestling.views.auth import auth
+app.register_blueprint(auth)
 
 if __name__ == '__main__':
     app.run('127.0.0.1')

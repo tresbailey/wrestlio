@@ -11,9 +11,10 @@ from datetime import datetime
 from functools import partial
 from flask import Module, render_template, request, jsonify, \
     url_for, session, redirect, abort
+from flask.ext.login import login_required
 from pymongo import Connection
 from pymongo.objectid import ObjectId
-from wrestling import db, facebook, redis_cli
+from wrestling import db, redis_cli, coach_permission
 from wrestling.logs import log
 from wrestling.models.wrestler import WrestlingDocument, \
     Wrestler, Schools, Match, Bout, RoundActivity, \
@@ -21,58 +22,6 @@ from wrestling.models.wrestler import WrestlingDocument, \
 import json
 
 api = Module(__name__)
-
-
-def get_local_user(remote_id):
-    return FacebookUser.query.filter(FacebookUser.face_id == remote_id).all()
-
-
-@api.route('/login_user/<fb_user>', methods=['GET'])
-def find_by_login(fb_user):
-    user = get_local_user(fb_user)
-    return json.dumps( user, 
-            default=remove_OIDs) if user else abort(404)
-
-
-@api.route('/login_user/<fb_user>', methods=['PUT'])
-def save_new_login(fb_user):
-    json_data = request.data
-    del json_data['fb_first']
-    del json_data['fb_last']
-    del json_data['fb_pic']
-    del json_data['facebook_id']
-    remote_user = FacebookUser(**json_data)
-    remote_user.face_id = fb_user
-    remote_user._id = ObjectId()
-    remote_user.save()
-    return json.dumps(remote_user,
-            default=remove_OIDs)
-
-
-@api.route('/login/authorized')
-@facebook.authorized_handler
-def facebook_authorized(resp):
-    if resp is None:
-        return 'Access denied: reason=%s error=%s' % (
-            request.args['error_reason'],
-            request.args['error_description']
-        )
-    session['oauth_token'] = (resp['access_token'], '')
-    me = facebook.get('/me')
-    local_user = get_local_user(me.data['id'])
-    if len(local_user) == 0:
-        local_user = FacebookUser()
-        local_user._id = ObjectId()
-        local_user.face_id = me.data['id']
-        local_user.role = 'unmapped'
-        local_user.save()
-    return 'Logged in as id=%s name=%s redirect=%s' % \
-        (me.data['id'], me.data['name'], request.args.get('next'))
-
-
-@facebook.tokengetter
-def get_facebook_oauth_token():
-    return session.get('oauth_token')
 
 
 def remove_OIDs(obj, recursive=False):
@@ -179,8 +128,9 @@ def append_schedule(school):
     school.schedule = all_matches
     return school
 
-
 @api.route('/schools/<school_list>', methods=['GET'])
+@coach_permission.require(http_exception=403)
+@login_required
 def get_school_list( school_list ):
     """
     Receives a query for a list of schools 

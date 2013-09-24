@@ -100,14 +100,11 @@ Backbone.sync = function( method, model, options ) {
 var Session = Backbone.Model.extend({
     default: {
         id: "",
-        facebook_id: "",
-        wrestler_id: "",
         school_id: "",
-        fb_first: "",
-        fb_last: "",
-        fb_pic: "",
         role: "",
-        fb_school: "",
-        email: ""
+        email: "",
+        open_id: {},
+        preferred_name: "",
+        photo: "",
     }
 });
