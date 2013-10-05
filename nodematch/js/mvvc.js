@@ -60,7 +60,7 @@ if (typeof(console.log) == "undefined") { console.log = function() { return 0; }
             initialize: function() {
                 this.userSession = new Session();
                 if ($.cookie('remember_token')) {
-                    this.userSession.url = 'http://local.tresback.rhcloud.com:5001/me';
+                    this.userSession.url = '/me';
                     var that = this;
                     this.userSession.fetch({
                         success: function(model, response, options) {
