@@ -129,8 +129,6 @@ def append_schedule(school):
     return school
 
 @api.route('/schools/<school_list>', methods=['GET'])
-@coach_permission.require(http_exception=403)
-@login_required
 def get_school_list( school_list ):
     """
     Receives a query for a list of schools 
@@ -149,6 +147,8 @@ def get_school_list( school_list ):
 
 
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['PUT'])
+@coach_permission.require(http_exception=403)
+@login_required
 def create_school(competition, area, size, conference, school_name):
     json_data = dict(dict(**request.data), **request.view_args)
     school = Schools( **json_data )
@@ -183,6 +183,8 @@ def prepare_wrestler(wrestler):
 
 
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['POST'])
+@coach_permission.require(http_exception=403)
+@login_required
 def create_wrestler(competition, area, size, conference, school_name):
     school = find_school(**request.view_args)
     json_data = request.data
@@ -223,6 +225,8 @@ def get_school_matches():
     return json.dumps( matches, default=remove_OIDs )
 
 @api.route('/matches', methods=['POST'])
+@coach_permission.require(http_exception=403)
+@login_required
 def create_school_match():
     match = Match(**request.data)
     match.match_date = datetime.strptime(match.match_date, '%Y-%m-%d')
@@ -248,7 +252,6 @@ def reassign_activity(activity_dict):
 
 
 def reassign_bout(bout):
-    #bout['bout_date'] = datetime.strptime(bout.get('bout_date'), '%m-%d-%Y') if bout.has_key('bout_date') else None
     bout['bout_date'] = datetime.fromtimestamp(bout.get('bout_date')/1000)
     bout['winner'] = ObjectId( bout.get('winner') )
     bout = Bout(**bout)
@@ -258,6 +261,8 @@ def reassign_bout(bout):
 
 
 @api.route('/matches/<match_id>', methods=['PUT'])
+@coach_permission.require(http_exception=403)
+@login_required
 def update_school_match(match_id):
     json_data = request.data
     match = Match( **json_data )
@@ -270,6 +275,8 @@ def update_school_match(match_id):
 
 
 @api.route('/matches/<match_id>', methods=['POST'])
+@coach_permission.require(http_exception=403)
+@login_required
 def create_match_bout( match_id ):
     match = find_match( match_id )
     bout_data = request.data
@@ -302,6 +309,8 @@ def get_single_bout(match_id, bout_id):
 
 
 @api.route('/matches/<match_id>/<bout_id>/<wrestler_id>', methods=['POST'])
+@coach_permission.require(http_exception=403)
+@login_required
 def save_wrestler_action(match_id, bout_id, wrestler_id, activity):
     """
     Good candidate to start using some memcache or redis here

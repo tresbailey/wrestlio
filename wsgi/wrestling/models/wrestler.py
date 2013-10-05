@@ -106,17 +106,18 @@ class Match(WrestlingDocument):
 
 
 class FacebookUser(WrestlingDocument):
-    face_id = db.StringField()
-    email = db.StringField()
+    email = db.StringField(required=False)
     school_id = db.ObjectIdField(required=False)
     wrestler_id = db.ObjectIdField(required=False)
     roles = ( 'wrestler', 'coach', 'unmapped')
     role = db.EnumField( db.StringField(),
         *roles )
-    open_id = db.DictField(db.StringField())
+    open_id = db.DictField(db.StringField(), required=False)
     preferred_name = db.StringField(required=False)
-    invite_code = db.ObjectIdField()
-    photo = db.StringField()
+    photo = db.StringField(required=False)
+    confirm_code = db.StringField()
+    first_name = db.StringField(required=False)
+    last_name = db.StringField(required=False)
 
     def is_authenticated(self):
         return True

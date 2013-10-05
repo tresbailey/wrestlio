@@ -106,5 +106,10 @@ var Session = Backbone.Model.extend({
         open_id: {},
         preferred_name: "",
         photo: "",
-    }
+        mongo_id: "",
+        first_name: "",
+        last_name: "",
+        confirm_code: "",
+    },
+    urlRoot: '/users',
 });

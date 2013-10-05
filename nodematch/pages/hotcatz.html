@@ -131,7 +131,7 @@
     </script>
 
     <script type="text/template" id="scheduleTemplate">
-        <% if (userSession.get('school_id') == school.id) { %>
+        <% if (userSession && uuserSession.get('school_id') == school.id) { %>
        <form name="create_match">
            <div class="row">
                 <div class="span6 offset3 thumbnail smallCat">
@@ -295,7 +295,7 @@
 
     <script type="text/template" id="createWrestlerTemplate">
         <div>
-        <% if (userSession.get('school_id') == school.id) { %>OB 
+        <% if (userSession && userSession.get('school_id') == school.id) { %>OB 
             <form>
                 <div class="row">
                 <div class="span6 offset3 thumbnail smallCat">
