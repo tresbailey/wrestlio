@@ -43,8 +43,8 @@ db = MongoAlchemy(app)
 app.secret_key = str(uuid.uuid4())
 DEBUG = True
 
-redis_cli = redis.Redis(host=os.environ.get('OPENSHIFT_REDIS_DB_HOST', 'localhost'), 
-        port=int(os.environ.get('OPENSHIFT_REDIS_DB_PORT', '6379')),
+redis_cli = redis.Redis(host=os.environ.get('OPENSHIFT_REDIS_HOST', 'localhost'), 
+        port=int(os.environ.get('OPENSHIFT_REDIS_PORT', '6379')),
         password=os.environ.get('REDIS_PASSWORD', None))
 
 import os
