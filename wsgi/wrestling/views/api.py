@@ -148,8 +148,6 @@ def get_school_list( school_list ):
 
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['PUT'])
 def create_school(competition, area, size, conference, school_name):
-    import pdb
-    pdb.set_trace()
     school = Schools( **request.data )
     school._id = ObjectId()
     school.wrestlers = dict([ ( wrestler.get('wrestler_id'), prepare_wrestler(Wrestler(**wrestler))) for wrestler in school.wrestlers])
