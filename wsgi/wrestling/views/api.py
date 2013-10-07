@@ -147,8 +147,6 @@ def get_school_list( school_list ):
 
 
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['PUT'])
-@coach_permission.require(http_exception=403)
-@login_required
 def create_school(competition, area, size, conference, school_name):
     json_data = dict(dict(**request.data), **request.view_args)
     school = Schools( **json_data )
