@@ -7,6 +7,7 @@ Created on Sep 2, 2011
 from sets import Set
 import pickle
 import sys
+import uuid
 from datetime import datetime
 from functools import partial
 from flask import Module, render_template, request, jsonify, \
@@ -148,12 +149,13 @@ def get_school_list( school_list ):
 
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['PUT'])
 def create_school(competition, area, size, conference, school_name):
-    school = Schools( **request.data )
+    school = Schools( **dict(request.data.items() + request.view_args.items()) )
     school._id = ObjectId()
     school.wrestlers = dict([ ( wrestler.get('wrestler_id'), prepare_wrestler(Wrestler(**wrestler))) for wrestler in school.wrestlers])
     school.save()
     redis_save(remove_OIDs(school), school.school_name, value_fields=(school.competition, school.area, school.size, 
         school.conference), store_func='rpush')
+    defined_school = redis_cli.hset('coach_confirmation', uuid.uuid4(), school.mongo_id)
     return json.dumps( school, default=remove_OIDs )
 
 
