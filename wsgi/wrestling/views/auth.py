@@ -30,12 +30,12 @@ def app_callback():
                 FacebookUser.open_id == {auth_info['profile']['providerSpecifier']: auth_info['profile']['identifier']}
             ).one()
     except Exception:
-        return redirect(HOME_URL + '/static/pages/hotcatz.html')
+        return redirect('/static/pages/hotcatz.html')
     login_user(user, remember=True)
     g.user = user
     identity = Identity(user.mongo_id)
     identity_changed.send(app, identity=identity)
-    return redirect(HOME_URL +'/static/pages/hotcatz.html')
+    return redirect('/static/pages/hotcatz.html')
 
 
 @auth.route('/register_callback', methods=['POST'])
@@ -53,7 +53,7 @@ def register_callback():
     g.user = user
     identity = Identity(user.mongo_id)
     identity_changed.send(app, identity=identity)
-    return redirect(HOME_URL +'/static/pages/hotcatz.html')
+    return redirect('/static/pages/hotcatz.html')
 
 
 @lm.user_loader

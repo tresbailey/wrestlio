@@ -332,5 +332,5 @@ def create_confirmation_code(object_id):
 @api.route('/confirmation_codes/<object_id>', methods=['GET'])
 def get_confirmation_code(object_id):
     confirmations = redis_cli.hgetall('coach_confirmation')
-    match = dict([(key, value) for key, value in confirmations.items() if value == object_id])
-    return match.keys()[0]
+    match = [key for key, value in confirmations.items() if value == object_id]
+    return match[0]
