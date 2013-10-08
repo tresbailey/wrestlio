@@ -321,3 +321,16 @@ def save_wrestler_action(match_id, bout_id, wrestler_id, activity):
     match.save()
     return json.dumps( activity, default=remove_OIDs )
 
+
+@api.route('/confirmation_codes/<object_id>', methods=['POST'])
+def create_confirmation_code(object_id):
+    new_code = uuid.uuid4()
+    redis_cli.hset('coach_confirmation', str(new_code), object_id)
+    return json.dumps(dict(object_id=object_id, confirmation_code=new_code), default=remove_OIDs)
+
+
+@api.route('/confirmation_codes/<object_id>', methods=['GET'])
+def get_confirmation_code(object_id):
+    confirmations = redis_cli.hgetall('coach_confirmation')
+    match = dict([(key, value) for key, value in confirmations.items() if value == object_id])
+    return match.keys()[0]
