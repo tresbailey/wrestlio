@@ -16,7 +16,7 @@ if (typeof(console.log) == "undefined") { console.log = function() { return 0; }
 
         var CreateUserView = ModalView.extend({
             el: $("#mainMatch"),
-            template: _.template( $("#setupUser").html() ),
+            template: setupUser,
             initialize: function( options ) {
                 this.userSession = options;
                 this.render();
@@ -35,7 +35,7 @@ if (typeof(console.log) == "undefined") { console.log = function() { return 0; }
 
         var LandingView = Backbone.View.extend({
             el: $("#mainMatch"),
-            template: _.template( $("#landingSchoolsTemplate").html() ),
+            template: landingSchoolsTemplate,
             initialize: function() {
                 select_request = $.ajax( {
                     url: BASEURL +'/staticData/school_hash',
@@ -56,7 +56,7 @@ if (typeof(console.log) == "undefined") { console.log = function() { return 0; }
 
         var SessionView = Backbone.View.extend({
             el: $("#loginDetails"),
-            template: _.template( $("#landingLogin").html() ),
+            template: landingLogin,
             initialize: function() {
                 this.userSession = new Session();
                 if ($.cookie('remember_token')) {
@@ -159,7 +159,7 @@ if (typeof(console.log) == "undefined") { console.log = function() { return 0; }
 
         var ScheduleView = Backbone.View.extend({
             el: $("#mainMatch"),
-            template: _.template( $("#scheduleTemplate").html() ),
+            template: scheduleTemplate,
             initialize: function() {
             },
             render: function() {
@@ -197,7 +197,7 @@ if (typeof(console.log) == "undefined") { console.log = function() { return 0; }
         var RosterEditView = Backbone.View.extend({
             
             el: $("#fullMatch"),
-            template: _.template( $("#createWrestlerTemplate").html() ),
+            template: createWrestlerTemplate,
             initialize: function( school ) {
                 this.model = school;
                 this.wrestlers = new Wrestlers();

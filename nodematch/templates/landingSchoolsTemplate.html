@@ -1,0 +1,28 @@
+<ul >
+    <li class="">
+      <ul class="" id="">
+        <% _.each(_.pairs(select_values['High School']), function(states, ind1) { %>
+        <li class="">
+          <%= states[0] %>
+          <ul class="">
+            <% _.each(_.pairs(states[1]), function(classes, ind2) { %>
+            <li class=""><%=classes[0] %>
+                <ul class="">
+                <% _.each(_.pairs(classes[1]), function(region, ind3) { %>
+                    <li class=""><%= region[0] %>
+                        <ul class="">
+                            <% _.each(region[1], function(sch, ind4) { %>
+                            <li><a href="#schedule/<%= sch._id %>"><%= sch.school_name %></a></li>
+                            <% }) %>
+                        </ul>
+                    </li>
+                <% }) %>
+                </ul>
+            </li>
+            <% }) %>
+          </ul>
+        </li>  
+        <% }) %>
+      </ul>
+    </li>
+</ul>

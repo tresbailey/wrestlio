@@ -1,0 +1,4 @@
+<% _(_.filter(_.values(move_lookup), function(val) { return moveComparison(val, wrestler);})).each(function(move, index) { %>
+    <button class="btn btn-<%= color == 'red' ? 'danger': 'success' %>" id="<%= move.get('move_id') %>"><%= move.get('move_name') %></button>
+<%});%>
+

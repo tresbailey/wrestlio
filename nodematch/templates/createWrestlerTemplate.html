@@ -1,0 +1,20 @@
+<div>
+<% if (userSession && userSession.get('school_id') == school.id) { %>B 
+    <form>
+        <div class="row">
+        <div class="span6 offset3 thumbnail smallCat">
+            <div class="pagination-centered">
+                <div>First Name: <input type="text" name="first_name" /></div>
+                <div>Last Name: <input type="text" name="last_name" /></div>
+                <div>Normal Weight: <input type="text" name="avg_wt" /></div>
+                <div>Qualified Weight: <input type="text" name="qual_wt" /></div>
+                <a href="#" id="create_wrestler" class="btn btn-inverse">Save Wrestler</a>
+            </div>
+        </div>
+    </div>
+    </form>
+    <% } %>
+    <div id="existingRoster">
+    </div>
+</div>
+

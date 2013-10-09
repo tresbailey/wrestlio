@@ -1,0 +1,32 @@
+<ul class="nav nav-pills">
+    <li class="dropdown">
+      <a href="#" data-toggle="dropdown" id="school_selection" class="dropdown-toggle">Opponent <b class="caret"></b></a>
+      <ul class="dropdown-menu" id="menu1">
+        <% _.each(_.pairs(select_values), function(states, ind1) { %>
+        <li class="dropdown-submenu">
+          <a href="#"><%= states[0] %></a>
+          <ul class="dropdown-menu">
+            <% _.each(_.pairs(states[1]), function(classes, ind2) { %>
+            <li class="dropdown-submenu"><a href="#"><%=classes[0] %></a>
+                <ul class="dropdown-menu">
+                <% _.each(_.pairs(classes[1]), function(region, ind3) { %>
+                    <li class="dropdown-submenu"><a href="#"><%=region[0] %></a>
+                        <ul class="dropdown-menu">
+                            <% _.each(region[1], function(school, ind4) { %>
+                            <li><a class="school_select" href="#">
+                                <%= school.school_name %>
+                                <input type="hidden" value="<%=school._id %>" />
+                            </a></li>
+                            <% }) %>
+                        </ul>
+                    </li>
+                <% }) %>
+                </ul>
+            </li>
+            <% }) %>
+          </ul>
+        </li>  
+        <% }) %>
+      </ul>
+    </li>
+</ul>

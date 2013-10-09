@@ -1,0 +1,21 @@
+<% var total = 0 %>
+<% _.each( collection.models, function(wrestler, index) { %>
+    <% if ( index % 2 == 0 ) { %>
+    <div class="row">
+    <% } %>
+        <div class="span5 thumbnail smallCat">
+            <div class="pagination-centered">
+                Name: <%= wrestler.get('first_name') %> <%= wrestler.get('last_name') %>
+                Weight: <%= wrestler.get('normal_weight') %>
+                Wins: <%= wrestler.get('wins') %>
+                Losses: <%= wrestler.get('losses') %>
+            </div>
+        </div>
+    <% total = index %>
+    <% if ( index % 2 == 1 ) { %>
+    </div>
+    <% } %>
+<% }) %>
+<% if ( total % 2 == 0 ) { %>
+</div>
+<% } %>

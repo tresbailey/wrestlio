@@ -1,0 +1,17 @@
+<div id="<%=model.get('weight_class')%>Bout" class="row">
+    <div class="span4">
+Name: <%= model.get('green_wrestler').get('first_name') %> <%= model.get('green_wrestler').get('last_name') %>
+Weight: <%= model.get('green_wrestler').get('normal_weight') %>
+Wins: <%= model.get('green_wrestler').get('wins') %>
+Losses: <%= model.get('green_wrestler').get('losses') %>
+    </div>
+    <div class="span3 pagination-centered">
+        <button class="btn btn-inverse">Let's Wrestle!</button>
+    </div>
+    <div class="span4">
+Name: <%= model.get('red_wrestler').get('first_name') %> <%= model.get('red_wrestler').get('last_name') %>
+Weight: <%= model.get('red_wrestler').get('normal_weight') %>
+Wins: <%= model.get('red_wrestler').get('wins') %>
+Losses: <%= model.get('red_wrestler').get('losses') %>
+    </div>
+</div>

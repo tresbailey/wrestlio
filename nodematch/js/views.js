@@ -3,7 +3,7 @@ var SmallWrestlerView = Backbone.View.extend({
     /*
     Renders a single wrestler in the list view
     */
-    template: _.template( $("#smallWrestlerTemplate").html() ),
+    template: smallWrestlerTemplate,
     initialize: function(options) {
         this.weight = options.weight;
         this.color = options.color;
@@ -26,7 +26,7 @@ var WrestlersView = Backbone.View.extend({
     /*
     Renders the list view of all cats
     */
-    template: _.template( $("#teamWrestlersTemplate").html() ),
+    template: teamWrestlersTemplate,
     initialize: function(models, options) {
         this.collection = models;
         console.log("Initiing the list view: "+ this.collection);
@@ -42,7 +42,7 @@ var WrestlersView = Backbone.View.extend({
 });
 
 var ClockView = Backbone.View.extend({
-    template: _.template( $("#boutClockTemplate").html() ),
+    template: boutClockTemplate,
     canvas_element: "",
     initialize: function(options) {
         this.el = options.el;
@@ -110,7 +110,7 @@ var BoutView = Backbone.View.extend({
     /*
     Renders the one on one matchup between 2 wrestlers
     */
-    template: _.template( $("#mainBoutTemplate").html() ),
+    template: mainBoutTemplate,
     initialize: function() {
         this.model.get('clock');
         this.boutClockView = new ClockView({model: this.model.get('clock'), el: $("#boutClock")});
@@ -253,7 +253,7 @@ var MovesView = Backbone.View.extend({
 });
 
 var SmallBoutView = Backbone.View.extend({
-    template: _.template( $("#smallBoutTemplate").html() ),
+    template: smallBoutTemplate,
     initialize: function() {
         //this._childN = options.childN + 1;
     },
@@ -270,7 +270,7 @@ var SmallBoutView = Backbone.View.extend({
 });
     
 var BoutsCollView = Backbone.View.extend({
-    template: _.template( $("#matchBoutsTemplate").html() ),
+    template: matchBoutsTemplate,
     initialize: function() {
         var that =  this;
     },
@@ -292,7 +292,7 @@ var BoutsCollView = Backbone.View.extend({
 });
 
 var BoutSetupView = ModalView.extend({
-    template: _.template( $("#boutSetupTemplate").html() ),
+    template: boutSetupTemplate,
     initialize: function(options) {
         get_weight_classes = $.ajax( {
             url: BASEURL + '/staticData/hsWeightClasses',
@@ -364,7 +364,7 @@ var BoutSetupView = ModalView.extend({
 });
 
 var MatchView = ModalView.extend({
-    template: _.template( $("#mainMatchTemplate").html() ),
+    template: mainMatchTemplate,
     _boutIndex: 0,
     currentBout: undefined,
     initialize: function(options) {
@@ -448,7 +448,7 @@ var MatchView = ModalView.extend({
 
 var SchoolSelectView = Backbone.View.extend({
     el: $("#createMatchOpp"),
-    template: _.template( $("#breakoutSchoolSelect").html() ),
+    template: breakoutSchoolSelect,
     initialize: function() {
         select_request = $.ajax( {
             url: BASEURL +'/staticData/school_hash',

@@ -1,0 +1,7 @@
+<% if ( !userSession.get('open_id') ) { %>
+    <a class="btn" href="new_user.html">Register</a>
+    <a class="janrainEngage" href="#">Login</a>
+<% } else { %>
+    <%= userSession.get('preferred_name')%>
+    <img src="<%= userSession.get('photo')%>" />
+<% } %>

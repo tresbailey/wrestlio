@@ -1,0 +1,33 @@
+<div id="boutClock" class="row">
+      <div class="span2 offset5 centered">
+          <div style="padding-left: 5px;">
+              <div class="photo-group thumbnail">
+                  <div href="#" class="photo-wrapper">
+                      <div class="photo">
+                          <canvas id="pie-countdown" class="runningClock" height="150px" width="300px"> 
+                          Sorry, it doesn't work for you.
+                          </canvas>
+                          <div class="vote-group">
+                              <a href="#" id="voteBtn" class="vote-wrapper voteBtn">
+                                  <div class="vote">
+                                      <div class="vote-label-left" style="left: -92px; bottom: 22px">
+                                          <h1 class="btnText">
+                                              <small>
+                                                  <div id="left" style="color: #aaaaaa">
+                                                      <%= model.get('str_clock') %>
+                                                  </div>                
+                                                  <div id="secondsleft" style="display: none">
+                                                      <%= model.get('left') %>
+                                                  </div>
+                                              </small>
+                                          </h1>
+                                      </div>
+                                  </div>
+                              </a>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>

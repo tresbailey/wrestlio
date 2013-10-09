@@ -1,0 +1,3 @@
+<% _(_.filter(actions.models, function(mod) { return (mod.get('actor') == wrestler.id && round == mod.get('round_number')) ;})).each(function(val, index) { %>
+    <button class="btn btn-<%= color == 'red' ? 'danger': 'success' %>"><%= val.get('point_value') %></button>
+<%});%>

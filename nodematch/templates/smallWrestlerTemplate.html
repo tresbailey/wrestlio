@@ -1,0 +1,15 @@
+<div class="span1 smallCat ">
+    <h3>
+    <small>
+        <div><b>Name:</b> <%= wrestler.get('first_name') %> <%= wrestler.get('last_name') %></div>
+        <div><b>Weight:</b> <%= wrestler.get('normal_weight') %></div>
+        <div><b>Wins:</b> <%= wrestler.get('wins') %></div>
+        <div><b>Losses:</b> <%= wrestler.get('losses') %></div>
+        <input type="hidden" value="<%= wrestler.id %>" name="wrest_id" />
+    </small>
+    </h3>
+</div>
+<div class="span1 smallCat">
+    <button class="btn choose btn-<%= color=='green'? 'success' : 'danger' %>">Select</button>
+</div>
+
