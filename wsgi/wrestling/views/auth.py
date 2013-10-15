@@ -6,7 +6,7 @@ from flask.ext.principal import identity_loaded, RoleNeed, UserNeed, Identity, i
 from wrestling import app, lm, oid, HOME_URL, principal, redis_cli
 from pymongo.objectid import ObjectId
 from wrestling.models.wrestler import FacebookUser
-from wrestling.views.api import remove_OIDs
+from wrestling.views import remove_OIDs
 
 auth = Blueprint('auth', __name__,
         template_folder='templates', static_folder='static')

@@ -295,7 +295,7 @@ raw_schools = [
          
 
 def create_school(school):
-    url = Template('http://takedown-tresback.rhcloud.com/$competition/$area/$size/$conference/$school_name').substitute(school)
+    url = Template('http://local.tresback.rhcloud.com:5001/$competition/$area/$size/$conference/$school_name').substitute(school)
     requests.put(url, data=json.dumps(school))
 
 

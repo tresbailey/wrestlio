@@ -456,13 +456,14 @@ var SchoolSelectView = Backbone.View.extend({
             dataType: 'json'
         });
         var that = this;
+        that.all_schools = new Schools();
         select_request.done( function(data) {
             that.select_values = data;
             that.render();
         });
     },
     render: function() {
-        $("#createMatchOpp").html( this.template( {select_values: this.select_values['High School']} ) );
+        $("#createMatchOpp").html( this.template( {select_values: this.select_values['High School'], all_schools: this.all_schools} ) );
         return this;
     },
 });

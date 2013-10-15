@@ -97,17 +97,11 @@ if (typeof(console.log) == "undefined") { console.log = function() { return 0; }
                 console.log("Initing the main view!!");
                 var red_school = new School();
                 red_school.url = BASEURL + '/High%20School/SC/3A/Region%20II/Broome';
-                //red_school.url = 'http://localhost:5001/High%20School/SC/3A/Region%20II/Walhalla';
-                //red_school.url = 'https://takedownRest-tresback.rhcloud.com/High%20School/SC/3A/Region%20II/Broome';
                 var green_school = new School();
                 green_school.url = BASEURL + '/High%20School/SC/3A/Region%20II/Chester';
-                //green_school.url = 'http://localhost:5001/High%20School/SC/3A/Region%20II/Seneca';
-                //green_school.url = 'https://takedownRest-tresback.rhcloud.com/High%20School/SC/3A/Region%20II/Chester';
                 var schools = new Schools();
                 this.matches = new Matches();
                 this.matches.url = BASEURL + '/matches';
-                //this.matches.url = 'http://localhost:5001/matches';
-                //this.matches.url = 'https://takedownRest-tresback.rhcloud.com/matches';
                 this.matches.add( new Match() );
                 this.currentMatch = this.matches.at(0);
                 this.currentMatch.id = '510d3883319d7d3728000001';
@@ -155,16 +149,26 @@ if (typeof(console.log) == "undefined") { console.log = function() { return 0; }
             return new Wrestlers(inList);
         }
 
-        //mainV = new MainView();
-
         var ScheduleView = Backbone.View.extend({
             el: $("#mainMatch"),
             template: scheduleTemplate,
             initialize: function() {
             },
             render: function() {
-                $(this.el).html( this.template( this ) );
                 this.selectSchool = new SchoolSelectView(); 
+                this.all_schools = {};
+                var that = this;
+                /*
+                new Schools().fetch({
+                    success: function(collection, response, opts) {
+                        collection.each(function(model, index, list) {
+                            that.all_schools[model.get('_id')] = model.get('school_name');
+                        });
+                        $(that.el).html( that.template( that ) );
+                    }
+                });
+                */
+                $(that.el).html( that.template( that ) );
                 return this;
             },
             events: {
@@ -202,8 +206,6 @@ if (typeof(console.log) == "undefined") { console.log = function() { return 0; }
                 this.model = school;
                 this.wrestlers = new Wrestlers();
                 this.model.url = BASEURL + '/'+ this.model.get('competition') 
-                //this.model.url = 'http://localhost:5001/'+ this.model.get('competition') 
-                //this.model.url = 'https://takedownRest-tresback.rhcloud.com/'+ this.model.get('competition') 
                     +'/'+ this.model.get('area') +'/'+ this.model.get('size')
                     +'/'+ this.model.get('conference') +'/'+ this.model.get('school_name');
                 var that = this;
@@ -240,14 +242,18 @@ if (typeof(console.log) == "undefined") { console.log = function() { return 0; }
         var school = new School();
         school.id = school_id;
         school.url = BASEURL + '/schools/'+ school.id +'?qschedule=true';
-        //school.url = 'http://localhost:5001/schools/'+ school.id +'?qschedule=true';
-        //school.url = 'https://takedownRest-tresback.rhcloud.com/schools/'+ school.id +'?qschedule=true';
         var matches;
         school.fetch({
             success: function(model, response, options) {
                 school = new School(model.attributes[0]);
                 school.id = model.attributes[0]._id;
-                matches = new Matches(model.attributes[0].schedule);
+                matches = new Matches();
+                _.each(model.attributes[0].schedule, function(mup, index,list) {
+                    var match = new Match(mup);
+                    matches.add(match);
+                    match.set('home_school', new School(match.get('home_school')));
+                    match.set('visit_school', new School(match.get('visit_school')));
+                });
                 var schedule = new ScheduleView();
                 schedule.school = school;
                 schedule.matches = matches;
@@ -286,22 +292,25 @@ if (typeof(console.log) == "undefined") { console.log = function() { return 0; }
                 });
                 var schools = new Schools();
                 get_teams.done( function(data) {
-                    my_team = new School(data[0]);
+                    var t_schools = new Backbone.Collection(data);
+                    my_team = t_schools.get( school_id );
                     my_team.url = BASEURL + '/'+ my_team.get('competition') +'/'+
                         my_team.get('area') +'/'+ my_team.get('size') +'/'+
                         my_team.get('conference');
                     var my_wrestlers = setup_school_wrestlers(my_team.get('wrestlers'));
                     my_team.set('wrestlers', my_wrestlers);
                     schools.add(my_team);
-                    opponent = new School(data[1]);
+                    opponent = t_schools.get(opponent_id);
                     opponent.url = BASEURL + '/'+ opponent.get('competition') +'/'+
                         opponent.get('area') +'/'+ opponent.get('size') +'/'+
                         opponent.get('conference');
                     var opp_wrestlers = setup_school_wrestlers(opponent.get('wrestlers'));
                     opponent.set('wrestlers', opp_wrestlers);
                     schools.add(opponent);
-                    match.set('home_school', my_team.id == match.get('home_school') ? my_team : opponent);
-                    match.set('visit_school', my_team.id == match.get('home_school') ? opponent: my_team );
+                    var home_school = my_team.id == match.get('home_school') ? my_team : opponent;
+                    var visit_school = my_team.id == match.get('home_school') ? opponent: my_team ;
+                    match.set('home_school', home_school);
+                    match.set('visit_school', visit_school);
                     var matchView = new MatchView({model: match, el: $("#matchDetails")});
                     matchView.add_schools();
                 });

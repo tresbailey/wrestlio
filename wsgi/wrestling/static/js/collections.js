@@ -5,6 +5,7 @@ var Bouts = Backbone.Collection.extend({
     }
 });
 var Schools = Backbone.Collection.extend({
+    url: "/",
     initialize: function() {
     }
 });

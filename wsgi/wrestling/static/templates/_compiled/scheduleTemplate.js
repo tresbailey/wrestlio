@@ -10,25 +10,25 @@ __p+='\n<ul>\n    ';
 __p+='\n        <li>\n        '+
 ((__t=( match.get('match_date') ))==null?'':__t)+
 ' - \n        ';
- if ( match.get('home_school') == school.id ) { 
+ if ( match.get('home_school').id == school.get('id') ) { 
 __p+='\n            VS - <a href="#match/'+
-((__t=( school.id ))==null?'':__t)+
+((__t=( school.get('id') ))==null?'':__t)+
 '/'+
-((__t=( match.get('visit_school') ))==null?'':__t)+
+((__t=( match.get('visit_school').id ))==null?'':__t)+
 '/'+
-((__t=( match.get('match_id') ))==null?'':__t)+
+((__t=( match.get('id') ))==null?'':__t)+
 '">'+
-((__t=( match.get('visit_school') ))==null?'':__t)+
+((__t=( match.get('visit_school').get('school_name') ))==null?'':__t)+
 '</a>\n        ';
  } else { 
 __p+='\n            AT - <a href="#match/'+
-((__t=( school.id ))==null?'':__t)+
+((__t=( school.get('id') ))==null?'':__t)+
 '/'+
-((__t=( match.get('home_school') ))==null?'':__t)+
+((__t=( match.get('home_school').id ))==null?'':__t)+
 '/'+
-((__t=(match.get('match_id')))==null?'':__t)+
+((__t=(match.get('id')))==null?'':__t)+
 '">'+
-((__t=( match.get('home_school') ))==null?'':__t)+
+((__t=( match.get('home_school').get('school_name') ))==null?'':__t)+
 '</a>\n        ';
  } 
 __p+='\n        </li>\n    ';

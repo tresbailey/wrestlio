@@ -21,10 +21,10 @@
     <% _.each(matches.models, function(match, index) { %>
         <li>
         <%= match.get('match_date') %> - 
-        <% if ( match.get('home_school') == school.id ) { %>
-            VS - <a href="#match/<%= school.id %>/<%= match.get('visit_school') %>/<%= match.get('match_id') %>"><%= match.get('visit_school') %></a>
+        <% if ( match.get('home_school').id == school.get('id') ) { %>
+            VS - <a href="#match/<%= school.get('id') %>/<%= match.get('visit_school').id %>/<%= match.get('id') %>"><%= match.get('visit_school').get('school_name') %></a>
         <% } else { %>
-            AT - <a href="#match/<%= school.id %>/<%= match.get('home_school') %>/<%=match.get('match_id')%>"><%= match.get('home_school') %></a>
+            AT - <a href="#match/<%= school.get('id') %>/<%= match.get('home_school').id %>/<%=match.get('id')%>"><%= match.get('home_school').get('school_name') %></a>
         <% } %>
         </li>
     <% }) %>

@@ -20,20 +20,10 @@ from wrestling.logs import log
 from wrestling.models.wrestler import WrestlingDocument, \
     Wrestler, Schools, Match, Bout, RoundActivity, \
     FacebookUser
+from wrestling.views import remove_OIDs
 import json
 
 api = Module(__name__)
-
-
-def remove_OIDs(obj, recursive=False):
-    """
-    Removes the ObjectID types from an object 
-    before returning
-    """
-    if isinstance(obj, list):
-        return [remove_OIDs(ob) for ob in obj]
-    elif isinstance(obj, WrestlingDocument):
-        return obj.clean4_dump()
 
 
 def find_school(competition="", area="", size="", conference="", school_name="", **kwargs):
@@ -118,14 +108,20 @@ get_school_by_list = lambda sclist: Schools.query.filter(Schools._id.in_(*sclist
 def append_schedule(school):
     all_matches = Match.query.or_(Match.home_school == school._id,
         Match.visit_school == school._id).all()
-    pick_other = lambda match: match.home_school if school._id == match.visit_school else match.visit_school
+    def pick_other(match):
+        if match.home_school != school._id:
+            return match.home_school
+        return match.visit_school
     school_list = Set( [pick_other(match) for match in all_matches] )
-    schools_full = dict([(school._id, school.school_name) for school in get_school_by_list( school_list )])
+    schools_full = dict([(sch._id, sch) for sch in get_school_by_list( school_list )])
+    schools_full[school._id] = school
     for match in all_matches:
         # Replace the school id with the school repr if its in schools_full
         # which means its not equal to this school.  if not found just id will be there
         match.home_school = schools_full.get(match.home_school, match.home_school)
+        match.home_school = match.home_school.clean4_dump()
         match.visit_school = schools_full.get(match.visit_school, match.visit_school)
+        match.visit_school = match.visit_school.clean4_dump()
     school.schedule = all_matches
     return school
 
@@ -135,15 +131,10 @@ def get_school_list( school_list ):
     Receives a query for a list of schools 
     """
     school_list = [ObjectId(school) for school in school_list.split(",")]
-    #all_schools = Schools.query.filter(Schools._id.in_(*school_list)).all()
     all_schools = get_school_by_list(school_list)
     if request.args.get('qschedule'):
         all_schools = [ append_schedule(school)
             for school in all_schools]
-        custom_def = lambda x: [dict(schedule=remove_OIDs(school.schedule), 
-            **remove_OIDs(school)) 
-            for school in x]
-        return json.dumps( custom_def(all_schools) )
     return json.dumps( all_schools, default=remove_OIDs )
 
 

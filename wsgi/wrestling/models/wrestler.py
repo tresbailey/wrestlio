@@ -1,32 +1,7 @@
 from datetime import datetime
 from pymongo.objectid import ObjectId
 from wrestling import db
-
-class WrestlingDocument(db.Document):
-
-    def clean4_dump(self):
-        """
-        Removes the ObjectID types from an object 
-        before returning
-        """
-        response = dict(self._field_values)
-        for field in self._fields:
-            try:
-                field_value = self.__getattribute__(field)
-                if isinstance(field_value, 
-                        ObjectId):
-                    response[field] = str(self.__getattribute__(field))
-                elif isinstance( field_value, list):
-                    field_value = [ value.clean4_dump() for 
-                            value in field_value ]
-                    response[field] = field_value
-                elif isinstance( field_value,
-                        dict):
-                    field_value = dict( [ (str(key), value.clean4_dump()) for key, value in field_value.items() ])
-                    response[field] = field_value
-            except AttributeError:
-                continue
-        return response
+from wrestling.models import WrestlingDocument
     
     
 class RoundActivity(WrestlingDocument):
@@ -80,6 +55,7 @@ class Schools(WrestlingDocument):
     city = db.StringField()
     county = db.StringField()
     wrestlers = db.KVField( db.ObjectIdField(), db.DocumentField( Wrestler ) )
+    schedule = db.AnythingField(required=False)
 
 
 class Match(WrestlingDocument):
@@ -91,18 +67,18 @@ class Match(WrestlingDocument):
     visit_score = db.IntField()
     individual_bouts = db.ListField( db.DocumentField( Bout ) )
 
-    def clean4_dump(self):
-        """
-        Removes the ObjectID types from an object 
-        before returning
-        """
-        response = dict(self._field_values)
-        response['match_id'] = str(self._id)
-        response['home_school'] = str(self.home_school)
-        response['visit_school'] = str(self.visit_school)
-        response['match_date'] = self.match_date.strftime('%m/%d/%Y')
-        response['_id'] = str(response['_id'])
-        return response
+    #def clean4_dump(self):
+    #    """
+    #    Removes the ObjectID types from an object 
+    #    before returning
+    #    """
+    #    response = dict(self._field_values)
+    #    response['match_id'] = str(self._id)
+    #    response['home_school'] = str(self.home_school)
+    #    response['visit_school'] = str(self.visit_school)
+    #    response['match_date'] = self.match_date.strftime('%m/%d/%Y')
+    #    response['_id'] = str(response['_id'])
+    #    return response
 
 
 class FacebookUser(WrestlingDocument):
