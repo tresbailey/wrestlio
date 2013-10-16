@@ -70,6 +70,7 @@ def save_static_data(static_key):
 @api.route('/staticData/<static_key>', methods=['GET'])
 def get_static_data(static_key):
     if bool(request.args.get('qrefresh')):
+        redis_cli.set('school_hash', pickle.dumps({}) )    
         [ redis_save(remove_OIDs(school), school.school_name, value_fields=(school.competition, school.area, school.size, 
             school.conference), store_func='rpush')
             for school in mongo_q()]
