@@ -246,7 +246,7 @@ if (typeof(console.log) == "undefined") { console.log = function() { return 0; }
         school.fetch({
             success: function(model, response, options) {
                 school = new School(model.attributes[0]);
-                school.id = model.attributes[0]._id;
+                school.id = model.attributes[0].id;
                 matches = new Matches();
                 _.each(model.attributes[0].schedule, function(mup, index,list) {
                     var match = new Match(mup);
