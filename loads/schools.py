@@ -292,10 +292,67 @@ raw_schools = [
             county='Greenville',
             wrestlers=[])
         ]
-         
+
+raw_schools = [
+         dict(
+             competition='High School',
+             area='SC',
+             size='2A',
+             conference='Region II',
+             school_name='Broome High School',
+             city='Spartanburg',
+             county='Spartanburg',
+             wrestlers=[]),
+         dict(
+             competition='High School',
+             area='SC',
+             size='2A',
+             conference='Region II',
+             school_name='Woodruff High School',
+             city='Woodruff',
+             county='Spartanburg',
+             wrestlers=[]),
+         dict(
+             competition='High School',
+             area='SC',
+             size='2A',
+             conference='Region II',
+             school_name='Southside High School',
+             city='Greenville',
+             county='Greenville',
+             wrestlers=[]),
+         dict(
+             competition='High School',
+             area='SC',
+             size='2A',
+             conference='Region II',
+             school_name='Chesnee High School',
+             city='Chesnee',
+             county='Spartanburg',
+             wrestlers=[]),
+         dict(
+             competition='High School',
+             area='SC',
+             size='2A',
+             conference='Region II',
+             school_name='Palmetto High School',
+             city='Williamston',
+             county='Anderson',
+             wrestlers=[]),
+         dict(
+             competition='High School',
+             area='SC',
+             size='2A',
+             conference='Region II',
+             school_name='Carolina High School',
+             city='Greenville',
+             county='Greenville',
+             wrestlers=[])
+]
 
 def create_school(school):
-    url = Template('http://local.tresback.rhcloud.com:5001/$competition/$area/$size/$conference/$school_name').substitute(school)
+    #url = Template('http://local.tresback.rhcloud.com:5001/$competition/$area/$size/$conference/$school_name').substitute(school)
+    url = Template('https://takedown-tresback.rhcloud.com/$competition/$area/$size/$conference/$school_name').substitute(school)
     requests.put(url, data=json.dumps(school))
 
 
