@@ -20,64 +20,14 @@ from wrestling.logs import log
 from wrestling.models.wrestler import WrestlingDocument, \
     Wrestler, Schools, Match, Bout, RoundActivity, \
     FacebookUser
+from wrestling.storage import redis_save, mongo_q, redis_q
+from wrestling.storage.match import add_qparam_searches, reassign_activity, reassign_bout, reassign_activity, find_bout, find_match
+from wrestling.storage.school import find_school, append_schedule, get_school_by_list
+from wrestling.storage.wrestler import wrestler_object
 from wrestling.views import remove_OIDs
 import json
 
 api = Module(__name__)
-
-
-def find_school(competition="", area="", size="", conference="", school_name="", **kwargs):
-    return Schools.query.filter( *(Schools.competition == competition,
-        Schools.area == area,
-        Schools.size == size,
-        Schools.conference == conference,
-        Schools.school_name == school_name) ).one()
-
-
-def redis_save(savee, key_field='', value_fields=(), serializer=str, deserializer=dict, store_func=set):
-    loaded_str = redis_cli.get('school_hash')
-    hashed = pickle.loads(loaded_str) if loaded_str is not None else {}
-    dlist_keys = lambda obj, key: {key: obj}
-    if hasattr(savee, '_field_values'):
-        savee = savee._field_values
-    base = [savee]
-    for keyf in reversed(value_fields):
-        base = dlist_keys(base, keyf)
-    search = hashed
-    for keyf in value_fields:
-        if keyf not in search:
-            search[keyf] = base[keyf]
-        elif isinstance(base[keyf], list):
-            search[keyf] = base[keyf] + search[keyf] if base[keyf] != search[keyf] else search[keyf]
-        search = search[keyf]
-        base = base[keyf]
-    savee['_id'] =  str(savee['_id'])
-    redis_cli.set('school_hash', pickle.dumps(hashed) )    
-    return base
-   
-
-mongo_q = lambda: Schools.query.all()
-redis_q = lambda: redis_cli.get('school_dict')
-
-
-@api.route('/staticData/<static_key>', methods=['PUT'])
-def save_static_data(static_key):
-    savee = request.data
-    redis_cli.set(static_key, pickle.dumps(savee))
-    return json.dumps( savee )
-
-
-@api.route('/staticData/<static_key>', methods=['GET'])
-def get_static_data(static_key):
-    if bool(request.args.get('qrefresh')):
-        redis_cli.set('school_hash', pickle.dumps({}) )    
-        [ redis_save(remove_OIDs(school), school.school_name, value_fields=(school.competition, school.area, school.size, 
-            school.conference), store_func='rpush')
-            for school in mongo_q()]
-    lookup_value = redis_cli.get(static_key)
-    lookup_value = pickle.loads(lookup_value) if lookup_value is not None else {}
-    log.debug("GOt back a pickle: %s " % lookup_value)
-    return json.dumps( lookup_value, default=remove_OIDs )
 
 
 @api.route('/', methods=['GET'])
@@ -104,28 +54,6 @@ def show_school_info(competition, area, size, conference, school_name):
         log.error("Unexpected error:", sys.exc_info()[0])
         raise
 
-get_school_by_list = lambda sclist: Schools.query.filter(Schools._id.in_(*sclist)).all()
-
-def append_schedule(school):
-    all_matches = Match.query.or_(Match.home_school == school._id,
-        Match.visit_school == school._id).all()
-    def pick_other(match):
-        if match.home_school != school._id:
-            return match.home_school
-        return match.visit_school
-    school_list = Set( [pick_other(match) for match in all_matches] )
-    schools_full = dict([(sch._id, sch) for sch in get_school_by_list( school_list )])
-    schools_full[school._id] = school
-    for match in all_matches:
-        # Replace the school id with the school repr if its in schools_full
-        # which means its not equal to this school.  if not found just id will be there
-        match.home_school = schools_full.get(match.home_school, match.home_school)
-        match.home_school = match.home_school.clean4_dump()
-        match.visit_school = schools_full.get(match.visit_school, match.visit_school)
-        match.visit_school = match.visit_school.clean4_dump()
-    school.schedule = all_matches
-    return school
-
 @api.route('/schools/<school_list>', methods=['GET'])
 def get_school_list( school_list ):
     """
@@ -143,7 +71,7 @@ def get_school_list( school_list ):
 def create_school(competition, area, size, conference, school_name):
     school = Schools( **dict(request.data.items() + request.view_args.items()) )
     school._id = ObjectId()
-    school.wrestlers = dict([ ( wrestler.get('wrestler_id'), prepare_wrestler(Wrestler(**wrestler))) for wrestler in school.wrestlers])
+    school.wrestlers = dict([ ( wrestler.get('wrestler_id'), wrestler_object(Wrestler(**wrestler))) for wrestler in school.wrestlers])
     school.save()
     redis_save(remove_OIDs(school), school.school_name, value_fields=(school.competition, school.area, school.size, 
         school.conference), store_func='rpush')
@@ -164,15 +92,6 @@ def show_wrestler_info(competition, area, size, conference, school_name, wrestle
             None)
     return json.dumps( wrestler, default=remove_OIDs )
 
-def prepare_wrestler(wrestler):
-    wrestler.wrestler_id = ObjectId()
-    wrestler.wins = int(wrestler.wins)
-    wrestler.losses = int(wrestler.losses)
-    wrestler.qualified_weight = int(wrestler.qualified_weight)
-    wrestler.normal_weight = int(wrestler.normal_weight)
-    return wrestler
-
-
 @api.route('/<competition>/<area>/<size>/<conference>/<school_name>', methods=['POST'])
 @coach_permission.require(http_exception=403)
 @login_required
@@ -180,7 +99,7 @@ def create_wrestler(competition, area, size, conference, school_name):
     school = find_school(**request.view_args)
     json_data = request.data
     wrestler = Wrestler( **json_data )
-    wrestler = prepare_wrestler(wrestler)
+    wrestler = wrestler_object(wrestler)
     try:
         school.__getattribute__("wrestlers")
     except AttributeError: 
@@ -191,23 +110,6 @@ def create_wrestler(competition, area, size, conference, school_name):
     school.save()
     return json.dumps( school, default=remove_OIDs )
 
-
-def prepare_school( school, converter=str ): 
-    school = converter(school)
-    return school
-
-
-def add_qparam_searches( query, query_params, school_param='qschool' ):
-    filter_list = list()
-    if query_params.has_key( school_param ):
-        query = query.or_( Match.home_school == ObjectId(query_params.get(school_param)),
-                Match.visit_school == ObjectId(query_params.get(school_param)) )
-    if query_params.has_key('qdate'):
-        filter_list.append( Match.match_date == 
-            datetime.strptime(query_params.get('qdate'),
-                '%m/%d/%Y'))
-    return query.filter( *filter_list )
-   
 
 @api.route('/matches', methods=['GET'])
 def get_school_matches():
@@ -232,23 +134,6 @@ def create_school_match():
     match.individual_bouts = bouts
     match.save()
     return json.dumps( match, default=remove_OIDs )
-
-
-def reassign_activity(activity_dict):
-    activity = RoundActivity(**activity_dict)
-    activity.activity_id = ObjectId(activity_dict.get('activity_id'))
-    activity.point_value = activity.activity_value.get(activity.activity_type)
-    activity.action_time = int(activity.action_time)
-    return activity
-
-
-def reassign_bout(bout):
-    bout['bout_date'] = datetime.fromtimestamp(bout.get('bout_date')/1000)
-    bout['winner'] = ObjectId( bout.get('winner') )
-    bout = Bout(**bout)
-    bout.bout_id = ObjectId()
-    bout.actions = [ reassign_activity(activity) for activity in bout.actions ]
-    return bout
 
 
 @api.route('/matches/<match_id>', methods=['PUT'])
@@ -277,15 +162,6 @@ def create_match_bout( match_id ):
     match.save()
     return json.dumps( match, default=remove_OIDs)
 
-def find_match( match_id ):
-    return Match.query.filter( Match._id == ObjectId(match_id) ).one()
-
-
-def find_bout( match, bout_id ):
-    return [bout for bout in match.individual_bouts 
-            if bout.bout_id == ObjectId(bout_id) ]
-    
-
 @api.route('/matches/<match_id>', methods=['GET'])
 def get_single_match(match_id):
     match = find_match( match_id)
@@ -312,17 +188,3 @@ def save_wrestler_action(match_id, bout_id, wrestler_id, activity):
     bout.rounds.append( activity )
     match.save()
     return json.dumps( activity, default=remove_OIDs )
-
-
-@api.route('/confirmation_codes/<object_id>', methods=['POST'])
-def create_confirmation_code(object_id):
-    new_code = uuid.uuid4()
-    redis_cli.hset('coach_confirmation', str(new_code), object_id)
-    return json.dumps(dict(object_id=object_id, confirmation_code=new_code), default=remove_OIDs)
-
-
-@api.route('/confirmation_codes/<object_id>', methods=['GET'])
-def get_confirmation_code(object_id):
-    confirmations = redis_cli.hgetall('coach_confirmation')
-    match = [key for key, value in confirmations.items() if value == object_id]
-    return match[0]

@@ -69,6 +69,10 @@ from wrestling.views.api import api
 app.register_blueprint(api)
 from wrestling.views.auth import auth
 app.register_blueprint(auth)
+from wrestling.views.static import statics
+app.register_blueprint(statics)
+from wrestling.views.confirmations import confirms
+app.register_blueprint(confirms)
 
 if __name__ == '__main__':
     app.run('127.0.0.1')
